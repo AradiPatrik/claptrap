@@ -1,3 +1,14 @@
+buildscript {
+  repositories {
+    google()
+    jcenter()
+  }
+
+  dependencies {
+    classpath("com.google.dagger:hilt-android-gradle-plugin:2.28-alpha")
+  }
+}
+
 allprojects {
   repositories {
     google()
@@ -10,5 +21,7 @@ plugins {
 }
 
 tasks.register("clean", Delete::class) {
+  this.group = "clean"
+
   delete(rootProject.buildDir)
 }

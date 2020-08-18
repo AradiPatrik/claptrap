@@ -1,0 +1,21 @@
+plugins {
+  id(Libraries.Dagger.hiltPlugin)
+}
+
+dependencies {
+  implementation(project(":navigation"))
+
+  implementation(Libraries.AndroidX.Navigation.core)
+  implementation(Libraries.AndroidX.Navigation.extensions)
+  implementation(Libraries.AndroidX.Ui.constraintLayout)
+  implementation(Libraries.AndroidX.Ui.recyclerView)
+  implementation(Libraries.AndroidX.appCompat)
+  implementation(Libraries.AndroidX.Lifecycle.viewModel)
+  implementation(Libraries.AndroidX.Lifecycle.lifecycle)
+  implementation(Libraries.AndroidX.Lifecycle.liveData)
+
+  implementation(Libraries.Dagger.hilt)
+  implementation(Libraries.Dagger.hiltLifecycle)
+  kapt(Libraries.Dagger.hiltKapt)
+  kapt(Libraries.Dagger.hiltAndroidXKapt)
+}

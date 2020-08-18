@@ -1,5 +1,19 @@
+plugins {
+  id(Libraries.Dagger.hiltPlugin)
+}
+
 dependencies {
-  implementation(Libraries.Core.coreKtx)
-  implementation(Libraries.AppCompat.appCompat)
-  implementation(Libraries.ConstraintLayout.constraintLayout)
+  implementation(project(":navigation"))
+  implementation(project(":features:todos"))
+
+  implementation(Libraries.AndroidX.appCompat)
+  implementation(Libraries.AndroidX.Ktx.core)
+  implementation(Libraries.AndroidX.Ui.constraintLayout)
+  implementation(Libraries.AndroidX.Navigation.core)
+  implementation(Libraries.AndroidX.Navigation.extensions)
+
+  implementation(Libraries.Dagger.hilt)
+  implementation(Libraries.Dagger.hiltLifecycle)
+  kapt(Libraries.Dagger.hiltKapt)
+  kapt(Libraries.Dagger.hiltAndroidXKapt)
 }
