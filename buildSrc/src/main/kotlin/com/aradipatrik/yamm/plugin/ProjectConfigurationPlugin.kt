@@ -1,0 +1,117 @@
+package com.aradipatrik.yamm.plugin
+
+import ProjectConstants
+import Versions
+import com.android.build.gradle.AppExtension
+import com.android.build.gradle.BaseExtension
+import com.android.build.gradle.LibraryExtension
+import com.android.build.gradle.api.BaseVariant
+import com.android.build.gradle.internal.dsl.DefaultConfig
+import org.gradle.api.DomainObjectSet
+import org.gradle.api.JavaVersion
+import org.gradle.api.Plugin
+import org.gradle.api.Project
+import org.gradle.kotlin.dsl.configure
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import java.io.File
+
+
+class ProjectConfigurationPlugin : Plugin<Project> {
+  override fun apply(target: Project) = with(target) {
+    optInToFlowPreviewAndExperimentalCoroutines()
+    configureAndroidModules {
+      applyLibraryOrApplicationPlugin()
+      applyCommonPlugins()
+      configureAndroidPlugin()
+    }
+  }
+
+  private fun Project.optInToFlowPreviewAndExperimentalCoroutines() {
+    subprojects {
+      tasks.withType(KotlinCompile::class.java) {
+        kotlinOptions {
+          jvmTarget = JavaVersion.VERSION_1_8.toString()
+          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
+          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
+        }
+      }
+    }
+  }
+
+  private fun Project.configureAndroidModules(configurationBlock: Project.() -> Unit) {
+    configure(androidModules) {
+      configurationBlock()
+    }
+  }
+
+  private val Project.androidModules
+    get() = subprojects.filter {
+      it.file("src/main/AndroidManifest.xml").exists()
+    }
+
+  private fun Project.applyLibraryOrApplicationPlugin() = if (name == "app") {
+    plugins.apply("com.android.application")
+  } else {
+    plugins.apply("com.android.library")
+  }
+
+  private fun Project.applyCommonPlugins() {
+    plugins.apply("org.jetbrains.kotlin.android")
+    plugins.apply("org.jetbrains.kotlin.android.extensions")
+    plugins.apply("org.jetbrains.kotlin.kapt")
+  }
+
+  private fun Project.android(androidPluginConfiguration: BaseExtension.() -> Unit) =
+    extensions.configure(androidPluginConfiguration)
+
+  private fun Project.configureAndroidPlugin() = android {
+    compileSdkVersion(Versions.Build.targetSdk)
+
+    defaultConfig {
+      minSdkVersion(Versions.Build.minSdk)
+      targetSdkVersion(Versions.Build.targetSdk)
+      versionCode = ProjectConstants.versionCode
+      versionName = ProjectConstants.versionName
+
+      consumeProguardFileIfExists(file("proguard-rules.pro"))
+
+      compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+      }
+
+      productFlavors {
+        dimension = "default"
+
+        sourceSets.getByName(name) {
+          java.srcDir("src/$name/kotlin")
+        }
+      }
+
+      buildTypes.configureEach {
+        sourceSets.getByName(name) {
+          java.srcDir("src/$name/kotlin")
+        }
+      }
+
+      variants.all {
+        extensions.getByType(BaseExtension::class.java).sourceSets.getByName(name) {
+          java.srcDir("src/$name/kotlin")
+        }
+      }
+    }
+  }
+
+  private fun DefaultConfig.consumeProguardFileIfExists(proguardFile: File) {
+    if (name != "app" && proguardFile.exists()) {
+      consumerProguardFiles(proguardFile.name)
+    }
+  }
+
+  val Project.variants: DomainObjectSet<out BaseVariant>
+    get() = if (plugins.hasPlugin("android-library")) {
+      extensions.getByType(LibraryExtension::class.java).libraryVariants
+    } else {
+      extensions.getByType(AppExtension::class.java).applicationVariants
+    }
+}
