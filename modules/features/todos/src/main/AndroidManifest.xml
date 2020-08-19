@@ -1,4 +1,4 @@
-<manifest package="com.aradipatrik.yamm.todos">
+<manifest package="com.aradipatrik.yamm.feature.todos">
 
   <application />
 </manifest>

@@ -16,7 +16,6 @@ import org.gradle.kotlin.dsl.dependencies
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import java.io.File
 
-
 class ProjectConfigurationPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
     optInToFlowPreviewAndExperimentalCoroutines()
@@ -24,6 +23,9 @@ class ProjectConfigurationPlugin : Plugin<Project> {
       applyLibraryOrApplicationPlugin()
       applyCommonPlugins()
       configureAndroidPlugin()
+    }
+    configureNonAndroidModules {
+      applyKotlinLibraryPlugins()
     }
   }
 
@@ -45,9 +47,25 @@ class ProjectConfigurationPlugin : Plugin<Project> {
     }
   }
 
+  private fun Project.configureNonAndroidModules(configurationBlock: Project.() -> Unit) {
+    configure(nonAndroidModules) {
+      configurationBlock()
+    }
+  }
+
+  private fun Project.applyKotlinLibraryPlugins() {
+    plugins.apply("org.gradle.java-library")
+    plugins.apply("org.jetbrains.kotlin.jvm")
+  }
+
   private val Project.androidModules
     get() = subprojects.filter {
       it.file("src/main/AndroidManifest.xml").exists()
+    }
+
+  private val Project.nonAndroidModules
+    get() = subprojects.filter {
+      !it.file("src/main/AndroidManifest.xml").exists()
     }
 
   private fun Project.applyLibraryOrApplicationPlugin() = if (name == "app") {
