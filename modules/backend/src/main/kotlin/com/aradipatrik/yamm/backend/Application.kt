@@ -47,6 +47,16 @@ fun Application.module(testing: Boolean = false) {
         }
       }
     }
+
+    get("/foos") {
+      call.respondHtml {
+        body {
+          h1 {
+            +"This should work!!!!"
+          }
+        }
+      }
+    }
   }
 }
 
