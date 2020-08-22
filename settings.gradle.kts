@@ -33,5 +33,8 @@ project(":core").projectDir = file("./modules/core")
 include(":core:api-models")
 project(":core:api-models").projectDir = file("./modules/core/api-models")
 
-include("core:domain-models")
+include(":core:domain-models")
 project(":core:domain-models").projectDir = file("./modules/core/domain-models")
+
+include(":backend")
+project(":backend").projectDir = file("./modules/backend")

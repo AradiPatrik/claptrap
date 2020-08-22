@@ -27,7 +27,7 @@ class TodosFragment : Fragment(R.layout.fragment_todo_list) {
   }
 
   private fun render(viewState: TodosViewState) {
-    when(viewState) {
+    when (viewState) {
       TodosViewState.Loading -> todo_list_view_flipper.displayedChild = 0
       is TodosViewState.ListLoaded -> {
         todosAdapter.submitList(viewState.list)

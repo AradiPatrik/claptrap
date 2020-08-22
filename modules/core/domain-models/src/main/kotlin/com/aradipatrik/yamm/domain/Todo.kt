@@ -1,7 +1,7 @@
 package com.aradipatrik.yamm.domain
 
 data class Todo(
-  val name: String,
   val id: String,
+  val name: String,
   val isDone: Boolean
 )

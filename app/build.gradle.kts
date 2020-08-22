@@ -4,6 +4,7 @@ plugins {
 
 dependencies {
   implementation(project(":navigation"))
+  implementation(project(":data:network"))
   implementation(project(":features:todos"))
 
   implementation(Libraries.AndroidX.appCompat)

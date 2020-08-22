@@ -9,7 +9,6 @@ object Libraries {
     object Ui {
       const val constraintLayout =
         "androidx.constraintlayout:constraintlayout:${Versions.AndroidX.constraintLayout}"
-
       const val recyclerView =
         "androidx.recyclerview:recyclerview:${Versions.AndroidX.recyclerView}"
     }
@@ -17,7 +16,6 @@ object Libraries {
     object Navigation {
       const val core =
         "androidx.navigation:navigation-fragment-ktx:${Versions.AndroidX.navigation}"
-
       const val extensions =
         "androidx.navigation:navigation-ui-ktx:${Versions.AndroidX.navigation}"
     }
@@ -25,10 +23,8 @@ object Libraries {
     object Lifecycle {
       const val viewModel =
         "androidx.lifecycle:lifecycle-viewmodel-ktx:${Versions.AndroidX.lifecycle}"
-
       const val lifecycle =
         "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.lifecycle}"
-
       const val liveData =
         "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.AndroidX.lifecycle}"
     }
@@ -42,5 +38,28 @@ object Libraries {
       "androidx.hilt:hilt-compiler:${Versions.Dagger.hiltAndroidX}"
     const val hiltPlugin = "dagger.hilt.android.plugin"
     const val hiltKapt = "com.google.dagger:hilt-android-compiler:${Versions.Dagger.hilt}"
+  }
+
+  object Coroutines {
+    const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Coroutines.core}"
+  }
+
+  object Network {
+    const val okHttp = "com.squareup.okhttp3:okhttp"
+    const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.Network.retrofit}"
+    const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.Network.moshi}"
+    const val moshiCodegen = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.Network.moshi}"
+    const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.Network.retrofit}"
+  }
+
+  object Ktor {
+    const val netty = "io.ktor:ktor-server-netty:${Versions.Ktor.core}"
+    const val serverCore = "io.ktor:ktor-server-core:${Versions.Ktor.core}"
+    const val htmlBuilder = "io.ktor:ktor-html-builder:${Versions.Ktor.core}"
+    const val serverSession = "io.ktor:ktor-server-sessions:${Versions.Ktor.core}"
+    const val serverGson = "io.ktor:ktor-gson:${Versions.Ktor.core}"
+    const val logback = "ch.qos.logback:logback-classic:${Versions.Ktor.logback}"
+    const val networkTls = "io.ktor:ktor-network-tls:${Versions.Ktor.core}"
+    const val certificates = "io.ktor:ktor-network-tls-certificates:${Versions.Ktor.core}"
   }
 }

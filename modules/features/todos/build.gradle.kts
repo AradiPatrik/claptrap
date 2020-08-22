@@ -5,6 +5,7 @@ plugins {
 dependencies {
   implementation(project(":navigation"))
   implementation(project(":core:domain-models"))
+  api(project(":domain:interactors"))
 
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
