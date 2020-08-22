@@ -1,31 +1,35 @@
-include(":app")
+val includeAndroid: String by extra
 
-include(":navigation")
-project(":navigation").projectDir = file("./modules/navigation")
+if (includeAndroid == "true") {
+  include(":app")
 
-include(":features")
-project(":features").projectDir = file("./modules/features")
+  include(":navigation")
+  project(":navigation").projectDir = file("./modules/navigation")
 
-include(":features:todos")
-project(":features:todos").projectDir = file("./modules/features/todos")
+  include(":features")
+  project(":features").projectDir = file("./modules/features")
 
-include(":data")
-project(":data").projectDir = file("./modules/data")
+  include(":features:todos")
+  project(":features:todos").projectDir = file("./modules/features/todos")
 
-include(":data:disk")
-project(":data:disk").projectDir = file("./modules/data/disk")
+  include(":data")
+  project(":data").projectDir = file("./modules/data")
 
-include(":data:network")
-project(":data:network").projectDir = file("./modules/data/network")
+  include(":data:disk")
+  project(":data:disk").projectDir = file("./modules/data/disk")
 
-include(":domain")
-project(":domain").projectDir = file("./modules/domain")
+  include(":data:network")
+  project(":data:network").projectDir = file("./modules/data/network")
 
-include(":domain:datasources")
-project(":domain:datasources").projectDir = file("./modules/domain/datasources")
+  include(":domain")
+  project(":domain").projectDir = file("./modules/domain")
 
-include(":domain:interactors")
-project(":domain:interactors").projectDir = file("./modules/domain/interactors")
+  include(":domain:datasources")
+  project(":domain:datasources").projectDir = file("./modules/domain/datasources")
+
+  include(":domain:interactors")
+  project(":domain:interactors").projectDir = file("./modules/domain/interactors")
+}
 
 include(":core")
 project(":core").projectDir = file("./modules/core")
