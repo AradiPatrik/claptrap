@@ -40,10 +40,10 @@ fun Application.module(testing: Boolean = false) {
       ))
     }
 
-    get("/foo") {
+    get("/test") {
       call.respondHtml {
         body {
-          h1 { +"SSL works" }
+          h1 { +"This is working" }
         }
       }
     }

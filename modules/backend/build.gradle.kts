@@ -1,5 +1,6 @@
 plugins {
   application
+  id("com.github.johnrengelman.shadow") version "5.0.0"
 }
 
 application {
@@ -19,4 +20,14 @@ dependencies {
   implementation(Libraries.Ktor.serverSession)
   implementation(Libraries.Ktor.networkTls)
   implementation(Libraries.Ktor.certificates)
+}
+
+tasks.withType<Jar> {
+  manifest {
+    attributes(
+      mapOf(
+        "Main-Class" to application.mainClassName
+      )
+    )
+  }
 }
