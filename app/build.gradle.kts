@@ -18,3 +18,18 @@ dependencies {
   kapt(Libraries.Dagger.hiltKapt)
   kapt(Libraries.Dagger.hiltAndroidXKapt)
 }
+
+android {
+  productFlavors {
+    flavorDimensions("environment")
+    register("dev") {
+      applicationIdSuffix = ".dev"
+
+      buildConfigField("String", "API_BASE_URL", "\"https://hidden-savannah-29279.herokuapp.com/\"")
+    }
+
+    register("prod") {
+      buildConfigField("String", "API_BASE_URL", " ")
+    }
+  }
+}

@@ -29,6 +29,9 @@ if (includeAndroid == "true") {
 
   include(":domain:interactors")
   project(":domain:interactors").projectDir = file("./modules/domain/interactors")
+
+  include(":config")
+  project(":config").projectDir = file("./modules/config")
 }
 
 include(":core")

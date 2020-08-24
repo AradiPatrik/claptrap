@@ -6,6 +6,7 @@ dependencies {
   api(project(":domain:datasources"))
   implementation(project(":core:domain-models"))
   implementation(project(":core:api-models"))
+  implementation(project(":config"))
 
   implementation(Libraries.Dagger.hilt)
   kapt(Libraries.Dagger.hiltKapt)

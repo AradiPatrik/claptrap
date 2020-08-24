@@ -24,28 +24,8 @@ class NetworkModule {
   // This is only for debugging, should be removed on production!!!
   @Provides
   @Singleton
-  internal fun provideOkHttpClient(): OkHttpClient {
-    val certs: Array<TrustManager> = arrayOf(
-      object : X509TrustManager {
-        override fun checkClientTrusted(chain: Array<X509Certificate?>?, authType: String?) {}
-
-        override fun checkServerTrusted(chain: Array<X509Certificate?>?, authType: String?) {}
-
-        override fun getAcceptedIssuers(): Array<X509Certificate> = arrayOf()
-      }
-    )
-
-    val ctx = SSLContext.getInstance("TLS").apply {
-      init(null, certs, SecureRandom())
-    }
-
-    val hostnameVerifier = HostnameVerifier { hostname, session -> true }
-
-    return OkHttpClient.Builder()
-      .hostnameVerifier(hostnameVerifier)
-      .sslSocketFactory(ctx.socketFactory, certs[0] as X509TrustManager)
-      .build()
-  }
+  internal fun provideOkHttpClient() = OkHttpClient.Builder()
+    .build()
 
   @Provides
   @Singleton
