@@ -5,4 +5,6 @@ import kotlinx.coroutines.flow.Flow
 
 interface TodoDiskDataSource {
   fun getAllTodos(): Flow<List<Todo>>
+
+  suspend fun saveAll(todos: List<Todo>)
 }

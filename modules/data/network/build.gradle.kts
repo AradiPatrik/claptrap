@@ -13,10 +13,12 @@ dependencies {
 
   implementation(Libraries.Coroutines.core)
 
+  implementation(Libraries.Logging.timber)
+
+  api(Libraries.Network.loggingInterceptor)
   api(Libraries.Network.moshi)
   kapt(Libraries.Network.moshiCodegen)
   implementation(Libraries.Network.moshiConverter)
   api(Libraries.Network.okHttp)
   api(Libraries.Network.retrofit)
-
 }

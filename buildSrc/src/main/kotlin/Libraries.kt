@@ -28,6 +28,12 @@ object Libraries {
       const val liveData =
         "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.AndroidX.lifecycle}"
     }
+
+    object Room {
+      const val runtime = "androidx.room:room-runtime:${Versions.AndroidX.room}"
+      const val ktx = "androidx.room:room-ktx:${Versions.AndroidX.room}"
+      const val kapt = "androidx.room:room-compiler:${Versions.AndroidX.room}"
+    }
   }
 
   object Dagger {
@@ -49,7 +55,13 @@ object Libraries {
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.Network.retrofit}"
     const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.Network.moshi}"
     const val moshiCodegen = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.Network.moshi}"
+    const val loggingInterceptor =
+      "com.squareup.okhttp3:logging-interceptor:${Versions.Network.okhttp}"
     const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.Network.retrofit}"
+  }
+
+  object Logging {
+    const val timber = "com.jakewharton.timber:timber:${Versions.Logging.timber}"
   }
 
   object Ktor {

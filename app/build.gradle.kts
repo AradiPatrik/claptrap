@@ -5,13 +5,17 @@ plugins {
 dependencies {
   implementation(project(":navigation"))
   implementation(project(":data:network"))
+  implementation(project(":data:disk"))
   implementation(project(":features:todos"))
+  implementation(project(":config"))
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Ui.constraintLayout)
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
+
+  implementation(Libraries.Logging.timber)
 
   implementation(Libraries.Dagger.hilt)
   implementation(Libraries.Dagger.hiltLifecycle)

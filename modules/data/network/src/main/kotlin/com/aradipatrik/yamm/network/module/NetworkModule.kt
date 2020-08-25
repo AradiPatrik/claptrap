@@ -1,5 +1,7 @@
 package com.aradipatrik.yamm.network.module
 
+import com.aradipatrik.yamm.config.AppConfig
+import com.aradipatrik.yamm.network.BuildConfig
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module
@@ -7,24 +9,22 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
-import java.security.SecureRandom
-import java.security.cert.X509Certificate
+import timber.log.Timber
 import javax.inject.Singleton
-import javax.net.ssl.HostnameVerifier
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManager
-import javax.net.ssl.X509TrustManager
 
 @Module
 @InstallIn(ApplicationComponent::class)
 class NetworkModule {
 
-  // This is only for debugging, should be removed on production!!!
   @Provides
   @Singleton
-  internal fun provideOkHttpClient() = OkHttpClient.Builder()
+  internal fun provideOkHttpClient(
+    httpLoggingInterceptor: HttpLoggingInterceptor
+  ) = OkHttpClient.Builder()
+    .addInterceptor(httpLoggingInterceptor)
     .build()
 
   @Provides
@@ -35,11 +35,27 @@ class NetworkModule {
 
   @Provides
   @Singleton
+  fun provideHttpLoggingInterceptor(): HttpLoggingInterceptor =
+    HttpLoggingInterceptor(object : HttpLoggingInterceptor.Logger {
+      override fun log(message: String) {
+        Timber.tag("OkHttp").d(message)
+      }
+    }).apply {
+      level = if (BuildConfig.DEBUG) {
+        HttpLoggingInterceptor.Level.BODY
+      } else {
+        HttpLoggingInterceptor.Level.NONE
+      }
+    }
+
+  @Provides
+  @Singleton
   internal fun provideRetrofit(
     okHttpClient: OkHttpClient,
-    moshi: Moshi
+    moshi: Moshi,
+    appConfig: AppConfig
   ): Retrofit = Retrofit.Builder()
-    .baseUrl("https://10.0.2.2:8443")
+    .baseUrl(appConfig.apiBaseUrl)
     .client(okHttpClient)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()

@@ -33,8 +33,6 @@ class ProjectConfigurationPlugin : Plugin<Project> {
       tasks.withType(KotlinCompile::class.java) {
         kotlinOptions {
           jvmTarget = JavaVersion.VERSION_1_8.toString()
-          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
         }
       }
     }
