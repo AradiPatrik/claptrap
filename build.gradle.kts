@@ -17,7 +17,7 @@ allprojects {
 }
 
 plugins {
-  id("com.aradipatrik.yamm.config")
+  id("com.aradipatrik.claptrap.config")
 }
 
 tasks.register("clean", Delete::class) {

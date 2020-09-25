@@ -6,6 +6,6 @@
 
   <fragment
     android:id="@+id/fragment_main"
-    android:name="com.aradipatrik.yamm.ui.MainFragment" />
+    android:name="com.aradipatrik.claptrap.ui.MainFragment" />
 
 </navigation>

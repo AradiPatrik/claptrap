@@ -12,6 +12,7 @@ dependencies {
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Ui.constraintLayout)
+  implementation(Libraries.AndroidX.Ui.material)
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
 

@@ -11,6 +11,7 @@ object Libraries {
         "androidx.constraintlayout:constraintlayout:${Versions.AndroidX.constraintLayout}"
       const val recyclerView =
         "androidx.recyclerview:recyclerview:${Versions.AndroidX.recyclerView}"
+      const val material = "com.google.android.material:material:${Versions.AndroidX.material}"
     }
 
     object Navigation {
@@ -48,6 +49,7 @@ object Libraries {
 
   object Coroutines {
     const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Coroutines.core}"
+    const val binding = "ru.ldralighieri.corbind:corbind:${Versions.Coroutines.corbind}"
   }
 
   object Network {

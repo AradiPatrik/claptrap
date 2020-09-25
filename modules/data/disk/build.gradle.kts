@@ -12,7 +12,7 @@ dependencies {
 
   implementation(Libraries.Coroutines.core)
 
-  implementation(Libraries.AndroidX.Room.runtime)
-  implementation(Libraries.AndroidX.Room.ktx)
+  api(Libraries.AndroidX.Room.runtime)
+  api(Libraries.AndroidX.Room.ktx)
   kapt(Libraries.AndroidX.Room.kapt)
 }

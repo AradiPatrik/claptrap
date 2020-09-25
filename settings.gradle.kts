@@ -32,6 +32,9 @@ if (includeAndroid == "true") {
 
   include(":config")
   project(":config").projectDir = file("./modules/config")
+
+  include(":mvi")
+  project(":mvi").projectDir = file("./modules/mvi")
 }
 
 include(":core")
