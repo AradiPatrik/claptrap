@@ -17,8 +17,8 @@ class OperatorTest {
 
     @Test
     fun flatMap() {
-        val flux = Flux.just("aa", "bb", "cc")
-            .flatMap { e: String -> Flux.just(*e.split("").toTypedArray()) }
+        val flux = Flux.just("a a", "b b", "c c")
+            .flatMap { e: String -> Flux.just(*e.split(" ").toTypedArray()) }
         StepVerifier.create(flux)
             .expectNext("a", "a", "b", "b", "c", "c")
             .verifyComplete()
