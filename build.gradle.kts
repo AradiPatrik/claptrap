@@ -27,11 +27,11 @@ tasks.register("clean", Delete::class) {
 }
 
 tasks.register("build-backend") {
-  dependsOn(":backend:build")
+  dependsOn(":backend-spring:build")
 }
 
 tasks.register("clean-backend") {
-  dependsOn(":backend:clean")
+  dependsOn(":backend-spring:clean")
 }
 
 tasks.getByName("build-backend")
