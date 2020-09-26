@@ -4,7 +4,7 @@
   "env": {
     "GRADLE_TASK": {
       "description": "The Gradle task that Heroku will run to build this app",
-      "value": "-Dorg.gradle.project.includeAndroid=false :backend:build"
+      "value": "-Dorg.gradle.project.includeAndroid=false :backend-spring:build"
     }
   }
 }
