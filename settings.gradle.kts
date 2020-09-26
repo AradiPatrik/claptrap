@@ -48,3 +48,6 @@ project(":core:domain-models").projectDir = file("./modules/core/domain-models")
 
 include(":backend")
 project(":backend").projectDir = file("./modules/backend")
+
+include(":backend-spring")
+project(":backend-spring").projectDir = file("./modules/backend-spring")
