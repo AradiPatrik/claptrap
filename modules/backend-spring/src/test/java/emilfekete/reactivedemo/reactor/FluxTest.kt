@@ -39,7 +39,7 @@ class FluxTest {
 
     @Test
     fun fromIterable() {
-        val flux = Flux.fromIterable(List.of(1, 2, 3))
+        val flux = Flux.fromIterable(listOf(1, 2, 3))
         StepVerifier.create(flux)
             .expectNext(1, 2, 3)
             .verifyComplete()
