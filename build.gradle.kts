@@ -25,3 +25,18 @@ tasks.register("clean", Delete::class) {
 
   delete(rootProject.buildDir)
 }
+
+tasks.register("build-backend") {
+  dependsOn(":backend:build")
+}
+
+tasks.register("clean-backend") {
+  dependsOn(":backend:clean")
+}
+
+tasks.getByName("build-backend")
+  .mustRunAfter("clean-backend")
+
+tasks.register("stage") {
+  dependsOn("build-backend", "clean-backend")
+}

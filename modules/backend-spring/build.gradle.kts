@@ -4,6 +4,9 @@ plugins {
     id("io.spring.dependency-management") version "1.0.7.RELEASE"
 }
 
+tasks.withType<Jar> {
+    archiveBaseName.set("bug-free-octo-spoon")
+}
 
 repositories {
     mavenCentral()
@@ -17,7 +20,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("io.springfox:springfox-boot-starter:3.0.0")
     implementation("io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT")
-    implementation ("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test") {

@@ -1,1 +1,1 @@
-web: java -jar modules/backend/build/libs/backend-1.0.0-all.jar -port=$PORT
+web: java -jar modules/backend-spring/build/libs/bug-free-octo-spoon.jar -port=$PORT

@@ -6,11 +6,11 @@ import org.springframework.web.reactive.config.EnableWebFlux
 
 @EnableWebFlux
 @SpringBootApplication
-class ReactivedemoApplication {
+class ReactiveDemoApplication {
     companion object {
         @JvmStatic
         fun main(args: Array<String>) {
-            SpringApplication.run(ReactivedemoApplication::class.java, *args)
+            SpringApplication.run(ReactiveDemoApplication::class.java, *args)
         }
     }
 
