@@ -5,7 +5,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.feature.todos.edit.model.EditTodoViewState.Editing
 import com.aradipatrik.claptrap.feature.todos.edit.model.EditTodoViewState.Saving
-import com.aradipatrik.claptrap.interactors.todo.TodoInteractor
+import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay

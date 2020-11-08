@@ -32,6 +32,12 @@ if (includeAndroid == "true") {
   include(":domain:interactors")
   project(":domain:interactors").projectDir = file("./modules/domain/interactors")
 
+  include(":domain:interactor-interfaces")
+  project(":domain:interactor-interfaces").projectDir = file("./modules/domain/interactor-interfaces")
+
+  include(":domain:fake-interactors")
+  project(":domain:fake-interactors").projectDir = file("./modules/domain/fake-interactors")
+
   include(":config")
   project(":config").projectDir = file("./modules/config")
 

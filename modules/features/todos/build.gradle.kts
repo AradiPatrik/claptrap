@@ -5,7 +5,7 @@ plugins {
 dependencies {
   implementation(project(":navigation"))
   implementation(project(":core:domain-models"))
-  api(project(":domain:interactors"))
+  implementation(project(":domain:interactor-interfaces"))
   implementation(project(":mvi"))
 
   implementation(Libraries.Logging.timber)

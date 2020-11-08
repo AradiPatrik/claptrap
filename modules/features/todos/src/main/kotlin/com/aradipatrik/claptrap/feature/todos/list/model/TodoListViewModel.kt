@@ -7,14 +7,13 @@ import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEffect.Navi
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEvent.TodoChecked
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEvent.TodoClicked
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewState.ListLoaded
-import com.aradipatrik.claptrap.interactors.todo.TodoInteractor
+import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import timber.log.Timber
 
 class TodoListViewModel @ViewModelInject constructor(
   private val todoInteractor: TodoInteractor,

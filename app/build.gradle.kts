@@ -8,6 +8,9 @@ dependencies {
   implementation(project(":data:disk"))
   implementation(project(":features:todos"))
   implementation(project(":config"))
+  implementation(project(":domain:interactors"))
+  implementation(project(":domain:interactor-interfaces"))
+  implementation(project(":domain:fake-interactors"))
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
@@ -27,14 +30,30 @@ dependencies {
 android {
   productFlavors {
     flavorDimensions("environment")
+    register("mock") {
+      dimension = "environment"
+      applicationIdSuffix = ".mock"
+
+      buildConfigField("String", "API_BASE_URL", "\" \"")
+    }
+
     register("dev") {
+      dimension = "environment"
       applicationIdSuffix = ".dev"
 
       buildConfigField("String", "API_BASE_URL", "\"https://hidden-savannah-29279.herokuapp.com/\"")
     }
 
     register("prod") {
-      buildConfigField("String", "API_BASE_URL", " ")
+      dimension = "environment"
+
+      buildConfigField("String", "API_BASE_URL", "\" \"")
+    }
+
+    sourceSets {
+      getByName("mock").java.srcDir("src/mock/kotlin")
+      getByName("dev").java.srcDir("src/live/kotlin")
+      getByName("prod").java.srcDir("src/live/kotlin")
     }
   }
 }

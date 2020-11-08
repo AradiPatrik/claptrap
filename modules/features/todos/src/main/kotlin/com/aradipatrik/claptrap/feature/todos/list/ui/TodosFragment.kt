@@ -15,12 +15,11 @@ import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEffect
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEffect.NavigateToEdit
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewModel
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewState
+import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_todo_list.*
-import kotlinx.coroutines.flow.consumeAsFlow
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.*
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -37,14 +36,14 @@ class TodosFragment : Fragment(R.layout.fragment_todo_list) {
 
     viewModel.viewState
       .onEach(::render)
-      .launchIn(lifecycleScope)
+      .launchWhenResumed()
 
     viewEvents.onEach(viewModel::processInput)
-      .launchIn(lifecycleScope)
+      .launchWhenResumed()
 
     viewModel.viewEffects.receiveAsFlow()
       .onEach(::handleEffect)
-      .launchIn(lifecycleScope)
+      .launchWhenResumed()
   }
 
   private fun render(viewState: TodoListViewState) {
@@ -63,5 +62,11 @@ class TodosFragment : Fragment(R.layout.fragment_todo_list) {
       R.id.nav_action_todos_to_edit_todos,
       bundleOf("todoId" to viewEffect.todo.id)
     )
+  }
+
+  private fun Flow<*>.launchWhenResumed() {
+    lifecycleScope.launchWhenResumed {
+      this@launchWhenResumed.collect()
+    }
   }
 }
