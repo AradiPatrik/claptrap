@@ -11,6 +11,7 @@ dependencies {
   implementation(project(":domain:interactors"))
   implementation(project(":domain:interactor-interfaces"))
   implementation(project(":domain:fake-interactors"))
+  implementation(project(":theme"))
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)

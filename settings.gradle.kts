@@ -41,6 +41,9 @@ if (includeAndroid == "true") {
   include(":config")
   project(":config").projectDir = file("./modules/config")
 
+  include(":theme")
+  project(":theme").projectDir = file("./modules/theme")
+
   include(":mvi")
   project(":mvi").projectDir = file("./modules/mvi")
 }
