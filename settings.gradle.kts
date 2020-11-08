@@ -1,4 +1,6 @@
 val includeAndroid: String by extra
+val includeKtor: String by extra
+val includeSpring: String by extra
 
 if (includeAndroid == "true") {
   include(":app")
@@ -46,8 +48,12 @@ project(":core:api-models").projectDir = file("./modules/core/api-models")
 include(":core:domain-models")
 project(":core:domain-models").projectDir = file("./modules/core/domain-models")
 
-include(":backend")
-project(":backend").projectDir = file("./modules/backend")
+if (includeKtor == "true") {
+  include(":backend")
+  project(":backend").projectDir = file("./modules/backend")
+}
 
-include(":backend-spring")
-project(":backend-spring").projectDir = file("./modules/backend-spring")
+if (includeSpring == "true") {
+  include(":backend-spring")
+  project(":backend-spring").projectDir = file("./modules/backend-spring")
+}
