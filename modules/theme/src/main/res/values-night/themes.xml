@@ -17,5 +17,6 @@
     <item name="colorOnError">@color/black_900</item>
     <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
+    <item name="android:navigationBarDividerColor" tools:ignore="NewApi">#151515</item>
   </style>
 </resources>

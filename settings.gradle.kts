@@ -14,6 +14,9 @@ if (includeAndroid == "true") {
   include(":features:todos")
   project(":features:todos").projectDir = file("./modules/features/todos")
 
+  include(":features:transactions")
+  project(":features:transactions").projectDir = file("./modules/features/transactions")
+
   include(":data")
   project(":data").projectDir = file("./modules/data")
 

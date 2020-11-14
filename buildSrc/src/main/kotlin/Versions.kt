@@ -8,12 +8,14 @@ object Versions {
   object AndroidX {
     const val appCompat = "1.2.0"
     const val coreKtx = "1.3.1"
-    const val constraintLayout = "1.1.3"
-    const val navigation = "2.3.0"
+    const val constraintLayout = "2.0.4"
+    const val navigation = "2.3.1"
     const val recyclerView = "1.1.0"
     const val lifecycle = "2.2.0"
     const val room = "2.2.5"
     const val material = "1.2.0"
+    const val cardView = "1.0.0"
+    const val vectorDrawable = "1.1.0"
   }
 
   object Dagger {

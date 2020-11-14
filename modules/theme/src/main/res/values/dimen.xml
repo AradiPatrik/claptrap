@@ -6,6 +6,16 @@
   <dimen name="keyline_4">16dp</dimen>
   <dimen name="keyline_5">24dp</dimen>
 
+  <dimen name="list_item_two_line_height">64dp</dimen>
+  <dimen name="margin_default">16dp</dimen>
+  <dimen name="default_backdrop_margin_start">24dp</dimen>
+  <dimen name="default_backdrop_margin_vertical">@dimen/margin_default</dimen>
+
   <dimen name="component_label_horizontal_margin">@dimen/keyline_4</dimen>
   <dimen name="elevation_default_top_app_bar">4dp</dimen>
+
+  <dimen name="alpha_full">1</dimen>
+  <dimen name="alpha_high">0.8</dimen>
+  <dimen name="alpha_medium">0.55</dimen>
+  <dimen name="alpha_low">0.33</dimen>
 </resources>

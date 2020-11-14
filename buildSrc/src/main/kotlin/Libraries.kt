@@ -12,6 +12,9 @@ object Libraries {
       const val recyclerView =
         "androidx.recyclerview:recyclerview:${Versions.AndroidX.recyclerView}"
       const val material = "com.google.android.material:material:${Versions.AndroidX.material}"
+      const val cardView = "androidx.cardview:cardview:${Versions.AndroidX.cardView}"
+      const val vectorDrawable =
+        "androidx.vectordrawable:vectordrawable:${Versions.AndroidX.vectorDrawable}"
     }
 
     object Navigation {

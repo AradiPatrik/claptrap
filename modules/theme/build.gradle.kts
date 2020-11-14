@@ -1,3 +1,3 @@
 dependencies {
-  implementation(Libraries.AndroidX.Ui.material)
+  api(Libraries.AndroidX.Ui.material)
 }

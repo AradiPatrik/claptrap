@@ -6,7 +6,10 @@ dependencies {
   implementation(project(":navigation"))
   implementation(project(":data:network"))
   implementation(project(":data:disk"))
+
   implementation(project(":features:todos"))
+  implementation(project(":features:transactions"))
+
   implementation(project(":config"))
   implementation(project(":domain:interactors"))
   implementation(project(":domain:interactor-interfaces"))
@@ -16,7 +19,8 @@ dependencies {
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Ui.constraintLayout)
-  implementation(Libraries.AndroidX.Ui.material)
+  implementation(Libraries.AndroidX.Ui.cardView)
+  implementation(Libraries.AndroidX.Ui.vectorDrawable)
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
 

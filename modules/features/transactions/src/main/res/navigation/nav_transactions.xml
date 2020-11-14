@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+  android:id="@+id/nav_graph_transactions"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  app:startDestination="@id/fragment_transactions">
+  <fragment
+    android:id="@+id/fragment_transactions"
+    android:name="com.aradipatrik.claptrap.feature.dashboard.ui.TransactionsFragment"
+    android:label="Transactions"/>
+</navigation>

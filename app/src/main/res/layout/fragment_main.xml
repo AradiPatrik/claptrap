@@ -1,40 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
-  android:layout_height="match_parent">
+  android:layout_height="match_parent"
+  android:background="?attr/colorPrimarySurface"
+  app:layoutDescription="@xml/fragment_main_scene">
 
-  <com.google.android.material.appbar.AppBarLayout
-    android:id="@+id/appbar"
-    android:layout_width="0dp"
+  <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
+    android:id="@+id/menu_icon"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_marginStart="@dimen/default_backdrop_margin_start"
+    android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
+    android:tint="?attr/colorOnPrimarySurface"
+    app:endToStart="@drawable/close_to_menu"
     app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent">
-    <com.google.android.material.appbar.MaterialToolbar
-      android:id="@+id/toolbar"
-      android:layout_width="match_parent"
-      android:layout_height="?android:attr/actionBarSize" />
-  </com.google.android.material.appbar.AppBarLayout>
+    app:layout_constraintTop_toTopOf="parent"
+    app:startToEnd="@drawable/menu_to_close" />
+
+  <TextView
+    android:id="@+id/title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Transaction History"
+    android:includeFontPadding="false"
+    android:layout_marginStart="16dp"
+    android:textAppearance="?attr/textAppearanceHeadline6"
+    android:textColor="?attr/colorOnPrimarySurface"
+    app:layout_constraintBottom_toBottomOf="@+id/menu_icon"
+    app:layout_constraintStart_toEndOf="@id/menu_icon"
+    app:layout_constraintTop_toTopOf="@id/menu_icon" />
+
+  <ImageView
+    android:id="@+id/transactions_menu_item_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
+    app:layout_constraintStart_toStartOf="@id/menu_icon"
+    app:layout_constraintTop_toBottomOf="@id/menu_icon"
+    app:srcCompat="@drawable/ic_money"
+    app:tint="?attr/colorOnPrimarySurface" />
+
+  <TextView
+    android:id="@+id/transaction_menu_item_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:text="Transaction History"
+    android:textAppearance="?attr/textAppearanceSubtitle1"
+    android:textColor="?attr/colorOnPrimarySurface"
+    app:layout_constraintBottom_toBottomOf="@id/transactions_menu_item_icon"
+    app:layout_constraintStart_toEndOf="@id/transactions_menu_item_icon"
+    app:layout_constraintTop_toTopOf="@id/transactions_menu_item_icon" />
+
+  <ImageView
+    android:id="@+id/wallets_menu_item_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:alpha="@dimen/alpha_medium"
+    app:layout_constraintStart_toStartOf="@id/transactions_menu_item_icon"
+    app:layout_constraintTop_toBottomOf="@id/transactions_menu_item_icon"
+    app:srcCompat="@drawable/ic_money"
+    app:tint="?attr/colorOnPrimarySurface" />
+
+  <TextView
+    android:id="@+id/wallets_menu_item_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:alpha="@dimen/alpha_medium"
+    android:text="Wallets"
+    android:textAppearance="?attr/textAppearanceSubtitle1"
+    android:textColor="?attr/colorOnPrimarySurface"
+    app:layout_constraintBottom_toBottomOf="@id/wallets_menu_item_icon"
+    app:layout_constraintStart_toEndOf="@id/wallets_menu_item_icon"
+    app:layout_constraintTop_toTopOf="@id/wallets_menu_item_icon" />
+
+  <ImageView
+    android:id="@+id/statistics_menu_item_icon"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="8dp"
+    android:alpha="@dimen/alpha_medium"
+    app:layout_constraintStart_toStartOf="@id/wallets_menu_item_icon"
+    app:layout_constraintTop_toBottomOf="@id/wallets_menu_item_icon"
+    app:srcCompat="@drawable/ic_money"
+    app:tint="?attr/colorOnPrimarySurface" />
+
+  <TextView
+    android:id="@+id/statistics_menu_item_text"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="8dp"
+    android:alpha="@dimen/alpha_medium"
+    android:text="Statistics"
+    android:textAppearance="?attr/textAppearanceSubtitle1"
+    android:textColor="?attr/colorOnPrimarySurface"
+    app:layout_constraintBottom_toBottomOf="@id/statistics_menu_item_icon"
+    app:layout_constraintStart_toEndOf="@id/statistics_menu_item_icon"
+    app:layout_constraintTop_toTopOf="@id/statistics_menu_item_icon" />
 
   <androidx.fragment.app.FragmentContainerView
     android:id="@+id/child_host"
     android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="0dp"
     android:layout_height="0dp"
+    android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
     app:defaultNavHost="false"
-    app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/appbar"
-    app:navGraph="@navigation/nav_child" />
-
-  <com.google.android.material.bottomnavigation.BottomNavigationView
-    android:id="@+id/bottom_navigation"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent" />
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/menu_icon"
+    app:navGraph="@navigation/nav_child"
+    tools:layout="@layout/fragment_transactions" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.motion.widget.MotionLayout>
