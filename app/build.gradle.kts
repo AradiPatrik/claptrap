@@ -7,7 +7,6 @@ dependencies {
   implementation(project(":data:network"))
   implementation(project(":data:disk"))
 
-  implementation(project(":features:todos"))
   implementation(project(":features:transactions"))
 
   implementation(project(":config"))

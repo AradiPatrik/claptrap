@@ -1,7 +1,6 @@
 package com.aradipatrik.claptrap.backdrop.ui
 
 import android.os.Bundle
-import android.transition.TransitionManager
 import android.view.View
 import androidx.activity.addCallback
 import androidx.fragment.app.viewModels
@@ -9,22 +8,26 @@ import androidx.navigation.fragment.NavHostFragment
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.backdrop.model.*
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
+import com.aradipatrik.claptrap.databinding.FragmentMainBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_main.*
-import kotlinx.android.synthetic.main.fragment_main_navigation_drawer.*
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 
 @AndroidEntryPoint
-class BackdropFragment : ClapTrapFragment<BackdropViewState, BackdropViewEvent, BackdropViewEffect>(R.layout.fragment_main) {
+class BackdropFragment : ClapTrapFragment<
+  BackdropViewState,
+  BackdropViewEvent,
+  BackdropViewEffect,
+  FragmentMainBinding
+  >(R.layout.fragment_main, FragmentMainBinding::inflate) {
   override val viewModel by viewModels<BackdropViewModel>()
 
   override val viewEvents get() = merge(
-    transactions_menu_item.clicks.map { SelectTopLevelScreen(TopLevelScreen.TRANSACTION_HISTORY) },
-    wallets_menu_item.clicks.map { SelectTopLevelScreen(TopLevelScreen.WALLETS) },
-    statistics_menu_item.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) }
+    binding.transactionsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.TRANSACTION_HISTORY) },
+    binding.walletsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.WALLETS) },
+    binding.statisticsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) }
   )
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -38,7 +41,7 @@ class BackdropFragment : ClapTrapFragment<BackdropViewState, BackdropViewEvent, 
       .findFragmentById(R.id.child_host) as NavHostFragment
     val nestedNavController = nestedNavHostFragment.navController
 
-    requireActivity().onBackPressedDispatcher.addCallback(this) {
+    requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
       if (nestedNavController.previousBackStackEntry != null) {
         nestedNavController.popBackStack()
       } else {
@@ -59,26 +62,26 @@ class BackdropFragment : ClapTrapFragment<BackdropViewState, BackdropViewEvent, 
   }
 
   private fun setTitle(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
-    TopLevelScreen.TRANSACTION_HISTORY -> title.text = getString(R.string.transaction_history)
-    TopLevelScreen.WALLETS -> title.text = getString(R.string.wallets)
-    TopLevelScreen.STATISTICS -> title.text = getString(R.string.statistics)
+    TopLevelScreen.TRANSACTION_HISTORY -> binding.title.text = getString(R.string.transaction_history)
+    TopLevelScreen.WALLETS -> binding.title.text = getString(R.string.wallets)
+    TopLevelScreen.STATISTICS -> binding.title.text = getString(R.string.statistics)
   }
 
   private fun activateMenu(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
-    TopLevelScreen.TRANSACTION_HISTORY -> activateMenuItem(transactions_menu_item)
-    TopLevelScreen.WALLETS -> activateMenuItem(wallets_menu_item)
-    TopLevelScreen.STATISTICS -> activateMenuItem(statistics_menu_item)
+    TopLevelScreen.TRANSACTION_HISTORY -> activateMenuItem(binding.transactionsMenuItem)
+    TopLevelScreen.WALLETS -> activateMenuItem(binding.walletsMenuItem)
+    TopLevelScreen.STATISTICS -> activateMenuItem(binding.statisticsMenuItem)
   }
 
   private fun activateMenuItem(menuItem: BackdropBackLayerMenuItemView) {
-    transactions_menu_item.deactivate()
-    wallets_menu_item.deactivate()
-    statistics_menu_item.deactivate()
+    binding.transactionsMenuItem.deactivate()
+    binding.walletsMenuItem.deactivate()
+    binding.statisticsMenuItem.deactivate()
     menuItem.activate()
   }
 
   override fun react(viewEffect: BackdropViewEffect) = when(viewEffect) {
-    BackdropViewEffect.RevealBackLayer -> menu_icon.performClick().ignore()
-    BackdropViewEffect.ConcealBackLayer -> menu_icon.performClick().ignore()
+    BackdropViewEffect.RevealBackLayer -> binding.menuIcon.performClick().ignore()
+    BackdropViewEffect.ConcealBackLayer -> binding.menuIcon.performClick().ignore()
   }
 }

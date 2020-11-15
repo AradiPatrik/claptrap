@@ -4,10 +4,12 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
 import androidx.annotation.LayoutRes
+import androidx.viewbinding.ViewBinding
 
 
 object ViewUtil {
@@ -25,8 +27,10 @@ object ViewUtil {
     }
   }
 
-  fun ViewGroup.inflate(@LayoutRes layoutRes: Int): View =
-    View.inflate(context, layoutRes, this)
+  fun <T: ViewBinding> ViewGroup.inflateAndAddUsing(inflaterMethod: (LayoutInflater) -> T) =
+    inflaterMethod(LayoutInflater.from(context)).apply {
+      addView(root)
+    }
 
   fun Context.getDimenValue(
     @DimenRes dimen: Int,

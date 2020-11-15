@@ -75,7 +75,6 @@ class ProjectConfigurationPlugin : Plugin<Project> {
 
   private fun Project.applyCommonPlugins() {
     plugins.apply("org.jetbrains.kotlin.android")
-    plugins.apply("org.jetbrains.kotlin.android.extensions")
     plugins.apply("org.jetbrains.kotlin.kapt")
   }
 
@@ -84,6 +83,8 @@ class ProjectConfigurationPlugin : Plugin<Project> {
 
   private fun Project.configureAndroidPlugin() = android {
     compileSdkVersion(Versions.Build.targetSdk)
+
+    buildFeatures.viewBinding = true
 
     defaultConfig {
       minSdkVersion(Versions.Build.minSdk)

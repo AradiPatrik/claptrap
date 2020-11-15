@@ -8,10 +8,10 @@ import androidx.annotation.AttrRes
 import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.content.res.getStringOrThrow
 import com.aradipatrik.claptrap.R
+import com.aradipatrik.claptrap.databinding.ViewBackdropMenuItemBinding
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.getDimenValue
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflate
+import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
-import kotlinx.android.synthetic.main.view_backdrop_menu_item.view.*
 import ru.ldralighieri.corbind.view.clicks
 
 class BackdropBackLayerMenuItemView @JvmOverloads constructor(
@@ -23,6 +23,7 @@ class BackdropBackLayerMenuItemView @JvmOverloads constructor(
   private lateinit var text: String
   private val deactivatedAlpha by lazy { context.getDimenValue(R.dimen.alpha_medium) }
   private val clickAreaActiveAlpha by lazy { context.getDimenValue(R.dimen.alpha_low) }
+  private val binding = inflateAndAddUsing(ViewBackdropMenuItemBinding::inflate)
 
   init {
     withStyleable(R.styleable.BackdropBackLayerMenuItemView, attrs) {
@@ -34,25 +35,23 @@ class BackdropBackLayerMenuItemView @JvmOverloads constructor(
   }
 
   private fun initView() {
-    inflate(R.layout.view_backdrop_menu_item)
-
-    backdrop_menu_item_icon.setImageDrawable(iconDrawable)
-    backdrop_menu_item_text.text = text
+    binding.backdropMenuItemIcon.setImageDrawable(iconDrawable)
+    binding.backdropMenuItemText.text = text
   }
 
   fun activate() {
-    backdrop_menu_item_icon.alpha = 1.0f
-    backdrop_menu_item_text.alpha = 1.0f
-    backdrop_menu_item_tap_area.isClickable = false
-    backdrop_menu_item_tap_area.alpha = clickAreaActiveAlpha
+    binding.backdropMenuItemIcon.alpha = 1.0f
+    binding.backdropMenuItemText.alpha = 1.0f
+    binding.backdropMenuItemTapArea.isClickable = false
+    binding.backdropMenuItemTapArea.alpha = clickAreaActiveAlpha
   }
 
   fun deactivate() {
-    backdrop_menu_item_icon.alpha = deactivatedAlpha
-    backdrop_menu_item_text.alpha = deactivatedAlpha
-    backdrop_menu_item_tap_area.isClickable = true
-    backdrop_menu_item_tap_area.alpha = 0.0f
+    binding.backdropMenuItemIcon.alpha = deactivatedAlpha
+    binding.backdropMenuItemText.alpha = deactivatedAlpha
+    binding.backdropMenuItemTapArea.isClickable = true
+    binding.backdropMenuItemTapArea.alpha = 0.0f
   }
 
-  val clicks = backdrop_menu_item_tap_area.clicks()
+  val clicks = binding.backdropMenuItemTapArea.clicks()
 }

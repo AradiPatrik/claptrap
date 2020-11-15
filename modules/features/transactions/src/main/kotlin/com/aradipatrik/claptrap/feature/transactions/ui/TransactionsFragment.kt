@@ -1,7 +1,5 @@
 package com.aradipatrik.claptrap.feature.transactions.ui
 
-import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -9,10 +7,10 @@ import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.CategoryIcon
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
 import com.aradipatrik.claptrap.feature.transactions.model.*
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.android.synthetic.main.fragment_transactions.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import org.joda.money.Money
@@ -21,7 +19,12 @@ import java.util.*
 import kotlin.math.abs
 
 @AndroidEntryPoint
-class TransactionsFragment : ClapTrapFragment<TransactionsViewState, TransactionsViewEvent, TransactionsViewEffect>(R.layout.fragment_transactions) {
+class TransactionsFragment : ClapTrapFragment<
+  TransactionsViewState,
+  TransactionsViewEvent,
+  TransactionsViewEffect,
+  FragmentTransactionsBinding
+  >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate) {
   override val viewModel by viewModels<TransactionsViewModel>()
   override val viewEvents: Flow<TransactionsViewEvent> = emptyFlow()
 
@@ -30,7 +33,8 @@ class TransactionsFragment : ClapTrapFragment<TransactionsViewState, Transaction
   private val mockDomainTransaction = Transaction(
     "", Money.parse("HUF 50"),
     DateTime.now(), "", Category(
-      "", CategoryIcon.CART)
+      "", CategoryIcon.CART
+    )
   )
 
   private val notes = listOf(
@@ -49,8 +53,8 @@ class TransactionsFragment : ClapTrapFragment<TransactionsViewState, Transaction
   }
 
   override fun initViews() {
-    transaction_recycler_view.adapter = transactionAdapter
-    transaction_recycler_view.layoutManager = LinearLayoutManager(context)
+    binding.transactionRecyclerView.adapter = transactionAdapter
+    binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
     transactionAdapter.submitList(
       transactionPresentations.take(20)
         .map { TransactionListItem.Item(it) }

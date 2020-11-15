@@ -11,9 +11,6 @@ if (includeAndroid == "true") {
   include(":features")
   project(":features").projectDir = file("./modules/features")
 
-  include(":features:todos")
-  project(":features:todos").projectDir = file("./modules/features/todos")
-
   include(":features:transactions")
   project(":features:transactions").projectDir = file("./modules/features/transactions")
 
