@@ -5,6 +5,6 @@
   app:startDestination="@id/fragment_transactions">
   <fragment
     android:id="@+id/fragment_transactions"
-    android:name="com.aradipatrik.claptrap.feature.dashboard.ui.TransactionsFragment"
+    android:name="com.aradipatrik.claptrap.feature.transactions.ui.TransactionsFragment"
     android:label="Transactions"/>
 </navigation>

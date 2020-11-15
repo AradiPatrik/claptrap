@@ -4,49 +4,38 @@ package com.aradipatrik.claptrap.feature.todos.list.ui
 import android.os.Bundle
 import android.view.View
 import androidx.core.os.bundleOf
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aradipatrik.claptrap.feature.todos.R
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEffect
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEffect.NavigateToEdit
+import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEvent
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewModel
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewState
-import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
+import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_todo_list.*
-import kotlinx.coroutines.flow.*
-import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
-class TodosFragment : Fragment(R.layout.fragment_todo_list) {
-  private val viewModel by viewModels<TodoListViewModel>()
+class TodosFragment : ClapTrapFragment<TodoListViewState, TodoListViewEvent, TodoListViewEffect>(
+  R.layout.fragment_todo_list
+) {
+  override val viewModel by viewModels<TodoListViewModel>()
 
   private val todosAdapter = TodosAdapter(lifecycleScope)
 
-  private val viewEvents get() = todosAdapter.viewEvents
+  override val viewEvents get() = todosAdapter.viewEvents
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+
     todo_recycler_view.adapter = todosAdapter
     todo_recycler_view.layoutManager = LinearLayoutManager(context)
-
-    viewModel.viewState
-      .onEach(::render)
-      .launchWhenResumed()
-
-    viewEvents.onEach(viewModel::processInput)
-      .launchWhenResumed()
-
-    viewModel.viewEffects.receiveAsFlow()
-      .onEach(::handleEffect)
-      .launchWhenResumed()
   }
 
-  private fun render(viewState: TodoListViewState) {
+  override fun render(viewState: TodoListViewState) {
     when (viewState) {
       TodoListViewState.Loading -> todo_list_view_flipper.displayedChild = 0
       is TodoListViewState.ListLoaded -> {
@@ -57,16 +46,10 @@ class TodosFragment : Fragment(R.layout.fragment_todo_list) {
     }
   }
 
-  private fun handleEffect(viewEffect: TodoListViewEffect) = when (viewEffect) {
+  override fun react(viewEffect: TodoListViewEffect) = when (viewEffect) {
     is NavigateToEdit -> findNavController().navigate(
       R.id.nav_action_todos_to_edit_todos,
       bundleOf("todoId" to viewEffect.todo.id)
     )
-  }
-
-  private fun Flow<*>.launchWhenResumed() {
-    lifecycleScope.launchWhenResumed {
-      this@launchWhenResumed.collect()
-    }
   }
 }

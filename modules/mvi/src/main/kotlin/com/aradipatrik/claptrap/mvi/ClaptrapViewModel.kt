@@ -11,11 +11,12 @@ import timber.log.Timber
 typealias StateReducer<T, V> = suspend (T) -> V
 typealias SideEffect<T> = suspend (T) -> Unit
 
-abstract class ClaptrapViewModel<VS, VE>(initialState: VS) : ViewModel() {
-  val reducerChannel = Channel<StateReducer<VS, VS>>(BUFFERED)
+abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
+  val reducerChannel = Channel<StateReducer<S, S>>(BUFFERED)
+  val viewEffects = Channel<EF>(BUFFERED)
 
   private val _viewState = MutableStateFlow(initialState)
-  val viewState: StateFlow<VS> = _viewState
+  val viewState: StateFlow<S> = _viewState
 
   init {
     reducerChannel.receiveAsFlow()
@@ -31,7 +32,7 @@ abstract class ClaptrapViewModel<VS, VE>(initialState: VS) : ViewModel() {
   }
 
 
-  protected inline fun <reified T: VS> setState(noinline stateReducer: StateReducer<T, VS>) {
+  protected inline fun <reified T: S> setState(noinline stateReducer: StateReducer<T, S>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
         require(state is T)
@@ -40,7 +41,7 @@ abstract class ClaptrapViewModel<VS, VE>(initialState: VS) : ViewModel() {
     }
   }
 
-  protected inline fun <reified T: VS> withState(noinline sideEffect: SideEffect<T>) {
+  protected inline fun <reified T: S> withState(noinline sideEffect: SideEffect<T>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
         require(state is T)
@@ -49,5 +50,5 @@ abstract class ClaptrapViewModel<VS, VE>(initialState: VS) : ViewModel() {
     }
   }
 
-  abstract fun processInput(viewEvent: VE)
+  abstract fun processInput(viewEvent: EV)
 }

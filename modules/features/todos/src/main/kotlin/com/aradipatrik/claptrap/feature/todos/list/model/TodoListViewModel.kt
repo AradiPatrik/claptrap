@@ -9,17 +9,15 @@ import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewEvent.TodoC
 import com.aradipatrik.claptrap.feature.todos.list.model.TodoListViewState.ListLoaded
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class TodoListViewModel @ViewModelInject constructor(
   private val todoInteractor: TodoInteractor,
-) : ClaptrapViewModel<TodoListViewState, TodoListViewEvent>(TodoListViewState.Loading) {
-  val viewEffects = Channel<TodoListViewEffect>(BUFFERED)
-
+) : ClaptrapViewModel<TodoListViewState, TodoListViewEvent, TodoListViewEffect>(
+  TodoListViewState.Loading
+) {
   init {
     todoInteractor.getAllTodos()
       .onEach { todo ->
@@ -31,7 +29,7 @@ class TodoListViewModel @ViewModelInject constructor(
   }
 
   override fun processInput(viewEvent: TodoListViewEvent) = withState<ListLoaded> {
-    when(viewEvent) {
+    when (viewEvent) {
       is TodoChecked -> todoInteractor.setTodoDone(viewEvent.todo, viewEvent.isChecked)
       is TodoClicked -> navigateToEdit(viewEvent.todo)
     }

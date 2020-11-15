@@ -15,9 +15,10 @@ import kotlinx.coroutines.launch
 
 class EditTodoViewModel @ViewModelInject constructor(
   private val todoInteractor: TodoInteractor
-) : ClaptrapViewModel<EditTodoViewState, EditTodoViewEvent>(EditTodoViewState.Loading) {
+) : ClaptrapViewModel<EditTodoViewState, EditTodoViewEvent, EditTodoViewEffect>(
+  EditTodoViewState.Loading
+) {
   private val paramChannel = Channel<Bundle?>()
-  val viewEffects = Channel<EditTodoViewEffect>()
 
   init {
     viewModelScope.launch {
@@ -46,7 +47,6 @@ class EditTodoViewModel @ViewModelInject constructor(
       withState<Editing> { state ->
         setState<Editing> { Saving(state.todo) }
         withState<Saving> {
-          delay(1000)
           todoInteractor.changeNameOfTodo(it.todo, it.todo.name)
           viewEffects.send(EditTodoViewEffect.NavigateBack)
         }

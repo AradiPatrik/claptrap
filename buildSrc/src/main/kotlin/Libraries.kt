@@ -4,6 +4,7 @@ object Libraries {
 
     object Ktx {
       const val core = "androidx.core:core-ktx:${Versions.AndroidX.coreKtx}"
+      const val fragment = "androidx.fragment:fragment-ktx:${Versions.AndroidX.fragmentKtx}"
     }
 
     object Ui {
@@ -53,6 +54,7 @@ object Libraries {
   object Coroutines {
     const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Coroutines.core}"
     const val binding = "ru.ldralighieri.corbind:corbind:${Versions.Coroutines.corbind}"
+    const val materialBinding = "ru.ldralighieri.corbind:corbind-material:${Versions.Coroutines.corbind}"
   }
 
   object Network {

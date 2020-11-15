@@ -15,6 +15,7 @@ dependencies {
   implementation(project(":domain:interactor-interfaces"))
   implementation(project(":domain:fake-interactors"))
   implementation(project(":theme"))
+  implementation(project(":mvi"))
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
@@ -23,6 +24,8 @@ dependencies {
   implementation(Libraries.AndroidX.Ui.vectorDrawable)
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
+  implementation(Libraries.Coroutines.binding)
+  implementation(Libraries.Coroutines.materialBinding)
 
   implementation(Libraries.Logging.timber)
 

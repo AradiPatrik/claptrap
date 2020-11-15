@@ -1,6 +1,6 @@
-package com.aradipatrik.claptrap.chrome.model
+package com.aradipatrik.claptrap.backdrop.model
 
-sealed class Backdrop {
-  object RevealBackLayer : Backdrop()
-  
+sealed class BackdropViewEffect {
+  object RevealBackLayer : BackdropViewEffect()
+  object ConcealBackLayer : BackdropViewEffect()
 }

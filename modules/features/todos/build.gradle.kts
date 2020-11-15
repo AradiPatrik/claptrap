@@ -21,6 +21,7 @@ dependencies {
   implementation(Libraries.AndroidX.Lifecycle.liveData)
 
   implementation(Libraries.Coroutines.binding)
+  implementation(Libraries.Coroutines.materialBinding)
   implementation(Libraries.Coroutines.core)
 
   implementation(Libraries.Dagger.hilt)

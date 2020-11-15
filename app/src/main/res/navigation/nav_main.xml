@@ -6,6 +6,6 @@
 
   <fragment
     android:id="@+id/fragment_main"
-    android:name="com.aradipatrik.claptrap.ui.MainFragment" />
+    android:name="com.aradipatrik.claptrap.backdrop.ui.BackdropFragment" />
 
 </navigation>

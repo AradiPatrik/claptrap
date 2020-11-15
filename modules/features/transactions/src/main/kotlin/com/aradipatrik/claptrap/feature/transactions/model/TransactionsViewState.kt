@@ -1,2 +1,2 @@
-package com.aradipatrik.claptrap.feature.dashboard.model
+package com.aradipatrik.claptrap.feature.transactions.model
 

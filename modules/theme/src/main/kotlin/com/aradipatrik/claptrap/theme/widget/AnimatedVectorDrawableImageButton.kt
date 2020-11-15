@@ -7,6 +7,7 @@ import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageButton
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.aradipatrik.claptrap.theme.R
+import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
 
 
 class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
@@ -16,25 +17,17 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
   private var isAtStartState = true
 
-  private var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
-  private var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable
+  private lateinit var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
+  private lateinit var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable
 
   init {
-    context.theme.obtainStyledAttributes(
-      attrs,
-      R.styleable.AnimatedVectorDrawableImageButton,
-      0, 0
-    ).apply {
-      try {
-        startToEndAnimatedVectorDrawable = getDrawable(
-          R.styleable.AnimatedVectorDrawableImageButton_startToEnd
-        ) as AnimatedVectorDrawable
-        endToStartAnimatedVectorDrawable = getDrawable(
-          R.styleable.AnimatedVectorDrawableImageButton_endToStart
-        ) as AnimatedVectorDrawable
-      } finally {
-        recycle()
-      }
+    withStyleable(R.styleable.AnimatedVectorDrawableImageButton, attrs) {
+      startToEndAnimatedVectorDrawable = getDrawable(
+        R.styleable.AnimatedVectorDrawableImageButton_startToEnd
+      ) as AnimatedVectorDrawable
+      endToStartAnimatedVectorDrawable = getDrawable(
+        R.styleable.AnimatedVectorDrawableImageButton_endToStart
+      ) as AnimatedVectorDrawable
     }
 
     setImageDrawable(startToEndAnimatedVectorDrawable)
@@ -46,7 +39,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
     return super.performClick()
   }
 
-  fun morph() {
+  private fun morph() {
     val drawable = if (isAtStartState) {
       startToEndAnimatedVectorDrawable
     } else {

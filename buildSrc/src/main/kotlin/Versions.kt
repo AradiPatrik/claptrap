@@ -8,6 +8,7 @@ object Versions {
   object AndroidX {
     const val appCompat = "1.2.0"
     const val coreKtx = "1.3.1"
+    const val fragmentKtx = "1.2.5"
     const val constraintLayout = "2.0.4"
     const val navigation = "2.3.1"
     const val recyclerView = "1.1.0"
@@ -35,7 +36,7 @@ object Versions {
 
   object Coroutines {
     const val core = "1.3.9"
-    const val corbind = "1.3.2"
+    const val corbind = "1.4.0"
   }
 
   object Ktor {

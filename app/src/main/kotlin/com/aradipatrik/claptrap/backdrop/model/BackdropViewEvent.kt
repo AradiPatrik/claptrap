@@ -1,2 +1,5 @@
-package com.aradipatrik.claptrap.chrome.model
+package com.aradipatrik.claptrap.backdrop.model
 
+sealed class BackdropViewEvent {
+  class SelectTopLevelScreen(val topLevelScreen: TopLevelScreen) : BackdropViewEvent()
+}

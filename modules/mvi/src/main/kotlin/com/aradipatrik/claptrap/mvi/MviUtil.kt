@@ -1,5 +1,5 @@
 package com.aradipatrik.claptrap.mvi
 
-object Util {
+object MviUtil {
   fun Any.ignore() = Unit
 }

@@ -5,102 +5,11 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="?attr/colorPrimarySurface"
+  android:id="@+id/backdrop_motion_layout"
   app:layoutDescription="@xml/fragment_main_scene">
 
-  <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
-    android:id="@+id/menu_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="@dimen/default_backdrop_margin_start"
-    android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
-    android:tint="?attr/colorOnPrimarySurface"
-    app:endToStart="@drawable/close_to_menu"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:startToEnd="@drawable/menu_to_close" />
-
-  <TextView
-    android:id="@+id/title"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="Transaction History"
-    android:includeFontPadding="false"
-    android:layout_marginStart="16dp"
-    android:textAppearance="?attr/textAppearanceHeadline6"
-    android:textColor="?attr/colorOnPrimarySurface"
-    app:layout_constraintBottom_toBottomOf="@+id/menu_icon"
-    app:layout_constraintStart_toEndOf="@id/menu_icon"
-    app:layout_constraintTop_toTopOf="@id/menu_icon" />
-
-  <ImageView
-    android:id="@+id/transactions_menu_item_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
-    app:layout_constraintStart_toStartOf="@id/menu_icon"
-    app:layout_constraintTop_toBottomOf="@id/menu_icon"
-    app:srcCompat="@drawable/ic_money"
-    app:tint="?attr/colorOnPrimarySurface" />
-
-  <TextView
-    android:id="@+id/transaction_menu_item_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:text="Transaction History"
-    android:textAppearance="?attr/textAppearanceSubtitle1"
-    android:textColor="?attr/colorOnPrimarySurface"
-    app:layout_constraintBottom_toBottomOf="@id/transactions_menu_item_icon"
-    app:layout_constraintStart_toEndOf="@id/transactions_menu_item_icon"
-    app:layout_constraintTop_toTopOf="@id/transactions_menu_item_icon" />
-
-  <ImageView
-    android:id="@+id/wallets_menu_item_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:alpha="@dimen/alpha_medium"
-    app:layout_constraintStart_toStartOf="@id/transactions_menu_item_icon"
-    app:layout_constraintTop_toBottomOf="@id/transactions_menu_item_icon"
-    app:srcCompat="@drawable/ic_money"
-    app:tint="?attr/colorOnPrimarySurface" />
-
-  <TextView
-    android:id="@+id/wallets_menu_item_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:alpha="@dimen/alpha_medium"
-    android:text="Wallets"
-    android:textAppearance="?attr/textAppearanceSubtitle1"
-    android:textColor="?attr/colorOnPrimarySurface"
-    app:layout_constraintBottom_toBottomOf="@id/wallets_menu_item_icon"
-    app:layout_constraintStart_toEndOf="@id/wallets_menu_item_icon"
-    app:layout_constraintTop_toTopOf="@id/wallets_menu_item_icon" />
-
-  <ImageView
-    android:id="@+id/statistics_menu_item_icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginTop="8dp"
-    android:alpha="@dimen/alpha_medium"
-    app:layout_constraintStart_toStartOf="@id/wallets_menu_item_icon"
-    app:layout_constraintTop_toBottomOf="@id/wallets_menu_item_icon"
-    app:srcCompat="@drawable/ic_money"
-    app:tint="?attr/colorOnPrimarySurface" />
-
-  <TextView
-    android:id="@+id/statistics_menu_item_text"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="8dp"
-    android:alpha="@dimen/alpha_medium"
-    android:text="Statistics"
-    android:textAppearance="?attr/textAppearanceSubtitle1"
-    android:textColor="?attr/colorOnPrimarySurface"
-    app:layout_constraintBottom_toBottomOf="@id/statistics_menu_item_icon"
-    app:layout_constraintStart_toEndOf="@id/statistics_menu_item_icon"
-    app:layout_constraintTop_toTopOf="@id/statistics_menu_item_icon" />
+  <include
+    layout="@layout/fragment_main_navigation_drawer" />
 
   <androidx.fragment.app.FragmentContainerView
     android:id="@+id/child_host"
