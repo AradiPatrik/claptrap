@@ -34,6 +34,14 @@ object Versions {
     const val okhttp = "4.8.1"
   }
 
+  object Date {
+    const val jodaTime = "2.10.8"
+  }
+
+  object Money {
+    const val jodaMoney = "1.0.1"
+  }
+
   object Coroutines {
     const val core = "1.3.9"
     const val corbind = "1.4.0"

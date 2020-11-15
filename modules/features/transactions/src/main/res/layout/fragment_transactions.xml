@@ -4,8 +4,8 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent">
 
-  <androidx.cardview.widget.CardView
-    android:background="?attr/colorSurface"
+  <com.google.android.material.card.MaterialCardView
+    android:id="@+id/front_layer"
     android:layout_width="0dp"
     android:layout_height="0dp"
     app:cardElevation="1dp"
@@ -13,8 +13,42 @@
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintBottom_toBottomOf="@id/card_bottom"
-    android:paddingBottom="32dp"/>
+    app:layout_constraintBottom_toBottomOf="@id/card_bottom"/>
+
+  <TextView
+    android:id="@+id/transactions_header"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:layout_constraintTop_toTopOf="@id/front_layer"
+    app:layout_constraintStart_toStartOf="@id/front_layer"
+    android:layout_marginTop="24dp"
+    android:layout_marginStart="24dp"
+    android:textAppearance="?attr/textAppearanceSubtitle1"
+    android:text="March"
+    android:elevation="1dp"/>
+
+  <View
+    android:id="@+id/header_separator"
+    android:background="?attr/colorOnSurface"
+    android:alpha="@dimen/alpha_low"
+    android:elevation="1dp"
+    android:layout_marginTop="8dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/transactions_header"
+    android:layout_marginHorizontal="16dp"
+    android:layout_width="0dp"
+    android:layout_height="1dp" />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/transaction_recycler_view"
+    android:elevation="1dp"
+    app:layout_constraintTop_toBottomOf="@id/header_separator"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toTopOf="@id/card_bottom"
+    android:layout_width="0dp"
+    android:layout_height="0dp" />
 
   <View
     android:id="@+id/card_bottom"

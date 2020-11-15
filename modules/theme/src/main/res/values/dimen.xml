@@ -18,4 +18,5 @@
   <item name="alpha_high" type="dimen" format="float">0.8</item>
   <item name="alpha_medium" type="dimen" format="float">0.55</item>
   <item name="alpha_low" type="dimen" format="float">0.33</item>
+  <item name="alpha_separator" type="dimen" format="float">0.1</item>
 </resources>

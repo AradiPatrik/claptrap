@@ -67,6 +67,14 @@ object Libraries {
     const val moshiConverter = "com.squareup.retrofit2:converter-moshi:${Versions.Network.retrofit}"
   }
 
+  object Date {
+    const val jodaTime = "joda-time:joda-time:${Versions.Date.jodaTime}"
+  }
+
+  object Money {
+    const val jodaMoney = "org.joda:joda-money:${Versions.Money.jodaMoney}"
+  }
+
   object Logging {
     const val timber = "com.jakewharton.timber:timber:${Versions.Logging.timber}"
   }

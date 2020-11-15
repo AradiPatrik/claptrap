@@ -20,11 +20,7 @@ class TodoListViewModel @ViewModelInject constructor(
 ) {
   init {
     todoInteractor.getAllTodos()
-      .onEach { todo ->
-        setState<TodoListViewState> {
-          ListLoaded(todo)
-        }
-      }
+      .onEach { todo -> setState { ListLoaded(todo) } }
       .launchIn(viewModelScope)
   }
 

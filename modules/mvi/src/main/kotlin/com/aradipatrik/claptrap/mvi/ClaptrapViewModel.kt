@@ -10,6 +10,7 @@ import timber.log.Timber
 
 typealias StateReducer<T, V> = suspend (T) -> V
 typealias SideEffect<T> = suspend (T) -> Unit
+typealias StateSetter<T> = suspend () -> T
 
 abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
   val reducerChannel = Channel<StateReducer<S, S>>(BUFFERED)
@@ -31,8 +32,15 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
       .launchIn(viewModelScope)
   }
 
+  protected fun setState(stateSetter: StateSetter<S>) {
+    viewModelScope.launch {
+      reducerChannel.send {
+        stateSetter.invoke()
+      }
+    }
+  }
 
-  protected inline fun <reified T: S> setState(noinline stateReducer: StateReducer<T, S>) {
+  protected inline fun <reified T: S> reduceState(noinline stateReducer: StateReducer<T, S>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
         require(state is T)

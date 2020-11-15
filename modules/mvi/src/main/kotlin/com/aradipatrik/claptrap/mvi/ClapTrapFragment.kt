@@ -18,8 +18,12 @@ abstract class ClapTrapFragment<VS, EV, EF>(layout: Int) : Fragment(layout) {
 
   abstract fun react(viewEffect: EF)
 
+  open fun initViews() { }
+
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+
+    initViews()
 
     viewModel.viewState
       .onEach(::render)

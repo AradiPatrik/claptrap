@@ -8,7 +8,6 @@ import com.aradipatrik.claptrap.feature.todos.edit.model.EditTodoViewState.Savin
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -31,9 +30,7 @@ class EditTodoViewModel @ViewModelInject constructor(
   private fun subscribeToEditedTodoStateChanges(todoId: String) {
     todoInteractor.getTodoById(todoId)
       .onEach { todo ->
-        setState<EditTodoViewState> {
-          Editing(todo)
-        }
+        setState { Editing(todo) }
       }
       .launchIn(viewModelScope)
   }
@@ -44,19 +41,17 @@ class EditTodoViewModel @ViewModelInject constructor(
 
   override fun processInput(viewEvent: EditTodoViewEvent) = when (viewEvent) {
     EditTodoViewEvent.DoneClick -> {
-      withState<Editing> { state ->
-        setState<Editing> { Saving(state.todo) }
-        withState<Saving> {
-          todoInteractor.changeNameOfTodo(it.todo, it.todo.name)
-          viewEffects.send(EditTodoViewEffect.NavigateBack)
-        }
+      reduceState<Editing> { oldState -> Saving(oldState.todo) }
+      withState<Saving> {
+        todoInteractor.changeNameOfTodo(it.todo, it.todo.name)
+        viewEffects.send(EditTodoViewEffect.NavigateBack)
       }
     }
     EditTodoViewEvent.BackClick -> withState<EditTodoViewState> {
       viewEffects.send(EditTodoViewEffect.NavigateBack)
     }
-    is EditTodoViewEvent.NameChanged -> setState<Editing> { state ->
-      Editing(state.todo.copy(name = viewEvent.newName))
+    is EditTodoViewEvent.NameChanged -> reduceState<Editing> { oldState ->
+      Editing(oldState.todo.copy(name = viewEvent.newName))
     }
   }
 }
