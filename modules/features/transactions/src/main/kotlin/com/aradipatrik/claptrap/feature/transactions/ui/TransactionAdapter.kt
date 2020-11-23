@@ -3,12 +3,17 @@ package com.aradipatrik.claptrap.feature.transactions.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionHeaderBinding
+import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.model.TransactionListItem
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
   override fun areItemsTheSame(
@@ -34,27 +39,97 @@ object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>(
   }
 }
 
-sealed class TransactionViewHolder(view: View) :
-  RecyclerView.ViewHolder(view) {
+sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   abstract fun bindItem(item: TransactionListItem)
 
-  class TransactionHeaderViewHolder(view: View) : TransactionViewHolder(view) {
+  class TransactionHeaderViewHolder(
+    private val binding: ListItemTransactionHeaderBinding
+  ) : TransactionViewHolder(binding.root) {
+    private var _headerItem: TransactionListItem.Header? = null
+    val headerItem get() = _headerItem!!
+
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Header) { "Expected transaction list item got: $item" }
-
+      _headerItem = item
+      binding.headerText.text = item.title
     }
   }
 
-  class TransactionItemViewHolder(view: View) : TransactionViewHolder(view) {
+  class TransactionItemViewHolder(
+    private val binding: ListItemTransactionItemBinding
+  ) : TransactionViewHolder(binding.root) {
+    private var _transactionListItem: TransactionListItem.Item? = null
+    val transactionListItem get() = _transactionListItem!!
+
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Item) { "Expected transaction list item got: $item" }
-
+      _transactionListItem = item
+      binding.transactionDate.text = item.transactionPresentation.date
+      binding.transactionNote.text = item.transactionPresentation.note
+      binding.transactionAmount.text = item.transactionPresentation.amount
+      binding.transactionAmountIcon.text = item.transactionPresentation.currencySymbol
     }
   }
 }
 
-class TransactionAdapter(lifecycleScope: LifecycleCoroutineScope) :
+class TransactionAdapter :
   ListAdapter<TransactionListItem, TransactionViewHolder>(TransactionItemItemCallback) {
+  private val _headerChangeEvents = MutableStateFlow<String?>(null)
+  val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
+    .distinctUntilChanged()
+
+  private var _layoutManager: LinearLayoutManager? = null
+  private val layoutManager: LinearLayoutManager get() = _layoutManager!!
+
+  override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
+    _layoutManager = recyclerView.layoutManager as LinearLayoutManager
+  }
+
+  override fun onCurrentListChanged(
+    previousList: MutableList<TransactionListItem>,
+    currentList: MutableList<TransactionListItem>
+  ) {
+    if (isFirstListSubmitted()) {
+      currentList.firstOrNull()?.let { firstItem ->
+        _headerChangeEvents.value = when (firstItem) {
+          is TransactionListItem.Header -> firstItem.title
+          is TransactionListItem.Item -> firstItem.transactionPresentation.monthAsText
+        }
+      }
+    }
+  }
+
+  private fun isFirstListSubmitted() = layoutManager.findFirstVisibleItemPosition() == -1
+
+  override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+    _layoutManager = null
+  }
+
+  override fun onViewDetachedFromWindow(holder: TransactionViewHolder) {
+    if (isFirstInList(holder)) {
+      notifyFirstItemChanged(holder)
+    }
+  }
+
+  override fun onViewAttachedToWindow(holder: TransactionViewHolder) {
+    if (isFirstInList(holder)) {
+      notifyFirstItemChanged(holder)
+    }
+  }
+
+  private fun notifyFirstItemChanged(holder: TransactionViewHolder) {
+    _headerChangeEvents.value = when (holder) {
+      is TransactionViewHolder.TransactionHeaderViewHolder -> holder.headerItem.title
+      is TransactionViewHolder.TransactionItemViewHolder -> holder
+        .transactionListItem
+        .transactionPresentation
+        .monthAsText
+    }
+  }
+
+  private fun isFirstInList(holder: TransactionViewHolder) =
+    holder.adapterPosition == layoutManager.findFirstVisibleItemPosition()
+
   override fun getItemViewType(position: Int) = when (getItem(position)) {
     is TransactionListItem.Header -> VIEW_TYPE_HEADER
     is TransactionListItem.Item -> VIEW_TYPE_ITEM
@@ -62,10 +137,10 @@ class TransactionAdapter(lifecycleScope: LifecycleCoroutineScope) :
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = when (viewType) {
     VIEW_TYPE_HEADER -> TransactionViewHolder.TransactionHeaderViewHolder(
-      LayoutInflater.from(parent.context).inflate(R.layout.list_item_transaction_item, parent, false)
+      ListItemTransactionHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
     VIEW_TYPE_ITEM -> TransactionViewHolder.TransactionItemViewHolder(
-      LayoutInflater.from(parent.context).inflate(R.layout.list_item_transaction_item, parent, false)
+      ListItemTransactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
     else -> error("Unexpected view type: $viewType")
   }

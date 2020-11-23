@@ -24,6 +24,8 @@ dependencies {
   implementation(Libraries.Coroutines.binding)
   implementation(Libraries.Coroutines.materialBinding)
 
+  implementation(Libraries.Logging.timber)
+
   implementation(Libraries.Dagger.hilt)
   implementation(Libraries.Dagger.hiltLifecycle)
   kapt(Libraries.Dagger.hiltKapt)

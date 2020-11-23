@@ -3,20 +3,18 @@ package com.aradipatrik.claptrap.feature.transactions.ui
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.aradipatrik.claptrap.domain.Category
-import com.aradipatrik.claptrap.domain.CategoryIcon
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
 import com.aradipatrik.claptrap.feature.transactions.model.*
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
+import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
-import org.joda.money.Money
-import org.joda.time.DateTime
-import java.util.*
-import kotlin.math.abs
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class TransactionsFragment : ClapTrapFragment<
@@ -25,45 +23,36 @@ class TransactionsFragment : ClapTrapFragment<
   TransactionsViewEffect,
   FragmentTransactionsBinding
   >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate) {
+
+  @Inject
+  lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
+
   override val viewModel by viewModels<TransactionsViewModel>()
   override val viewEvents: Flow<TransactionsViewEvent> = emptyFlow()
 
-  private val transactionAdapter by lazy { TransactionAdapter(lifecycleScope) }
-
-  private val mockDomainTransaction = Transaction(
-    "", Money.parse("HUF 50"),
-    DateTime.now(), "", Category(
-      "", CategoryIcon.CART
-    )
-  )
-
-  private val notes = listOf(
-    "Starbux coffee", "Finomsag", "Schmuck", "Jysk", "Diszek", "Coop", "Spar", "Telefon"
-  )
-
-  private val transactionPresentations = generateSequence {
-    TransactionPresentation(
-      domain = mockDomainTransaction.copy(id = UUID.randomUUID().toString()),
-      amount = (Random().nextInt() % 800).toString(),
-      date = "2017 / ${Random().nextInt() % 13} / ${Random().nextInt() % 32}",
-      R.drawable.ic_money,
-      note = notes[abs(Random().nextInt() % (notes.size - 1))],
-      "$"
-    )
-  }
+  private val transactionAdapter by lazy { TransactionAdapter() }
 
   override fun initViews() {
-    binding.transactionRecyclerView.adapter = transactionAdapter
     binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
-    transactionAdapter.submitList(
-      transactionPresentations.take(20)
-        .map { TransactionListItem.Item(it) }
-        .toList()
-    )
+    binding.transactionRecyclerView.adapter = transactionAdapter
+
+    transactionAdapter.headerChangeEvents
+      .onEach(binding.transactionsHeader::setText)
+      .launchInWhenResumed(lifecycleScope)
   }
 
-  override fun render(viewState: TransactionsViewState) {
+  override fun render(viewState: TransactionsViewState) = when (viewState) {
+    TransactionsViewState.Loading -> renderLoading()
+    is TransactionsViewState.Loaded -> renderLoaded(viewState)
+  }
 
+  private fun renderLoading() {
+  }
+
+  private fun renderLoaded(viewState: TransactionsViewState.Loaded) {
+    transactionAdapter.submitList(
+      transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
+    )
   }
 
   override fun react(viewEffect: TransactionsViewEffect) {
