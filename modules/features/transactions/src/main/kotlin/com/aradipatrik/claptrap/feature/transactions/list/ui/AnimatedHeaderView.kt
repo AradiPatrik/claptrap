@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.ui
+package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import android.content.Context
 import android.util.AttributeSet

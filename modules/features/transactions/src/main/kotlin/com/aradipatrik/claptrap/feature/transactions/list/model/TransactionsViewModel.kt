@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.model
+package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
@@ -20,13 +20,20 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = setState {
-    TransactionsViewState.Loaded(
+    TransactionsViewState.TransactionsLoaded(
       transactions = transactions,
       refreshing = false
     )
   }
 
-  override fun processInput(viewEvent: TransactionsViewEvent) {
-
+  override fun processInput(viewEvent: TransactionsViewEvent) = when(viewEvent) {
+    is TransactionsViewEvent.AddClick -> setState {
+      viewEffects.send(TransactionsViewEffect.ShowAddTransactionMenu)
+      TransactionsViewState.Adding
+    }
+    TransactionsViewEvent.BackClick -> sideEffect {
+      viewEffects.send(TransactionsViewEffect.HiedTransactionMenu)
+    }
+    is TransactionsViewEvent.TransactionTypeSwitch -> TODO()
   }
 }

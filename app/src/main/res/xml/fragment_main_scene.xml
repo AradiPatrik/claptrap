@@ -3,24 +3,75 @@
   xmlns:motion="http://schemas.android.com/apk/res-auto">
 
   <Transition
-    motion:constraintSetEnd="@+id/end"
-    motion:constraintSetStart="@id/start"
+    motion:constraintSetEnd="@+id/menu_shown"
+    motion:constraintSetStart="@id/toolbar_shown"
     motion:duration="300">
-    <OnClick motion:targetId="@+id/menu_icon"
-      motion:clickAction="transitionToEnd" />
+    <OnClick
+      motion:clickAction="transitionToEnd"
+      motion:targetId="@+id/menu_icon" />
   </Transition>
 
   <Transition
-    motion:constraintSetEnd="@+id/start"
-    motion:constraintSetStart="@id/end"
+    motion:constraintSetEnd="@+id/toolbar_shown"
+    motion:constraintSetStart="@id/menu_shown"
     motion:duration="300">
-    <OnClick motion:targetId="@+id/menu_icon"
-      motion:clickAction="transitionToEnd" />
+    <OnClick
+      motion:clickAction="transitionToEnd"
+      motion:targetId="@+id/menu_icon" />
   </Transition>
 
-  <ConstraintSet android:id="@+id/start" />
+  <Transition
+    motion:constraintSetEnd="@id/toolbar_hidden"
+    motion:constraintSetStart="@id/toolbar_shown"
+    motion:duration="500">
+    <KeyFrameSet>
+      <KeyAttribute
+        android:alpha="0.0"
+        motion:framePosition="1"
+        motion:motionTarget="@+id/menu_icon" />
 
-  <ConstraintSet android:id="@+id/end">
+      <KeyAttribute
+        android:alpha="0.0"
+        motion:framePosition="1"
+        motion:motionTarget="@+id/wallets_menu_item" />
+
+      <KeyAttribute
+        android:alpha="0.0"
+        motion:framePosition="1"
+        motion:motionTarget="@+id/transactions_menu_item" />
+
+      <KeyAttribute
+        android:alpha="0.0"
+        motion:framePosition="1"
+        motion:motionTarget="@+id/statistics_menu_item" />
+    </KeyFrameSet>
+  </Transition>
+
+  <ConstraintSet android:id="@+id/toolbar_shown" />
+
+  <ConstraintSet android:id="@+id/toolbar_hidden">
+    <Constraint android:id="@+id/title">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/menu_icon">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/wallets_menu_item">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/transactions_menu_item">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/statistics_menu_item">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
+  </ConstraintSet>
+
+  <ConstraintSet android:id="@+id/menu_shown">
     <Constraint android:id="@id/child_host">
       <Layout
         android:layout_width="0dp"

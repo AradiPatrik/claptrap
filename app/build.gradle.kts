@@ -6,6 +6,7 @@ dependencies {
   implementation(project(":navigation"))
   implementation(project(":data:network"))
   implementation(project(":data:disk"))
+  implementation(project(":features:common"))
 
   implementation(project(":features:transactions"))
 

@@ -58,5 +58,13 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
     }
   }
 
+  protected fun sideEffect(sideEffect: SideEffect<S>) {
+    viewModelScope.launch {
+      reducerChannel.send { state ->
+        state.also { sideEffect(state) }
+      }
+    }
+  }
+
   abstract fun processInput(viewEvent: EV)
 }

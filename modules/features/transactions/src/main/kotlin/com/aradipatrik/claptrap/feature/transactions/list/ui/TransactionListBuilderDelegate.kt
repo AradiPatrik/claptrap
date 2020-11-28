@@ -1,8 +1,8 @@
-package com.aradipatrik.claptrap.feature.transactions.ui
+package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import com.aradipatrik.claptrap.domain.Transaction
-import com.aradipatrik.claptrap.feature.transactions.model.TransactionListItem
-import com.aradipatrik.claptrap.feature.transactions.model.TransactionPresentation
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionPresentation
 import javax.inject.Inject
 
 class TransactionListBuilderDelegate @Inject constructor() {

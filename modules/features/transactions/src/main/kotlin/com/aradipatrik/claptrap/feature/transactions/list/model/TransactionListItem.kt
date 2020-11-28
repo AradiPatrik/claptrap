@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.model
+package com.aradipatrik.claptrap.feature.transactions.list.model
 
 sealed class TransactionListItem {
   data class Header(val title: String) : TransactionListItem()

@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.ui
+package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionHeaderBinding
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
-import com.aradipatrik.claptrap.feature.transactions.model.TransactionListItem
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged

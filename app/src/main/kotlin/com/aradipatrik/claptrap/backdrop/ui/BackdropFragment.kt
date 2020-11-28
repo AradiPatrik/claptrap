@@ -3,14 +3,19 @@ package com.aradipatrik.claptrap.backdrop.ui
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.*
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.backdrop.model.*
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
+import com.aradipatrik.claptrap.common.backdrop.Backdrop
 import com.aradipatrik.claptrap.databinding.FragmentMainBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
+import com.aradipatrik.claptrap.theme.widget.ViewUtil.visibleInMotionLayout
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -21,8 +26,8 @@ class BackdropFragment : ClapTrapFragment<
   BackdropViewEvent,
   BackdropViewEffect,
   FragmentMainBinding
-  >(R.layout.fragment_main, FragmentMainBinding::inflate) {
-  override val viewModel by viewModels<BackdropViewModel>()
+  >(R.layout.fragment_main, FragmentMainBinding::inflate), Backdrop {
+  override val viewModel by activityViewModels<BackdropViewModel>()
 
   override val viewEvents get() = merge(
     binding.transactionsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.TRANSACTION_HISTORY) },
@@ -32,8 +37,14 @@ class BackdropFragment : ClapTrapFragment<
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
-
     initNavigation()
+    savedInstanceState?.getBundle(MOTION_LAYOUT_STATE_KEY)
+      ?.let(binding.backdropMotionLayout::setTransitionState)
+  }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    outState.putBundle(MOTION_LAYOUT_STATE_KEY, binding.backdropMotionLayout.transitionState)
   }
 
   private fun initNavigation() {
@@ -54,6 +65,19 @@ class BackdropFragment : ClapTrapFragment<
 
   override fun render(viewState: BackdropViewState) = when(viewState) {
     is BackdropViewState.OnTopLevelScreen -> activateScreen(viewState.topLevelScreen)
+    is BackdropViewState.CustomMenuShowing -> showCustomMenu(viewState.menuFragment)
+  }
+
+  private fun showCustomMenu(menuFragment: Fragment) {
+    childFragmentManager.commit {
+      setReorderingAllowed(true)
+      replace(R.id.custom_menu_container, menuFragment)
+    }
+
+    lifecycleScope.launchWhenResumed {
+      binding.backdropMotionLayout
+        .playTransitionAndWaitForFinish(R.id.toolbar_shown, R.id.toolbar_hidden)
+    }
   }
 
   private fun activateScreen(topLevelScreen: TopLevelScreen) {
@@ -83,5 +107,14 @@ class BackdropFragment : ClapTrapFragment<
   override fun react(viewEffect: BackdropViewEffect) = when(viewEffect) {
     BackdropViewEffect.RevealBackLayer -> binding.menuIcon.performClick().ignore()
     BackdropViewEffect.ConcealBackLayer -> binding.menuIcon.performClick().ignore()
+  }
+
+  override fun switchMenu(menuFragment: Fragment) =
+    viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragment))
+
+  override fun clearMenu() = viewModel.processInput(BackdropViewEvent.RemoveCustomMenu)
+
+  companion object {
+    private const val MOTION_LAYOUT_STATE_KEY = "MOTION_LAYOUT_STATE_KEY"
   }
 }

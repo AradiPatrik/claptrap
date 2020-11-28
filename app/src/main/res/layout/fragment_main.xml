@@ -2,10 +2,10 @@
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/backdrop_motion_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="?attr/colorPrimarySurface"
-  android:id="@+id/backdrop_motion_layout"
   app:layoutDescription="@xml/fragment_main_scene">
 
   <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
@@ -20,6 +20,15 @@
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:startToEnd="@drawable/menu_to_close" />
+
+  <androidx.fragment.app.FragmentContainerView
+    android:id="@+id/custom_menu_container"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintBottom_toTopOf="@id/child_host"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
   <TextView
     android:id="@+id/title"
@@ -39,22 +48,22 @@
     android:id="@+id/transactions_menu_item"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    app:icon="@drawable/ic_money"
-    app:title="@string/transaction_history"
     android:layout_marginTop="16dp"
-    app:layout_constraintStart_toStartOf="parent"
+    app:icon="@drawable/ic_money"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/title"/>
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/title"
+    app:title="@string/transaction_history" />
 
   <com.aradipatrik.claptrap.backdrop.ui.BackdropBackLayerMenuItemView
     android:id="@+id/wallets_menu_item"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:icon="@drawable/ic_money"
-    app:title="@string/wallets"
-    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/transactions_menu_item"/>
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/transactions_menu_item"
+    app:title="@string/wallets" />
 
 
   <com.aradipatrik.claptrap.backdrop.ui.BackdropBackLayerMenuItemView
@@ -62,12 +71,12 @@
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     app:icon="@drawable/ic_money"
-    app:title="@string/statistics"
-    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/wallets_menu_item"/>
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/wallets_menu_item"
+    app:title="@string/statistics" />
 
-  <androidx.fragment.app.FragmentContainerView
+  <fragment
     android:id="@+id/child_host"
     android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="0dp"
@@ -76,9 +85,19 @@
     app:defaultNavHost="false"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintHorizontal_bias="0.0"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/menu_icon"
+    app:layout_constraintVertical_bias="0.0"
     app:navGraph="@navigation/nav_child"
     tools:layout="@layout/fragment_transactions" />
+
+  <View
+    android:id="@+id/header_anchor"
+    android:layout_width="0dp"
+    android:layout_height="32dp"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

@@ -28,7 +28,7 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
 
   abstract fun react(viewEffect: EF)
 
-  open fun initViews() { }
+  open fun initViews(savedInstanceState: Bundle?) { }
 
   protected val binding get() = _binding!!
 
@@ -44,7 +44,7 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
 
-    initViews()
+    initViews(savedInstanceState)
 
     viewModel.viewState
       .onEach(::render)

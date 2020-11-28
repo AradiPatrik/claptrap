@@ -8,6 +8,7 @@ dependencies {
   implementation(project(":core:domain-models"))
   implementation(project(":mvi"))
   implementation(project(":domain:interactor-interfaces"))
+  implementation(project(":features:common"))
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ui.constraintLayout)

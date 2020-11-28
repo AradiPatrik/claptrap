@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
-import androidx.annotation.LayoutRes
 import androidx.viewbinding.ViewBinding
 
 
@@ -27,7 +26,7 @@ object ViewUtil {
     }
   }
 
-  fun <T: ViewBinding> ViewGroup.inflateAndAddUsing(inflaterMethod: (LayoutInflater) -> T) =
+  fun <T : ViewBinding> ViewGroup.inflateAndAddUsing(inflaterMethod: (LayoutInflater) -> T) =
     inflaterMethod(LayoutInflater.from(context)).apply {
       addView(root)
     }
@@ -40,4 +39,16 @@ object ViewUtil {
     resources.getValue(dimen, typedValue, resolveRefs)
     return typedValue.float
   }
+
+  var View.visibleInMotionLayout: Boolean
+    get() = alpha > 0.0f && isClickable
+    set(value) = if (value) {
+      alpha = 1.0f
+      isClickable = true
+      isFocusable = true
+    } else {
+      alpha = 0.0f
+      isClickable = false
+      isFocusable = false
+    }
 }

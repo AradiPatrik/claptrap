@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.model
+package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import androidx.annotation.DrawableRes
 import com.aradipatrik.claptrap.domain.Transaction
