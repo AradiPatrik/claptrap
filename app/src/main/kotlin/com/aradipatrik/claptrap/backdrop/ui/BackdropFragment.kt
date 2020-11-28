@@ -3,10 +3,11 @@ package com.aradipatrik.claptrap.backdrop.ui
 import android.os.Bundle
 import android.view.View
 import androidx.activity.addCallback
-import androidx.fragment.app.*
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
-import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.backdrop.model.*
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
@@ -15,7 +16,8 @@ import com.aradipatrik.claptrap.databinding.FragmentMainBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.visibleInMotionLayout
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -38,13 +40,12 @@ class BackdropFragment : ClapTrapFragment<
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     initNavigation()
-    savedInstanceState?.getBundle(MOTION_LAYOUT_STATE_KEY)
-      ?.let(binding.backdropMotionLayout::setTransitionState)
+    binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
-    outState.putBundle(MOTION_LAYOUT_STATE_KEY, binding.backdropMotionLayout.transitionState)
+    binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
   }
 
   private fun initNavigation() {
