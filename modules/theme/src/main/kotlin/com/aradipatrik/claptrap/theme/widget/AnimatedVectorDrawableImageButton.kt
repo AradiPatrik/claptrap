@@ -1,13 +1,16 @@
 package com.aradipatrik.claptrap.theme.widget
 
 import android.content.Context
+import android.graphics.drawable.Animatable2
 import android.graphics.drawable.AnimatedVectorDrawable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageButton
-import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
 import com.aradipatrik.claptrap.theme.R
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
+import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlin.coroutines.resume
 
 
 class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
@@ -17,8 +20,8 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
   private var isAtStartState = true
 
-  private lateinit var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
-  private lateinit var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable
+  lateinit var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
+  lateinit var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable
 
   init {
     withStyleable(R.styleable.AnimatedVectorDrawableImageButton, attrs) {
@@ -39,7 +42,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
     return super.performClick()
   }
 
-  private fun morph() {
+  fun morph() {
     val drawable = if (isAtStartState) {
       startToEndAnimatedVectorDrawable
     } else {
@@ -48,6 +51,35 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
 
     setImageDrawable(drawable)
     drawable.start()
+    isAtStartState = !isAtStartState
+  }
+
+  suspend fun morphAndWait() {
+    val animatedDrawable = if (isAtStartState) {
+      startToEndAnimatedVectorDrawable
+    } else {
+      endToStartAnimatedVectorDrawable
+    }
+
+    isClickable = false
+
+    suspendCancellableCoroutine<Unit> { continuation ->
+      val listener = object : Animatable2.AnimationCallback() {
+        override fun onAnimationEnd(drawable: Drawable?) {
+          animatedDrawable.unregisterAnimationCallback(this)
+          continuation.resume(Unit)
+        }
+      }
+
+      continuation.invokeOnCancellation { animatedDrawable.unregisterAnimationCallback(listener) }
+
+      animatedDrawable.registerAnimationCallback(listener)
+
+      setImageDrawable(animatedDrawable)
+      animatedDrawable.start()
+    }
+
+    isClickable = true
     isAtStartState = !isAtStartState
   }
 }

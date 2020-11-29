@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
@@ -14,7 +15,7 @@ typealias StateSetter<T> = suspend () -> T
 
 abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
   val reducerChannel = Channel<StateReducer<S, S>>(BUFFERED)
-  val viewEffects = Channel<EF>(BUFFERED)
+  val viewEffects = BroadcastChannel<EF>(BUFFERED)
 
   private val _viewState = MutableStateFlow(initialState)
   val viewState: StateFlow<S> = _viewState

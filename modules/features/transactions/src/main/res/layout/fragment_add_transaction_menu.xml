@@ -4,12 +4,14 @@
   android:layout_height="match_parent"
   xmlns:app="http://schemas.android.com/apk/res-auto">
 
-  <ImageView
-    app:srcCompat="@drawable/ic_arrow_back"
+  <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
+    android:id="@+id/back_button"
     app:tint="?attr/colorOnPrimarySurface"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
+    app:endToStart="@drawable/arrow_to_menu"
+    app:startToEnd="@drawable/menu_to_arrow"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:layout_constraintBottom_toBottomOf="parent" />

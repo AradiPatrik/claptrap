@@ -8,6 +8,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.aradipatrik.claptrap.common.backdrop.BackEffect
+import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
@@ -18,14 +20,14 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransitionAndWaitForFinish
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks
 import timber.log.Timber
 import javax.inject.Inject
@@ -36,7 +38,7 @@ class TransactionsFragment : ClapTrapFragment<
   TransactionsViewEvent,
   TransactionsViewEffect,
   FragmentTransactionsBinding
-  >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate) {
+  >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate), BackListener {
 
   @Inject
   lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
@@ -47,8 +49,12 @@ class TransactionsFragment : ClapTrapFragment<
     binding.fabBackground.clicks()
       .map { TransactionsViewEvent.AddClick },
     binding.frontLayer.clicks()
-      .map { TransactionsViewEvent.AddClick }
+      .map { TransactionsViewEvent.AddClick },
+    backPressEvents.consumeAsFlow()
+      .map { TransactionsViewEvent.BackClick }
   )
+
+  private val backPressEvents = Channel<Unit>(BUFFERED)
 
   private val transactionAdapter by lazy { TransactionAdapter() }
 
@@ -64,7 +70,6 @@ class TransactionsFragment : ClapTrapFragment<
     if (savedInstanceState != null) {
       binding.transactionsMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
     }
-
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
@@ -78,15 +83,7 @@ class TransactionsFragment : ClapTrapFragment<
     TransactionsViewState.Adding -> renderAdding(viewState)
   }
 
-  private fun renderAdding(viewState: TransactionsViewState) = lifecycleScope.launchWhenResumed {
-    playAddAnimation()
-  }.ignore()
-
-  private suspend fun playAddAnimation() = with(binding.transactionsMotionLayout) {
-    playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
-    playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
-    playTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
-    Timber.d("animation finished, startState: ${states[startState]} endState: ${states[endState]}")
+  private fun renderAdding(viewState: TransactionsViewState) {
   }
 
   private fun renderLoading() {
@@ -101,17 +98,39 @@ class TransactionsFragment : ClapTrapFragment<
   override fun react(viewEffect: TransactionsViewEffect) = when(viewEffect) {
     is TransactionsViewEffect.ShowAddTransactionMenu -> backdrop
       .switchMenu(AddTransactionMenuFragment())
-    TransactionsViewEffect.HiedTransactionMenu -> backdrop
-      .clearMenu()
+    TransactionsViewEffect.HiedTransactionMenu -> backdrop.clearMenu().also {
+      Timber.d("Clear menu called")
+    }
+    TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
+    TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
+  }.also {
+    Timber.d("viewEffect: ${viewEffect}")
+  }
+
+  private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
+    with(binding.transactionsMotionLayout) {
+      playReverseTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
+      playReverseTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
+      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
+    }
+  }.ignore()
+
+  private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
+    with(binding.transactionsMotionLayout) {
+      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
+      playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
+      playTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
+    }
+  }.ignore()
+
+  override fun onBack(): BackEffect {
+    lifecycleScope.launchWhenResumed {
+      backPressEvents.send(Unit)
+    }
+    return BackEffect.NO_POP
   }
 
   companion object {
     private const val MOTION_LAYOUT_STATE_KEY = "TRANSACTION_MOTION_LAYOUT_STATE"
-    val states = hashMapOf(
-      R.id.fab_at_bottom to "FAB_AT_BOTTOM",
-      R.id.fab_at_middle to "FAB_AT_MIDDLE",
-      R.id.action_visible to "ACTION_VISIBLE",
-      R.id.categories_visible to "CATEGORIES_VISIBLE"
-    )
   }
 }

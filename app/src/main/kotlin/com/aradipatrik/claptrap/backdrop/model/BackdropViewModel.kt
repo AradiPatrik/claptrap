@@ -18,6 +18,7 @@ class BackdropViewModel : ClaptrapViewModel<BackdropViewState, BackdropViewEvent
       BackdropViewState.CustomMenuShowing(viewEvent.menuFragment, oldState.topLevelScreen)
     }
     is RemoveCustomMenu -> reduceState<BackdropViewState> { oldState ->
+      viewEffects.send(BackdropViewEffect.MorphFromBackToMenu)
       OnTopLevelScreen(oldState.topLevelScreen)
     }
   }

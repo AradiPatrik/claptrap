@@ -34,6 +34,18 @@ object MotionUtil {
     awaitStateReached(endState)
   }
 
+  suspend fun MotionLayout.playReverseTransitionAndWaitForFinish(beginState: Int, endState: Int) {
+    setTransition(beginState, endState)
+    progress = 1f
+    transitionToState(beginState)
+    awaitStateReached(beginState)
+  }
+
+  fun MotionLayout.playTransition(beginState: Int, endState: Int) {
+    setTransition(beginState, endState)
+    transitionToState(endState)
+  }
+
   fun MotionLayout.restoreState(savedInstanceState: Bundle?, key: String) {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {

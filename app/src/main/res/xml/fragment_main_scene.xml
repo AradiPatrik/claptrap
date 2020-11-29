@@ -23,7 +23,7 @@
   <Transition
     motion:constraintSetEnd="@id/toolbar_hidden"
     motion:constraintSetStart="@id/toolbar_shown"
-    motion:duration="500">
+    motion:duration="300">
     <KeyFrameSet>
       <KeyAttribute
         android:alpha="0.0"
@@ -44,6 +44,18 @@
         android:alpha="0.0"
         motion:framePosition="1"
         motion:motionTarget="@+id/statistics_menu_item" />
+    </KeyFrameSet>
+  </Transition>
+
+  <Transition
+    motion:constraintSetEnd="@id/toolbar_shown"
+    motion:constraintSetStart="@id/toolbar_hidden"
+    motion:duration="300">
+    <KeyFrameSet>
+      <KeyAttribute
+        android:alpha="1.0"
+        motion:framePosition="1"
+        motion:motionTarget="@+id/menu_icon" />
     </KeyFrameSet>
   </Transition>
 

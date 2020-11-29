@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 
@@ -46,6 +47,10 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
 
     initViews(savedInstanceState)
 
+    if (savedInstanceState != null) {
+      render(viewModel.viewState.value)
+    }
+
     viewModel.viewState
       .onEach(::render)
       .launchInWhenResumed(lifecycleScope)
@@ -54,7 +59,7 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
       .onEach(viewModel::processInput)
       .launchInWhenResumed(lifecycleScope)
 
-    viewModel.viewEffects.receiveAsFlow()
+    viewModel.viewEffects.asFlow()
       .onEach(::react)
       .launchInWhenResumed(lifecycleScope)
   }

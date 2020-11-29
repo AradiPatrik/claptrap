@@ -16,10 +16,10 @@
     android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
     android:foreground="?android:attr/selectableItemBackground"
     android:tint="?attr/colorOnPrimarySurface"
-    app:endToStart="@drawable/close_to_menu"
+    app:endToStart="@drawable/arrow_to_menu"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:startToEnd="@drawable/menu_to_close" />
+    app:startToEnd="@drawable/menu_to_arrow" />
 
   <androidx.fragment.app.FragmentContainerView
     android:id="@+id/custom_menu_container"
