@@ -6,6 +6,7 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="?attr/colorPrimarySurface"
+  app:motionDebug="SHOW_PROGRESS"
   app:layoutDescription="@xml/fragment_main_scene">
 
   <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton

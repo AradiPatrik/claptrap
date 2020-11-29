@@ -1,6 +1,7 @@
 package com.aradipatrik.claptrap.theme.widget
 
 import android.os.Bundle
+import android.os.Handler
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
@@ -43,14 +44,15 @@ object MotionUtil {
 
   fun MotionLayout.playTransition(beginState: Int, endState: Int) {
     setTransition(beginState, endState)
+    progress = 0.0f
     transitionToState(endState)
   }
 
   fun MotionLayout.restoreState(savedInstanceState: Bundle?, key: String) {
     viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
       override fun onGlobalLayout() {
-        doRestore(savedInstanceState, key)
         viewTreeObserver.removeOnGlobalLayoutListener(this)
+        doRestore(savedInstanceState, key)
       }
     })
   }

@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.backdrop.ui
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
+import android.os.Handler
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
@@ -28,6 +29,7 @@ import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import timber.log.Timber
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -102,6 +104,7 @@ class BackdropFragment : ClapTrapFragment<
       replace(R.id.custom_menu_container, menuFragment, MENU_FRAGMENT_TAG)
     }
 
+    Timber.d("Transitioning to hidden state")
     binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
   }
 
@@ -111,6 +114,7 @@ class BackdropFragment : ClapTrapFragment<
       remove(it)
     }
 
+    Timber.d("Transitioning to shown state")
     binding.backdropMotionLayout.playTransition(R.id.toolbar_hidden, R.id.toolbar_shown)
   }
 
