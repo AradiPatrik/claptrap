@@ -6,7 +6,6 @@
   android:layout_width="match_parent"
   android:layout_height="match_parent"
   android:background="?attr/colorPrimarySurface"
-  app:motionDebug="SHOW_PROGRESS"
   app:layoutDescription="@xml/fragment_main_scene">
 
   <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
@@ -17,10 +16,10 @@
     android:layout_marginTop="@dimen/default_backdrop_margin_vertical"
     android:foreground="?android:attr/selectableItemBackground"
     android:tint="?attr/colorOnPrimarySurface"
-    app:endToStart="@drawable/arrow_to_menu"
+    app:endToStart="@drawable/close_to_menu"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:startToEnd="@drawable/menu_to_arrow" />
+    app:startToEnd="@drawable/menu_to_close" />
 
   <androidx.fragment.app.FragmentContainerView
     android:id="@+id/custom_menu_container"

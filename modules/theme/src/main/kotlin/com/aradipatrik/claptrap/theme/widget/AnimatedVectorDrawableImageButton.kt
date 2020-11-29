@@ -43,18 +43,38 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
   }
 
   fun morph() {
-    val drawable = if (isAtStartState) {
+    val animatedVectorDrawable = if (isAtStartState) {
       startToEndAnimatedVectorDrawable
     } else {
       endToStartAnimatedVectorDrawable
     }
 
-    setImageDrawable(drawable)
-    drawable.start()
+
+    animatedVectorDrawable.registerAnimationCallback(object : Animatable2.AnimationCallback() {
+      override fun onAnimationEnd(drawable: Drawable?) {
+        isEnabled = true
+        animatedVectorDrawable.unregisterAnimationCallback(this)
+      }
+    })
+
+    setImageDrawable(animatedVectorDrawable)
+    isEnabled = false
+
+    animatedVectorDrawable.start()
     isAtStartState = !isAtStartState
   }
 
-  suspend fun morphAndWait() {
+  suspend fun playOneShotAnimation(animatedVectorDrawable: AnimatedVectorDrawable) {
+    val oldIsAtStartState = isAtStartState
+    val oldStartToEndDrawable = startToEndAnimatedVectorDrawable
+    startToEndAnimatedVectorDrawable = animatedVectorDrawable
+    isAtStartState = true
+    morphAndWait()
+    isAtStartState = oldIsAtStartState
+    startToEndAnimatedVectorDrawable = oldStartToEndDrawable
+  }
+
+  private suspend fun morphAndWait() {
     val animatedDrawable = if (isAtStartState) {
       startToEndAnimatedVectorDrawable
     } else {
@@ -66,6 +86,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
     suspendCancellableCoroutine<Unit> { continuation ->
       val listener = object : Animatable2.AnimationCallback() {
         override fun onAnimationEnd(drawable: Drawable?) {
+          isEnabled = true
           animatedDrawable.unregisterAnimationCallback(this)
           continuation.resume(Unit)
         }
@@ -76,6 +97,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
       animatedDrawable.registerAnimationCallback(listener)
 
       setImageDrawable(animatedDrawable)
+      isEnabled = false
       animatedDrawable.start()
     }
 

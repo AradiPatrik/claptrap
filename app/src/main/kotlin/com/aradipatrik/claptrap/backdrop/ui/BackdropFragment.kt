@@ -104,7 +104,6 @@ class BackdropFragment : ClapTrapFragment<
       replace(R.id.custom_menu_container, menuFragment, MENU_FRAGMENT_TAG)
     }
 
-    Timber.d("Transitioning to hidden state")
     binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
   }
 
@@ -114,7 +113,6 @@ class BackdropFragment : ClapTrapFragment<
       remove(it)
     }
 
-    Timber.d("Transitioning to shown state")
     binding.backdropMotionLayout.playTransition(R.id.toolbar_hidden, R.id.toolbar_shown)
   }
 
@@ -147,11 +145,12 @@ class BackdropFragment : ClapTrapFragment<
     BackdropViewEffect.RevealBackLayer -> binding.menuIcon.performClick().ignore()
     BackdropViewEffect.ConcealBackLayer -> binding.menuIcon.performClick().ignore()
     BackdropViewEffect.MorphFromBackToMenu -> lifecycleScope.launchWhenResumed {
-      val oldMenuIcon = binding.menuIcon.startToEndAnimatedVectorDrawable
-      binding.menuIcon.startToEndAnimatedVectorDrawable = ContextCompat
-        .getDrawable(requireContext(), R.drawable.arrow_to_menu) as AnimatedVectorDrawable
-      binding.menuIcon.morphAndWait()
-      binding.menuIcon.startToEndAnimatedVectorDrawable = oldMenuIcon
+      binding.menuIcon.playOneShotAnimation(
+        ContextCompat.getDrawable(
+          requireContext(),
+          R.drawable.arrow_to_menu
+        ) as AnimatedVectorDrawable
+      )
     }.ignore()
   }
 

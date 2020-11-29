@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
+import androidx.constraintlayout.motion.widget.MotionLayout
+import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.ViewAnimatedHeaderBinding
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
 import kotlin.properties.Delegates
