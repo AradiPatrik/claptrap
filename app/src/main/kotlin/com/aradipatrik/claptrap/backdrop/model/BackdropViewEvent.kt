@@ -6,4 +6,5 @@ sealed class BackdropViewEvent {
   class SelectTopLevelScreen(val topLevelScreen: TopLevelScreen) : BackdropViewEvent()
   data class SwitchToCustomMenu(val menuFragment: Fragment): BackdropViewEvent()
   object RemoveCustomMenu : BackdropViewEvent()
+  object BackdropConcealToggle : BackdropViewEvent()
 }

@@ -35,16 +35,23 @@ class TransactionsViewModel @ViewModelInject constructor(
     is TransactionsViewEvent.AddClick -> setState {
       viewEffects.send(TransactionsViewEffect.ShowAddTransactionMenu)
       viewEffects.send(TransactionsViewEffect.PlayAddAnimation)
-      TransactionsViewState.Adding
+      TransactionsViewState.Adding(transactionType = TransactionType.EXPENSE)
     }
-    TransactionsViewEvent.BackClick -> setState {
-      viewEffects.send(TransactionsViewEffect.PlayReverseAddAnimation)
-      viewEffects.send(TransactionsViewEffect.HiedTransactionMenu)
-      TransactionsViewState.TransactionsLoaded(
-        transactions = loadedTransactions,
-        refreshing = true
-      )
+    TransactionsViewEvent.BackClick -> reduceState { state ->
+      if (state is TransactionsViewState.Adding) {
+        viewEffects.send(TransactionsViewEffect.PlayReverseAddAnimation)
+        viewEffects.send(TransactionsViewEffect.HiedTransactionMenu)
+        TransactionsViewState.TransactionsLoaded(
+          transactions = loadedTransactions,
+          refreshing = true
+        )
+      } else {
+        state.also { viewEffects.send(TransactionsViewEffect.Back) }
+      }
+
     }
-    is TransactionsViewEvent.TransactionTypeSwitch -> TODO()
+    is TransactionsViewEvent.TransactionTypeSwitch -> reduceSpecificState<TransactionsViewState.Adding> {
+      it.copy(transactionType = viewEvent.newType)
+    }
   }
 }

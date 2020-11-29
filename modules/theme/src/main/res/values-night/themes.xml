@@ -15,6 +15,8 @@
     <item name="colorOnBackground">@color/white_50</item>
     <item name="colorOnSurface">@color/white_50</item>
     <item name="colorOnError">@color/black_900</item>
+    <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
+    <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>
     <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     <item name="android:navigationBarDividerColor" tools:ignore="NewApi">#151515</item>

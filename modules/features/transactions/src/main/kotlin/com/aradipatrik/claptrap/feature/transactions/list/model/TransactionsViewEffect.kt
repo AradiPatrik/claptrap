@@ -5,4 +5,5 @@ sealed class TransactionsViewEffect {
   object HiedTransactionMenu : TransactionsViewEffect()
   object PlayAddAnimation : TransactionsViewEffect()
   object PlayReverseAddAnimation : TransactionsViewEffect()
+  object Back : TransactionsViewEffect()
 }

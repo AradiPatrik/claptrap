@@ -18,7 +18,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
   attrs: AttributeSet? = null,
   @AttrRes defStyleAttr: Int = 0
 ) : AppCompatImageButton(context, attrs, defStyleAttr) {
-  private var isAtStartState = true
+  var isAtStartState = true
 
   lateinit var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
   lateinit var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable

@@ -42,6 +42,12 @@ object MotionUtil {
     awaitStateReached(beginState)
   }
 
+  fun MotionLayout.playReverseTransition(beginState: Int, endState: Int) {
+    setTransition(beginState, endState)
+    progress = 1f
+    transitionToState(beginState)
+  }
+
   fun MotionLayout.playTransition(beginState: Int, endState: Int) {
     setTransition(beginState, endState)
     progress = 0.0f

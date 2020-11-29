@@ -2,10 +2,8 @@ package com.aradipatrik.claptrap.backdrop.ui
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.os.Handler
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.activity.addCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -23,13 +21,14 @@ import com.aradipatrik.claptrap.common.backdrop.Backdrop
 import com.aradipatrik.claptrap.databinding.FragmentMainBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransition
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransition
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import timber.log.Timber
+import ru.ldralighieri.corbind.view.clicks
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -40,29 +39,39 @@ class BackdropFragment : ClapTrapFragment<
   >(R.layout.fragment_main, FragmentMainBinding::inflate), Backdrop {
   override val viewModel by activityViewModels<BackdropViewModel>()
 
-  override val viewEvents get() = merge(
-    binding.transactionsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.TRANSACTION_HISTORY) },
-    binding.walletsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.WALLETS) },
-    binding.statisticsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) }
-  )
+  override val viewEvents
+    get() = merge(
+      binding.transactionsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.TRANSACTION_HISTORY) },
+      binding.walletsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.WALLETS) },
+      binding.statisticsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) },
+      binding.menuIcon.clicks().map { BackdropViewEvent.BackdropConcealToggle }
+    )
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
     initNavigation()
-    binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
+
+    savedInstanceState?.let {
+      binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
+      if (!savedInstanceState.getBoolean(MENU_STATE_KEY)) binding.menuIcon.morph()
+    }
   }
 
   override fun onSaveInstanceState(outState: Bundle) {
     super.onSaveInstanceState(outState)
     binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
+    outState.putBoolean(MENU_STATE_KEY, binding.menuIcon.isAtStartState)
   }
 
-  private fun initNavigation() {
-    val nestedNavHostFragment = childFragmentManager
+  private val nestedNavHostFragment
+    get() = childFragmentManager
       .findFragmentById(R.id.child_host) as NavHostFragment
-    val nestedNavController = nestedNavHostFragment.navController
 
-    requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner) {
+  private val nestedNavController
+    get() = nestedNavHostFragment.navController
+
+  private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+    override fun handleOnBackPressed() {
       if (binding.backdropMotionLayout.isOpen) {
         lifecycleScope.launchWhenResumed {
           viewModel.viewEffects.send(BackdropViewEffect.ConcealBackLayer)
@@ -71,6 +80,10 @@ class BackdropFragment : ClapTrapFragment<
         notifyChildrenOfBackEventAndPopIfNecessary(nestedNavHostFragment, nestedNavController)
       }
     }
+  }
+
+  private fun initNavigation() {
+    requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
   }
 
   private fun OnBackPressedCallback.notifyChildrenOfBackEventAndPopIfNecessary(
@@ -93,7 +106,7 @@ class BackdropFragment : ClapTrapFragment<
     }
   }
 
-  override fun render(viewState: BackdropViewState) = when(viewState) {
+  override fun render(viewState: BackdropViewState) = when (viewState) {
     is BackdropViewState.OnTopLevelScreen -> activateScreen(viewState.topLevelScreen)
     is BackdropViewState.CustomMenuShowing -> showCustomMenu(viewState.menuFragment)
   }
@@ -123,7 +136,8 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   private fun setTitle(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
-    TopLevelScreen.TRANSACTION_HISTORY -> binding.title.text = getString(R.string.transaction_history)
+    TopLevelScreen.TRANSACTION_HISTORY -> binding.title.text =
+      getString(R.string.transaction_history)
     TopLevelScreen.WALLETS -> binding.title.text = getString(R.string.wallets)
     TopLevelScreen.STATISTICS -> binding.title.text = getString(R.string.statistics)
   }
@@ -142,8 +156,12 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: BackdropViewEffect) = when (viewEffect) {
-    BackdropViewEffect.RevealBackLayer -> binding.menuIcon.performClick().ignore()
-    BackdropViewEffect.ConcealBackLayer -> binding.menuIcon.performClick().ignore()
+    BackdropViewEffect.RevealBackLayer -> {
+      revealBackLayer()
+    }
+    BackdropViewEffect.ConcealBackLayer -> {
+      concealBackLayer()
+    }
     BackdropViewEffect.MorphFromBackToMenu -> lifecycleScope.launchWhenResumed {
       binding.menuIcon.playOneShotAnimation(
         ContextCompat.getDrawable(
@@ -154,6 +172,20 @@ class BackdropFragment : ClapTrapFragment<
     }.ignore()
   }
 
+  private fun revealBackLayer() {
+    if (binding.menuIcon.isAtStartState) {
+      binding.menuIcon.morph()
+    }
+    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.menu_shown)
+  }
+
+  private fun concealBackLayer() {
+    if (!binding.menuIcon.isAtStartState) {
+      binding.menuIcon.morph()
+    }
+    binding.backdropMotionLayout.playReverseTransition(R.id.toolbar_shown, R.id.menu_shown)
+  }
+
   override fun switchMenu(menuFragment: Fragment) =
     viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragment))
 
@@ -161,8 +193,19 @@ class BackdropFragment : ClapTrapFragment<
     viewModel.processInput(BackdropViewEvent.RemoveCustomMenu)
   }
 
+  override fun back() {
+    if (nestedNavController.previousBackStackEntry != null) {
+      nestedNavController.popBackStack()
+    } else {
+      onBackPressedCallback.isEnabled = false
+      requireActivity().onBackPressed()
+      onBackPressedCallback.isEnabled = true
+    }
+  }
+
   companion object {
     private const val MOTION_LAYOUT_STATE_KEY = "MOTION_LAYOUT_STATE_KEY"
+    private const val MENU_STATE_KEY = "MENU_STATE_KEY"
     private const val MENU_FRAGMENT_TAG = "MENU_FRAGMENT_TAG"
   }
 

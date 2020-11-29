@@ -26,6 +26,8 @@
     <item name="colorOnBackground">@color/black_900</item>
     <item name="colorOnSurface">@color/black_900</item>
     <item name="colorOnError">@color/white_50</item>
+    <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
+    <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <!--Material type attributes-->
     <item name="textAppearanceHeadline1">@style/TextAppearance.Claptrap.Headline1</item>
     <item name="textAppearanceHeadline2">@style/TextAppearance.Claptrap.Headline2</item>

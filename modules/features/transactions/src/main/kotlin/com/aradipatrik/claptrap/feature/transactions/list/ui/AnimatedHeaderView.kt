@@ -23,10 +23,14 @@ class AnimatedHeaderView @JvmOverloads constructor(
     binding.lowerView.text = text
   }
 
-  fun setText(text: String) {
-    upperText = lowerText
-    lowerText = text
-    binding.motionLayout.progress = 0.0f
-    binding.motionLayout.transitionToEnd()
-  }
+  var text: String
+    get() = lowerText
+    set(value) {
+      if (text != value) {
+        upperText = lowerText
+        lowerText = value
+        binding.motionLayout.progress = 0.0f
+        binding.motionLayout.transitionToEnd()
+      }
+    }
 }

@@ -3,37 +3,45 @@
   xmlns:motion="http://schemas.android.com/apk/res-auto">
 
   <Transition
-    motion:constraintSetStart="@+id/fab_at_bottom"
     motion:constraintSetEnd="@+id/fab_at_middle"
-    motion:duration="300"
-    motion:pathMotionArc="startHorizontal"
+    motion:constraintSetStart="@+id/fab_at_bottom"
+    motion:duration="600"
+    motion:motionInterpolator="easeInOut"
+    motion:pathMotionArc="startHorizontal" />
+
+  <Transition
+    motion:constraintSetEnd="@+id/action_visible"
+    motion:constraintSetStart="@+id/fab_at_middle"
+    motion:duration="600"
     motion:motionInterpolator="easeInOut" />
 
   <Transition
-    motion:constraintSetStart="@+id/fab_at_middle"
-    motion:constraintSetEnd="@+id/action_visible"
-    motion:duration="300"
-    motion:motionInterpolator="easeInOut" />
-
-  <Transition motion:constraintSetStart="@+id/action_visible"
     motion:constraintSetEnd="@+id/categories_visible"
-    motion:duration="300"
+    motion:constraintSetStart="@+id/action_visible"
+    motion:duration="600"
     motion:motionInterpolator="easeInOut">
     <KeyFrameSet>
-      <KeyAttribute android:alpha="1"
+      <KeyAttribute
+        android:alpha="1"
         motion:framePosition="0"
         motion:motionTarget="@+id/category_list_background" />
     </KeyFrameSet>
   </Transition>
 
-  <Transition motion:constraintSetStart="@+id/categories_visible"
+  <Transition
     motion:constraintSetEnd="@id/action_visible"
-    motion:duration="300" />
+    motion:constraintSetStart="@+id/categories_visible"
+    motion:duration="600" />
 
   <ConstraintSet android:id="@+id/fab_at_bottom">
     <Constraint android:id="@+id/fab_icon">
-      <CustomAttribute motion:customColorValue="?attr/colorOnSecondary"
-        motion:attributeName="colorFilter" />
+      <CustomAttribute
+        motion:attributeName="colorFilter"
+        motion:customColorValue="?attr/colorOnSecondary" />
+    </Constraint>
+
+    <Constraint android:id="@+id/category_list_background">
+      <PropertySet android:alpha="0" />
     </Constraint>
 
     <Constraint android:id="@id/fab_background">
@@ -48,10 +56,10 @@
       <Layout
         android:layout_width="48dp"
         android:layout_height="48dp"
-        motion:layout_constraintStart_toStartOf="parent"
-        motion:layout_constraintTop_toTopOf="parent"
         motion:layout_constraintBottom_toBottomOf="parent"
-        motion:layout_constraintEnd_toEndOf="parent" />
+        motion:layout_constraintEnd_toEndOf="parent"
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintTop_toTopOf="parent" />
 
       <CustomAttribute
         motion:attributeName="cardBackgroundColor"
@@ -63,63 +71,89 @@
     </Constraint>
 
     <Constraint android:id="@+id/fab_icon">
-      <CustomAttribute motion:customColorValue="?attr/colorOnSurface"
-        motion:attributeName="colorFilter" />
+      <CustomAttribute
+        motion:attributeName="colorFilter"
+        motion:customColorValue="?attr/colorOnSurface" />
     </Constraint>
 
-    <Constraint android:id="@+id/front_layer"
+    <Constraint
+      android:id="@+id/front_layer"
       android:layout_width="0dp"
       android:layout_height="200dp"
-      motion:layout_constraintTop_toBottomOf="parent"
-      motion:layout_constraintStart_toStartOf="parent"
-      motion:layout_constraintEnd_toEndOf="parent" />
-
-    <Constraint android:id="@+id/transaction_recycler_view"
-      motion:layout_constraintStart_toStartOf="parent"
       motion:layout_constraintEnd_toEndOf="parent"
-      motion:layout_constraintTop_toBottomOf="@+id/header_separator"
+      motion:layout_constraintStart_toStartOf="parent"
+      motion:layout_constraintTop_toBottomOf="parent" />
+
+    <Constraint
+      android:id="@+id/transaction_recycler_view"
+      android:layout_width="0dp"
       android:layout_height="200dp"
-      android:layout_width="0dp" />
+      motion:layout_constraintEnd_toEndOf="parent"
+      motion:layout_constraintStart_toStartOf="parent"
+      motion:layout_constraintTop_toBottomOf="@+id/header_separator" />
+
+    <Constraint android:id="@+id/category_list_background">
+      <PropertySet android:visibility="invisible" />
+    </Constraint>
   </ConstraintSet>
 
-  <ConstraintSet android:id="@+id/action_visible" motion:deriveConstraintsFrom="@id/fab_at_middle">
+  <ConstraintSet
+    android:id="@+id/action_visible"
+    motion:deriveConstraintsFrom="@id/fab_at_middle">
     <Constraint android:id="@+id/fab_background">
       <Layout
         android:layout_width="0dp"
         android:layout_height="0dp"
-        motion:layout_constraintStart_toStartOf="parent"
-        motion:layout_constraintTop_toTopOf="parent"
         motion:layout_constraintBottom_toBottomOf="@id/card_bottom"
         motion:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="112dp"/>
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintTop_toTopOf="@+id/number_pad" />
 
       <CustomAttribute
         motion:attributeName="cardBackgroundColor"
         motion:customColorValue="?attr/colorSurface" />
-
-      <CustomAttribute
-        motion:attributeName="radius"
-        motion:customDimension="0dp" />
     </Constraint>
 
     <Constraint android:id="@+id/fab_icon">
-      <CustomAttribute motion:customColorValue="?attr/colorOnSurface"
-        motion:attributeName="colorFilter" />
+      <CustomAttribute
+        motion:attributeName="colorFilter"
+        motion:customColorValue="?attr/colorOnSurface" />
+    </Constraint>
+
+    <Constraint android:id="@+id/category_list_background">
+      <PropertySet android:visibility="visible"
+        android:alpha="1"/>
+    </Constraint>
+
+    <Constraint
+      android:id="@+id/fab_icon">
+      <Layout
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        motion:layout_constraintEnd_toEndOf="@id/guide_button_3"
+        motion:layout_constraintStart_toStartOf="@id/guide_button_3"
+        motion:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="32dp" />
     </Constraint>
   </ConstraintSet>
 
-  <ConstraintSet android:id="@+id/categories_visible"
+  <ConstraintSet
+    android:id="@+id/categories_visible"
     motion:deriveConstraintsFrom="@id/action_visible">
     <Constraint android:id="@+id/category_list_background">
       <Layout
         android:layout_width="0dp"
-        android:layout_height="132dp"
-        motion:layout_constraintTop_toTopOf="parent"
+        android:layout_height="0dp"
+        motion:layout_constraintBottom_toBottomOf="@+id/category_card_bottom"
+        motion:layout_constraintEnd_toEndOf="parent"
         motion:layout_constraintStart_toStartOf="parent"
-        motion:layout_constraintEnd_toEndOf="parent" />
+        motion:layout_constraintTop_toTopOf="parent" />
 
-      <PropertySet
-        android:alpha="1" />
+      <PropertySet android:alpha="1" />
+    </Constraint>
+
+    <Constraint android:id="@+id/number_pad">
+      <PropertySet android:visibility="visible" />
     </Constraint>
   </ConstraintSet>
 </MotionScene>

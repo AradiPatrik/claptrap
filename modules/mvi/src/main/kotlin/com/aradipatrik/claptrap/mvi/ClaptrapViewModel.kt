@@ -41,7 +41,15 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
     }
   }
 
-  protected inline fun <reified T: S> reduceState(noinline stateReducer: StateReducer<T, S>) {
+  protected fun reduceState(stateReducer: StateReducer<S, S>) {
+    viewModelScope.launch {
+      reducerChannel.send {
+        stateReducer.invoke(it)
+      }
+    }
+  }
+
+  protected inline fun <reified T: S> reduceSpecificState(noinline stateReducer: StateReducer<T, S>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
         require(state is T)

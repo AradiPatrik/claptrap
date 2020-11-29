@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
+import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.feature.transactions.R
@@ -14,6 +15,8 @@ import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
+import ru.ldralighieri.corbind.view.clicks
 import timber.log.Timber
 
 class AddTransactionMenuFragment : ClapTrapFragment<
@@ -21,9 +24,10 @@ class AddTransactionMenuFragment : ClapTrapFragment<
   TransactionsViewEvent,
   TransactionsViewEffect,
   FragmentAddTransactionMenuBinding
-  >(R.layout.fragment_add_transaction_menu, FragmentAddTransactionMenuBinding::inflate), BackListener {
+  >(R.layout.fragment_add_transaction_menu, FragmentAddTransactionMenuBinding::inflate) {
   override val viewModel by activityViewModels<TransactionsViewModel>()
-  override val viewEvents get() = emptyFlow<TransactionsViewEvent>()
+  override val viewEvents get() = binding.backButton.clicks()
+    .map { TransactionsViewEvent.BackClick }
 
   override fun initViews(savedInstanceState: Bundle?) {
     if (savedInstanceState == null) {
@@ -36,9 +40,4 @@ class AddTransactionMenuFragment : ClapTrapFragment<
 
   override fun react(viewEffect: TransactionsViewEffect) {
   }
-
-  override fun onBack(): BackEffect {
-    return BackEffect.NO_POP
-  }
-
 }

@@ -6,6 +6,7 @@ import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 interface Backdrop {
   fun switchMenu(menuFragment: Fragment)
   fun clearMenu()
+  fun back()
 }
 
 val ClapTrapFragment<*, *, *, *>.backdrop

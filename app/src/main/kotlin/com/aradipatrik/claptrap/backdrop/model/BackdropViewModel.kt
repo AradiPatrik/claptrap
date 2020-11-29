@@ -7,19 +7,28 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 
 class BackdropViewModel : ClaptrapViewModel<BackdropViewState, BackdropViewEvent, BackdropViewEffect>(
-  OnTopLevelScreen(TRANSACTION_HISTORY)
+  OnTopLevelScreen(TRANSACTION_HISTORY, isBackLayerConcealed = true)
 ) {
   override fun processInput(viewEvent: BackdropViewEvent) = when(viewEvent) {
-    is SelectTopLevelScreen -> reduceState<OnTopLevelScreen> { oldState ->
+    is SelectTopLevelScreen -> reduceSpecificState<OnTopLevelScreen> { oldState ->
       viewEffects.send(BackdropViewEffect.ConcealBackLayer)
-      oldState.copy(topLevelScreen = viewEvent.topLevelScreen)
+      oldState.copy(topLevelScreen = viewEvent.topLevelScreen, isBackLayerConcealed = true)
     }
-    is SwitchToCustomMenu -> reduceState<BackdropViewState> { oldState ->
+    is SwitchToCustomMenu -> reduceState { oldState ->
       BackdropViewState.CustomMenuShowing(viewEvent.menuFragment, oldState.topLevelScreen)
     }
-    is RemoveCustomMenu -> reduceState<BackdropViewState> { oldState ->
+    is RemoveCustomMenu -> reduceState { oldState ->
       viewEffects.send(BackdropViewEffect.MorphFromBackToMenu)
-      OnTopLevelScreen(oldState.topLevelScreen)
+      OnTopLevelScreen(oldState.topLevelScreen, isBackLayerConcealed = true)
+    }
+    BackdropConcealToggle -> reduceSpecificState<OnTopLevelScreen> { state ->
+      if (state.isBackLayerConcealed) {
+        viewEffects.send(BackdropViewEffect.RevealBackLayer)
+        state.copy(isBackLayerConcealed = false)
+      } else {
+        viewEffects.send(BackdropViewEffect.ConcealBackLayer)
+        state.copy(isBackLayerConcealed = true)
+      }
     }
   }
 }

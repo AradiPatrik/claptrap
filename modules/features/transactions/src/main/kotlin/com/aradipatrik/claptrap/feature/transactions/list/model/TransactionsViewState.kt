@@ -10,5 +10,7 @@ sealed class TransactionsViewState {
     val refreshing: Boolean
   ) : TransactionsViewState()
 
-  object Adding : TransactionsViewState()
+  data class Adding(
+    val transactionType: TransactionType
+  ) : TransactionsViewState()
 }

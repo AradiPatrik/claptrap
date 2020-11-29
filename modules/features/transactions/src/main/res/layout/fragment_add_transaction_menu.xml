@@ -1,18 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  xmlns:app="http://schemas.android.com/apk/res-auto">
+  tools:layout_height="48dp">
 
   <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
     android:id="@+id/back_button"
-    app:tint="?attr/colorOnPrimarySurface"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="24dp"
+    android:foreground="?attr/selectableItemBackground"
     app:endToStart="@drawable/arrow_to_menu"
-    app:startToEnd="@drawable/menu_to_arrow"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent" />
+    app:startToEnd="@drawable/menu_to_arrow"
+    app:tint="?attr/colorOnPrimarySurface" />
+
+  <com.google.android.material.chip.ChipGroup
+    android:id="@+id/expense_income_chip_group"
+    style="@style/Widget.MaterialComponents.Chip.Choice"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    app:selectionRequired="true"
+    app:singleSelection="true"
+    app:checkedChip="@+id/expense_chip"
+    app:layout_constraintBottom_toBottomOf="@id/back_button"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toEndOf="@id/back_button"
+    app:layout_constraintTop_toTopOf="@id/back_button">
+
+    <com.google.android.material.chip.Chip
+      android:id="@+id/expense_chip"
+      style="@style/Widget.MaterialComponents.Chip.Choice"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:singleSelection="true"
+      android:text="@string/expense"
+      android:textAppearance="?attr/textAppearanceCaption"
+      android:textColor="?attr/colorOnPrimarySurface"
+      app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
+      app:chipStrokeWidth="2dp"
+      app:chipSurfaceColor="@color/chip_background_color"
+      app:rippleColor="?attr/colorOnPrimarySurfaceAlphaMedium" />
+
+    <com.google.android.material.chip.Chip
+      android:id="@+id/income_chip"
+      style="@style/Widget.MaterialComponents.Chip.Choice"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:text="@string/income"
+      android:textAppearance="?attr/textAppearanceCaption"
+      android:textColor="?attr/colorOnPrimarySurface"
+      app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
+      app:chipStrokeWidth="2dp"
+      app:chipSurfaceColor="@color/chip_background_color"
+      app:rippleColor="?attr/colorOnPrimarySurfaceAlphaMedium" />
+  </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
