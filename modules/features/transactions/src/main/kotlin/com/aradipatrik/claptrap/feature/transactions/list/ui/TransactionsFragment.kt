@@ -112,6 +112,7 @@ class TransactionsFragment : ClapTrapFragment<
       playReverseTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
       playReverseTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
       playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
+      binding.fabBackground.isClickable = true
     }
   }.ignore()
 
@@ -120,6 +121,7 @@ class TransactionsFragment : ClapTrapFragment<
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
       playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
       playTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
+      binding.fabBackground.isClickable = false
     }
   }.ignore()
 

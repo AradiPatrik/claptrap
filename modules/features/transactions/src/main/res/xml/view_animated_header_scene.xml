@@ -6,7 +6,7 @@
     <Transition
         motion:constraintSetEnd="@+id/bottom_shown"
         motion:constraintSetStart="@id/top_shown"
-        motion:duration="500">
+        motion:duration="200">
     </Transition>
 
     <ConstraintSet android:id="@+id/top_shown" />
