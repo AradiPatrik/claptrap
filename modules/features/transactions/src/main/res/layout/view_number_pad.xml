@@ -4,8 +4,7 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="wrap_content"
-  tools:background="?attr/colorSurface"
-  android:paddingBottom="16dp">
+  tools:background="?attr/colorSurface">
 
   <com.google.android.material.textview.MaterialTextView
     android:id="@+id/expression_display"
@@ -36,9 +35,11 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
+    android:layout_marginBottom="32dp"
     android:elevation="16dp"
     android:foregroundGravity="center"
     android:src="@drawable/ic_money"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_7"
     app:layout_constraintEnd_toEndOf="@+id/number_pad_number_7"
     app:layout_constraintStart_toStartOf="@+id/number_pad_number_7"
     app:layout_constraintTop_toTopOf="parent"
@@ -62,28 +63,26 @@
     android:id="@+id/display_divider"
     android:layout_width="0dp"
     android:layout_height="1dp"
-    android:layout_marginTop="16dp"
     android:layout_marginBottom="16dp"
     android:alpha="@dimen/alpha_separator"
     android:background="?attr/colorOnSurface"
     android:elevation="16dp"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_7"
     app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/category_icon_image_view" />
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/number_pad_number_7"
     style="@style/Widget.MaterialComponents.Button.TextButton"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/number_pad_button_height"
-    android:layout_marginTop="24dp"
     android:text="7"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_4"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_8"
     app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/display_divider" />
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/number_pad_number_8"
@@ -93,6 +92,7 @@
     android:text="8"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_5"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_9"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_7"
@@ -106,6 +106,7 @@
     android:text="9"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_6"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_calendar"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_8"
@@ -121,6 +122,7 @@
     app:icon="@drawable/ic_money"
     app:iconGravity="textStart"
     app:iconTint="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_plus"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_9"
@@ -134,19 +136,21 @@
     android:text="4"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_1"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_5"
     app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/number_pad_number_7" />
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/number_pad_number_5"
     style="@style/Widget.MaterialComponents.Button.TextButton"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/number_pad_button_height"
+    android:layout_marginBottom="1dp"
     android:text="5"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_2"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_6"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_4"
@@ -157,9 +161,11 @@
     style="@style/Widget.MaterialComponents.Button.TextButton"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/number_pad_button_height"
+    android:layout_marginBottom="1dp"
     android:text="6"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_3"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_plus"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_5"
@@ -170,9 +176,11 @@
     style="@style/Widget.MaterialComponents.Button.TextButton"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/number_pad_button_height"
+    android:layout_marginBottom="1dp"
     android:text="+"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_number_minus"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_number_6"
@@ -186,10 +194,10 @@
     android:text="1"
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toTopOf="@+id/number_pad_point"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_2"
     app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/number_pad_number_4" />
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/number_pad_number_2"
@@ -235,13 +243,14 @@
     style="@style/Widget.MaterialComponents.Button.TextButton"
     android:layout_width="wrap_content"
     android:layout_height="@dimen/number_pad_button_height"
+    android:layout_marginBottom="16dp"
     android:text="."
     android:textAppearance="?attr/textAppearanceBody1"
     android:textColor="?attr/colorOnSurface"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toStartOf="@+id/number_pad_number_0"
     app:layout_constraintHorizontal_bias="0.5"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toBottomOf="@+id/number_pad_number_1" />
+    app:layout_constraintStart_toStartOf="parent" />
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/number_pad_number_0"
@@ -283,5 +292,5 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_delete_one"
-    app:layout_constraintTop_toTopOf="@+id/number_pad_delete_one" />
+    app:layout_constraintTop_toBottomOf="@+id/number_pad_number_minus" />
 </androidx.constraintlayout.widget.ConstraintLayout>

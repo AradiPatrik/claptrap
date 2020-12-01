@@ -119,7 +119,7 @@
   <!-- Only helper views for constraining ignore -->
   <com.google.android.material.button.MaterialButton
     android:id="@+id/guide_button_0"
-    android:layout_width="92dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="3dp"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -129,7 +129,7 @@
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/guide_button_1"
-    android:layout_width="92dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="3dp"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -139,7 +139,7 @@
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/guide_button_2"
-    android:layout_width="92dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="3dp"
     app:layout_constraintBottom_toBottomOf="parent"
@@ -149,11 +149,22 @@
 
   <com.google.android.material.button.MaterialButton
     android:id="@+id/guide_button_3"
-    android:layout_width="92dp"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:elevation="3dp"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toEndOf="@id/guide_button_2"
     android:visibility="invisible"/>
+
+  <androidx.constraintlayout.widget.Guideline
+    android:id="@+id/transactions_halfway_guideline"
+    android:layout_width="1dp"
+    android:layout_height="1dp"
+    android:orientation="vertical"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintGuide_percent="0.5" />
 </androidx.constraintlayout.motion.widget.MotionLayout>
