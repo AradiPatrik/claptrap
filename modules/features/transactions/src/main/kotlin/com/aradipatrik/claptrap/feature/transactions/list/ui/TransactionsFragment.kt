@@ -12,6 +12,9 @@ import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
@@ -42,12 +45,14 @@ class TransactionsFragment : ClapTrapFragment<
   override val viewModel by activityViewModels<TransactionsViewModel>()
 
   override val viewEvents: Flow<TransactionsViewEvent> get() = merge(
-    binding.fabBackground.clicks()
-      .map { TransactionsViewEvent.AddClick },
-    binding.frontLayer.clicks()
-      .map { TransactionsViewEvent.AddClick },
-    backPressEvents.consumeAsFlow()
-      .map { TransactionsViewEvent.BackClick }
+    binding.fabBackground.clicks().map { ActionClick },
+    binding.frontLayer.clicks().map { ActionClick },
+    backPressEvents.consumeAsFlow().map { BackClick },
+    binding.numberPad.digitClicks.map { NumberClick(it) },
+    binding.numberPad.plusClicks.map { PlusClick },
+    binding.numberPad.minusClicks.map { MinusClick },
+    binding.numberPad.pointClicks.map { PointClick },
+    binding.numberPad.deleteOneClicks.map { DeleteOneClick }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -82,6 +87,7 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
+    binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
   }
 
   private fun renderLoading() {
