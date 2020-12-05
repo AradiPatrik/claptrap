@@ -306,6 +306,8 @@
     app:iconGravity="textStart"
     android:textSize="20sp"
     app:iconTint="?attr/colorOnSurface"
+    app:backgroundTint="?attr/colorSecondary"
+    android:elevation="2dp"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintHorizontal_bias="0.5"
     app:layout_constraintStart_toEndOf="@+id/number_pad_delete_one"

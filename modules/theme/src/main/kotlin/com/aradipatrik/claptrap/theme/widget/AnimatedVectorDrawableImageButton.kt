@@ -12,7 +12,6 @@ import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-
 class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
