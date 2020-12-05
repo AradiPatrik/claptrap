@@ -4,4 +4,6 @@
   android:id="@+id/nav_child"
   app:startDestination="@id/nav_graph_transactions">
   <include app:graph="@navigation/nav_transactions" />
+  <include app:graph="@navigation/nav_statistics" />
+  <include app:graph="@navigation/nav_wallets" />
 </navigation>

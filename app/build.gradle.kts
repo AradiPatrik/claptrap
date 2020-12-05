@@ -8,7 +8,10 @@ dependencies {
   implementation(project(":data:disk"))
   implementation(project(":features:common"))
 
+
   implementation(project(":features:transactions"))
+  implementation(project(":features:statistics"))
+  implementation(project(":features:wallets"))
 
   implementation(project(":config"))
   implementation(project(":domain:interactors"))

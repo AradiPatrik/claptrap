@@ -11,9 +11,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.backdrop.model.*
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.NavigateToDestination
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
@@ -29,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -170,6 +173,23 @@ class BackdropFragment : ClapTrapFragment<
         ) as AnimatedVectorDrawable
       )
     }.ignore()
+    is NavigateToDestination -> navigateToTopLevelScreen(viewEffect.destination)
+  }
+
+  private fun navigateToTopLevelScreen(topLevelScreen: TopLevelScreen) {
+    nestedNavController.navigate(
+      topLevelScreen.destinationId,
+      null,
+      NavOptions.Builder()
+        .setPopUpTo(nestedNavController.currentDestination!!.id, true)
+        .build()
+    )
+  }
+
+  private val TopLevelScreen.destinationId get() = when(this) {
+    TopLevelScreen.TRANSACTION_HISTORY -> R.id.nav_graph_transactions
+    TopLevelScreen.WALLETS -> R.id.nav_graph_wallets
+    TopLevelScreen.STATISTICS -> R.id.nav_graph_statistics
   }
 
   private fun revealBackLayer() {

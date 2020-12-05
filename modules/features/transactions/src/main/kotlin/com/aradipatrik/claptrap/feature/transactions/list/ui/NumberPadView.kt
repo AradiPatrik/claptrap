@@ -39,6 +39,8 @@ class NumberPadView @JvmOverloads constructor(
 
   val deleteOneClicks = binding.numberPadDeleteOne.clicks()
 
+  val actionClicks = binding.numberPadAction.clicks()
+
   var calculatorDisplayText: String by Delegates.observable("") { _, _, newValue ->
     binding.expressionDisplay.text = newValue
   }

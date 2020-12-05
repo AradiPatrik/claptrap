@@ -14,7 +14,7 @@ sealed class TransactionsViewEvent {
       object DeleteOneClick : CalculatorEvent()
       object PlusClick : CalculatorEvent()
       object MinusClick : CalculatorEvent()
-      object EqualsClick : CalculatorEvent()
+      object NumberPadActionClick : CalculatorEvent()
     }
   }
 

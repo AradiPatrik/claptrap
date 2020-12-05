@@ -14,7 +14,7 @@ object CalculatorStateReducer {
     DeleteOneClick -> currentState.deleteLastDigit()
     PlusClick -> currentState.add()
     MinusClick -> currentState.subtract()
-    EqualsClick -> currentState.evaluate()
+    NumberPadActionClick -> currentState.evaluate()
   }
 
   private fun CalculatorState.appendDigit(digit: Int) = when (this) {

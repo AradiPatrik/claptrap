@@ -6,8 +6,10 @@ import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberPadActionClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorStateReducer
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
@@ -49,7 +51,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     BackClick -> reduceState { state ->
       if (state is Adding) {
         viewEffects.send(PlayReverseAddAnimation)
-        viewEffects.send(HiedTransactionMenu)
+        viewEffects.send(HideTransactionMenu)
         TransactionsLoaded(
           transactions = loadedTransactions,
           refreshing = true
@@ -61,8 +63,19 @@ class TransactionsViewModel @ViewModelInject constructor(
     is TransactionTypeSwitch -> reduceSpecificState<Adding> {
       it.copy(transactionType = viewEvent.newType)
     }
-    is CalculatorEvent -> reduceSpecificState<Adding> {
-      it.copy(calculatorState = CalculatorStateReducer.reduceState(it.calculatorState, viewEvent))
+    is CalculatorEvent -> reduceSpecificState<Adding> { state ->
+      if (state.calculatorState is CalculatorState.SingleValue && viewEvent is NumberPadActionClick) {
+        viewEffects.send(PlayReverseAddAnimation)
+        viewEffects.send(HideTransactionMenu)
+        TransactionsLoaded(
+          transactions = loadedTransactions,
+          refreshing = false
+        )
+      } else {
+        state.copy(
+          calculatorState = CalculatorStateReducer.reduceState(state.calculatorState, viewEvent)
+        )
+      }
     }
     is MemoChange -> error("TODO")
   }

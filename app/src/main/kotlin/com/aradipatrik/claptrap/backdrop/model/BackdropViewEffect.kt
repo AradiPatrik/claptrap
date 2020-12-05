@@ -4,4 +4,6 @@ sealed class BackdropViewEffect {
   object RevealBackLayer : BackdropViewEffect()
   object ConcealBackLayer : BackdropViewEffect()
   object MorphFromBackToMenu : BackdropViewEffect()
+
+  data class NavigateToDestination(val destination: TopLevelScreen) : BackdropViewEffect()
 }

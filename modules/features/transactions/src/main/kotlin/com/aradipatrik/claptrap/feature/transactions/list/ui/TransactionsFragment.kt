@@ -24,6 +24,9 @@ import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransitionAnd
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
+import com.google.android.material.transition.MaterialFade
+import com.google.android.material.transition.MaterialFadeThrough
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
@@ -52,7 +55,8 @@ class TransactionsFragment : ClapTrapFragment<
     binding.numberPad.plusClicks.map { PlusClick },
     binding.numberPad.minusClicks.map { MinusClick },
     binding.numberPad.pointClicks.map { PointClick },
-    binding.numberPad.deleteOneClicks.map { DeleteOneClick }
+    binding.numberPad.deleteOneClicks.map { DeleteOneClick },
+    binding.numberPad.actionClicks.map { NumberPadActionClick }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -102,7 +106,7 @@ class TransactionsFragment : ClapTrapFragment<
   override fun react(viewEffect: TransactionsViewEffect) = when(viewEffect) {
     is TransactionsViewEffect.ShowAddTransactionMenu -> backdrop
       .switchMenu(AddTransactionMenuFragment())
-    TransactionsViewEffect.HiedTransactionMenu -> backdrop.clearMenu()
+    TransactionsViewEffect.HideTransactionMenu -> backdrop.clearMenu()
     TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
     TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
     TransactionsViewEffect.Back -> backdrop.back()

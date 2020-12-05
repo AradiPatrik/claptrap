@@ -5,6 +5,28 @@
   <color name="purple_600">#4b01d0</color> <!--Color primary variant (dark)-->
   <color name="purple_700">#3700b3</color> <!--Color primary variant (light)-->
 
+  <color name="blue_50">#b4e7ff</color>
+  <color name="blue_100">#b4e7ff</color>
+  <color name="blue_200">#82d7ff</color>
+  <color name="blue_300">#4fc7ff</color>
+  <color name="blue_400">#27bbff</color>
+  <color name="blue_500">#00AEFF</color>
+  <color name="blue_600">#03a0f0</color>
+  <color name="blue_700">#058ddb</color>
+  <color name="blue_800">#057bc7</color>
+  <color name="blue_900">#065ba5</color>
+
+  <color name="amber_50">#fce8e5</color>
+  <color name="amber_100">#ffcbb7</color>
+  <color name="amber_200">#ffa889</color>
+  <color name="amber_300">#ff8659</color>
+  <color name="amber_400">#ff6b33</color>
+  <color name="amber_500">#ff5100</color>
+  <color name="amber_600">#f44b00</color>
+  <color name="amber_700">#e64300</color>
+  <color name="amber_800">#d93c00</color>
+  <color name="amber_900">#c12c00</color>
+
   <color name="green_200">#03dac6</color> <!--Color secondary-->
   <color name="green_500">#018786</color> <!--Color secondary variant-->
 

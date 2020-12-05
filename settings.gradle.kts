@@ -14,6 +14,12 @@ if (includeAndroid == "true") {
   include(":features:transactions")
   project(":features:transactions").projectDir = file("./modules/features/transactions")
 
+  include(":features:statistics")
+  project(":features:statistics").projectDir = file("./modules/features/statistics")
+
+  include(":features:wallets")
+  project(":features:wallets").projectDir = file("./modules/features/wallets")
+
   include(":features:common")
   project(":features:common").projectDir = file("./modules/features/common")
 
