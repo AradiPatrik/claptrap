@@ -6,6 +6,7 @@ import android.os.Bundle
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
@@ -33,6 +34,7 @@ import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,6 +65,7 @@ class TransactionsFragment : ClapTrapFragment<
   private val backPressEvents = Channel<Unit>(BUFFERED)
 
   private val transactionAdapter by lazy { TransactionAdapter() }
+  private val categoryAdapter by lazy { CategoryAdapter() }
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
   private val equalsToCheck by lazy { getAnimatedVectorDrawable(R.drawable.equals_to_check) }
@@ -74,6 +77,11 @@ class TransactionsFragment : ClapTrapFragment<
     binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
     binding.transactionRecyclerView.adapter = transactionAdapter
 
+    binding.categoryRecyclerView.layoutManager = GridLayoutManager(
+      requireContext(), 3
+    )
+    binding.categoryRecyclerView.adapter = categoryAdapter
+
     transactionAdapter.headerChangeEvents
       .onEach(binding.transactionsHeader::text::set)
       .launchInWhenResumed(lifecycleScope)
@@ -84,6 +92,8 @@ class TransactionsFragment : ClapTrapFragment<
         binding.fabIcon.startToEndAnimatedVectorDrawable = checkToEquals
         binding.fabIcon.endToStartAnimatedVectorDrawable = equalsToCheck
         binding.fabIcon.reset()
+        binding.fabBackground.isEnabled = false
+        binding.fabBackground.isClickable = false
       }
       if (!savedInstanceState.getBoolean(FAB_ICON_STATE_KEY)) binding.fabIcon.morph()
     }
@@ -106,6 +116,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
     binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
+    categoryAdapter.submitList(viewState.categories)
   }
 
   private fun renderLoading() {

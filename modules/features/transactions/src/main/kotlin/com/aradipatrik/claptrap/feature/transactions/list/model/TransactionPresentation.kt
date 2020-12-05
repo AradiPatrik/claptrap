@@ -1,11 +1,8 @@
 package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import androidx.annotation.DrawableRes
-import com.aradipatrik.claptrap.domain.Category
-import com.aradipatrik.claptrap.domain.CategoryIcon
-import com.aradipatrik.claptrap.domain.CategoryIcon.*
 import com.aradipatrik.claptrap.domain.Transaction
-import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
 import java.util.*
 
 data class TransactionPresentation(
@@ -26,19 +23,6 @@ data class TransactionPresentation(
         note = transaction.note,
         currencySymbol = it.money.currencyUnit.symbol
       )
-    }
-
-    private val CategoryIcon.drawableRes get() = when(this) {
-      CAR -> R.drawable.category_icon_car
-      CART -> R.drawable.category_icon_cart
-      HEALTH -> R.drawable.category_icon_health
-      HOME -> R.drawable.category_icon_home
-      FOOD -> R.drawable.category_icon_pizza_slice
-      SALARY -> R.drawable.category_icon_salary
-      SOCIAL -> R.drawable.category_icon_social
-      TRANSPORTATION -> R.drawable.category_icon_train
-      WORK -> R.drawable.category_icon_work
-      WORKOUT -> R.drawable.category_icon_workout
     }
   }
 

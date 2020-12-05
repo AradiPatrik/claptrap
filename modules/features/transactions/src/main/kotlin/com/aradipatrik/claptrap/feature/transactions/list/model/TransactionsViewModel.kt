@@ -13,22 +13,28 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.BinaryOperation
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorStateReducer
+import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 
 class TransactionsViewModel @ViewModelInject constructor(
-  transactionInteractor: TransactionInteractor
+  transactionInteractor: TransactionInteractor,
+  private val categoryInteractor: CategoryInteractor
 ) : ClaptrapViewModel<TransactionsViewState, TransactionsViewEvent, TransactionsViewEffect>(
   Loading
 ) {
   private var loadedTransactions = emptyList<Transaction>()
 
   init {
-    transactionInteractor.getAllTransactions()
-      .onEach(::setLoadedTransactions)
-      .launchIn(viewModelScope)
+    viewModelScope.launch {
+      val transactions = transactionInteractor.getAllTransactions().take(1).single()
+      setLoadedTransactions(transactions)
+    }
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
@@ -123,6 +129,11 @@ class TransactionsViewModel @ViewModelInject constructor(
   private fun goToAddTransaction() = setState {
     viewEffects.send(ShowAddTransactionMenu)
     viewEffects.send(PlayAddAnimation)
-    Adding(transactionType = TransactionType.EXPENSE)
+    reduceSpecificState<Adding> { state ->
+      state.copy(
+        categories = categoryInteractor.getAllCategories().take(1).single()
+      )
+    }
+    Adding(TransactionType.EXPENSE)
   }
 }

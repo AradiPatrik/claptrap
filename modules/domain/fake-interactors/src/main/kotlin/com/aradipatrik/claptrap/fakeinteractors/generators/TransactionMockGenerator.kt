@@ -12,6 +12,7 @@ import kotlin.random.Random
 
 internal object TransactionMockGenerator {
   fun Random.nextCategory() = Category(
+    nextId(),
     nextCapitalWord(),
     nextEnum()
   )

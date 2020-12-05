@@ -168,6 +168,22 @@
         motion:layout_constraintEnd_toEndOf="@+id/transactions_halfway_guideline"
         motion:layout_constraintStart_toEndOf="@id/guide_button_2" />
     </Constraint>
+
+    <Constraint android:id="@+id/category_recycler_view">
+      <PropertySet
+        android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/categories_header">
+      <PropertySet
+        android:visibility="invisible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/category_header_separator">
+      <PropertySet
+        android:visibility="invisible" />
+    </Constraint>
+
   </ConstraintSet>
 
   <ConstraintSet
@@ -197,10 +213,25 @@
     </Constraint>
 
     <Constraint android:id="@+id/fab_icon">
-
       <CustomAttribute
         motion:attributeName="colorFilter"
         motion:customColorValue="?attr/colorOnSecondary" />
     </Constraint>
+
+    <Constraint android:id="@+id/category_recycler_view">
+      <PropertySet
+        android:visibility="visible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/categories_header">
+      <PropertySet android:visibility="visible" />
+    </Constraint>
+
+    <Constraint android:id="@+id/category_header_separator">
+      <PropertySet
+        android:alpha="@dimen/alpha_low"
+        android:visibility="visible" />
+    </Constraint>
+
   </ConstraintSet>
 </MotionScene>

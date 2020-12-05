@@ -1,7 +1,9 @@
 package com.aradipatrik.claptrap.di
 
+import com.aradipatrik.claptrap.fakeinteractors.category.CategoryInteractorFake
 import com.aradipatrik.claptrap.fakeinteractors.todo.TodoInteractorFake
 import com.aradipatrik.claptrap.fakeinteractors.transaction.TransactionInteractorFake
+import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TodoInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import dagger.Binds
@@ -19,4 +21,9 @@ abstract class InteractorModule {
   abstract fun bindTransactionInteractor(
     interactor: TransactionInteractorFake
   ): TransactionInteractor
+
+  @Binds
+  abstract fun bindCategoryInteractor(
+    interactor: CategoryInteractorFake
+  ): CategoryInteractor
 }

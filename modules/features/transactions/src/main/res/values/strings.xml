@@ -2,4 +2,5 @@
 <resources>
   <string name="expense">Expense</string>
   <string name="income">Income</string>
+  <string name="categories_title">Categories</string>
 </resources>

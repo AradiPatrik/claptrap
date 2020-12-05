@@ -21,6 +21,7 @@ internal object LoremIpsum {
     .lines()
     .flatMap { it.split(" ") }
     .shuffled()
+    .filter { it.isNotBlank() }
     .take(count)
     .joinToString(separator = " ")
     .trim()
