@@ -13,13 +13,12 @@ import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CategorySelected
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
@@ -59,7 +58,8 @@ class TransactionsFragment : ClapTrapFragment<
     binding.numberPad.minusClicks.map { MinusClick },
     binding.numberPad.pointClicks.map { PointClick },
     binding.numberPad.deleteOneClicks.map { DeleteOneClick },
-    binding.numberPad.actionClicks.map { NumberPadActionClick }
+    binding.numberPad.actionClicks.map { NumberPadActionClick },
+    categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -116,7 +116,14 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
     binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
-    categoryAdapter.submitList(viewState.categories)
+
+    categoryAdapter.submitList(viewState.categories.map {
+      CategoryListItem(it, it.id == viewState.selectedCategory?.id)
+    })
+
+    viewState.selectedCategory?.let { category ->
+      binding.numberPad.setCategoryIconRes(category.icon.drawableRes)
+    }
   }
 
   private fun renderLoading() {

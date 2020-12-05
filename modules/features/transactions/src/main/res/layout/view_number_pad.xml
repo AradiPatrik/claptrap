@@ -35,7 +35,6 @@
     android:id="@+id/category_icon_image_view"
     android:layout_width="wrap_content"
     android:maxWidth="86dp"
-
     android:layout_height="wrap_content"
     android:layout_marginTop="20dp"
     android:layout_marginBottom="32dp"

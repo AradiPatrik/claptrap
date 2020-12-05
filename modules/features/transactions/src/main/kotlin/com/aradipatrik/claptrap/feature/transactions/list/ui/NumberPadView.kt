@@ -44,4 +44,8 @@ class NumberPadView @JvmOverloads constructor(
   var calculatorDisplayText: String by Delegates.observable("") { _, _, newValue ->
     binding.expressionDisplay.text = newValue
   }
+
+  fun setCategoryIconRes(iconRes: Int) {
+    binding.categoryIconImageView.setImageResource(iconRes)
+  }
 }

@@ -2,13 +2,13 @@ package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
+import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.DeleteOneClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberPadActionClick
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.BinaryOperation
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
@@ -55,7 +55,12 @@ class TransactionsViewModel @ViewModelInject constructor(
     BackClick -> goBack()
     is TransactionTypeSwitch -> switchTransactionType(viewEvent)
     is CalculatorEvent -> handleCalculatorEvent(viewEvent)
+    is CategorySelected -> selectCategory(viewEvent.category)
     is MemoChange -> error("TODO")
+  }
+
+  private fun selectCategory(category: Category) = reduceSpecificState<Adding> { state ->
+    state.copy(selectedCategory = category)
   }
 
   private fun handleCalculatorEvent(
@@ -130,8 +135,10 @@ class TransactionsViewModel @ViewModelInject constructor(
     viewEffects.send(ShowAddTransactionMenu)
     viewEffects.send(PlayAddAnimation)
     reduceSpecificState<Adding> { state ->
+      val categories = categoryInteractor.getAllCategories().take(1).single()
       state.copy(
-        categories = categoryInteractor.getAllCategories().take(1).single()
+        categories = categories,
+        selectedCategory = categories.first()
       )
     }
     Adding(TransactionType.EXPENSE)

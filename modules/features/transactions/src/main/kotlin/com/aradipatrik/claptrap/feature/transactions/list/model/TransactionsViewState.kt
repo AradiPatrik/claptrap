@@ -16,6 +16,7 @@ sealed class TransactionsViewState {
   data class Adding(
     val transactionType: TransactionType = TransactionType.EXPENSE,
     val categories: List<Category> = emptyList(),
+    val selectedCategory: Category? = null,
     val calculatorState: CalculatorState = CalculatorState.SingleValue(NumberOnCalculator("0"))
   ) : TransactionsViewState()
 }

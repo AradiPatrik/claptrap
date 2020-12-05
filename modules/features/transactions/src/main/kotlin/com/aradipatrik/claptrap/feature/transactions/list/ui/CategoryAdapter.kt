@@ -5,32 +5,39 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemCategoryBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryListItem
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
 
-object CategoryItemCallback : DiffUtil.ItemCallback<Category>() {
-  override fun areItemsTheSame(oldItem: Category, newItem: Category) = oldItem.id == newItem.id
+object CategoryItemCallback : DiffUtil.ItemCallback<CategoryListItem>() {
+  override fun areItemsTheSame(
+    oldItem: CategoryListItem,
+    newItem: CategoryListItem
+  ) = oldItem.category.id == newItem.category.id
 
-  override fun areContentsTheSame(oldItem: Category, newItem: Category) = oldItem == newItem
+  override fun areContentsTheSame(
+    oldItem: CategoryListItem,
+    newItem: CategoryListItem
+  ) = oldItem == newItem
 }
 
 class CategoryViewHolder(
   val binding: ListItemCategoryBinding
 ) : RecyclerView.ViewHolder(binding.root) {
-  fun bind(category: Category, onClick: (Category) -> Unit) {
-    binding.categoryIcon.setImageResource(category.icon.drawableRes)
-    binding.categoryNameTextView.text = category.name
-    binding.root.setOnClickListener { onClick(category) }
+  fun bind(categoryListItem: CategoryListItem, onClick: (CategoryListItem) -> Unit) {
+    binding.categoryIcon.setImageResource(categoryListItem.category.icon.drawableRes)
+    binding.categoryNameTextView.text = categoryListItem.category.name
+    binding.root.setOnClickListener { onClick(categoryListItem) }
+    binding.root.isActivated = categoryListItem.isSelected
   }
 }
 
-class CategoryAdapter : ListAdapter<Category, CategoryViewHolder>(CategoryItemCallback) {
-  private val _categorySelectedEvents = MutableStateFlow<Category?>(null)
-  val categorySelectedEvents: Flow<Category> = _categorySelectedEvents
+class CategoryAdapter : ListAdapter<CategoryListItem, CategoryViewHolder>(CategoryItemCallback) {
+  private val _categorySelectedEvents = MutableStateFlow<CategoryListItem?>(null)
+  val categorySelectedEvents: Flow<CategoryListItem> = _categorySelectedEvents
     .filterNotNull()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = CategoryViewHolder(
