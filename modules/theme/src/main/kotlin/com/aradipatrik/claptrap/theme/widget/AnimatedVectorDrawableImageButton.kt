@@ -104,4 +104,12 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
     isClickable = true
     isAtStartState = !isAtStartState
   }
+
+  fun reset() {
+    setImageDrawable(if (isAtStartState) {
+      startToEndAnimatedVectorDrawable
+    } else {
+      endToStartAnimatedVectorDrawable
+    })
+  }
 }

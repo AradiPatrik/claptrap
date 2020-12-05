@@ -6,9 +6,11 @@ import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.DeleteOneClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberPadActionClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.BinaryOperation
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorStateReducer
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
@@ -43,40 +45,84 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   override fun processInput(viewEvent: TransactionsViewEvent) = when(viewEvent) {
-    is ActionClick -> setState {
-      viewEffects.send(ShowAddTransactionMenu)
-      viewEffects.send(PlayAddAnimation)
-      Adding(transactionType = TransactionType.EXPENSE)
+    is ActionClick -> goToAddTransaction()
+    BackClick -> goBack()
+    is TransactionTypeSwitch -> switchTransactionType(viewEvent)
+    is CalculatorEvent -> handleCalculatorEvent(viewEvent)
+    is MemoChange -> error("TODO")
+  }
+
+  private fun handleCalculatorEvent(
+    viewEvent: CalculatorEvent
+  ) = reduceSpecificState<Adding> { state ->
+    if (wereAddTransactionClicked(state, viewEvent)) {
+      handleAddTransaction()
+    } else {
+      handleNumberPadClick(state, viewEvent)
     }
-    BackClick -> reduceState { state ->
-      if (state is Adding) {
-        viewEffects.send(PlayReverseAddAnimation)
-        viewEffects.send(HideTransactionMenu)
-        TransactionsLoaded(
-          transactions = loadedTransactions,
-          refreshing = true
-        )
-      } else {
-        state.also { viewEffects.send(Back) }
-      }
-    }
-    is TransactionTypeSwitch -> reduceSpecificState<Adding> {
+  }
+
+  private suspend fun handleAddTransaction(): TransactionsLoaded {
+    viewEffects.send(PlayReverseAddAnimation)
+    viewEffects.send(HideTransactionMenu)
+    return TransactionsLoaded(
+      transactions = loadedTransactions,
+      refreshing = false
+    )
+  }
+
+  private suspend fun handleNumberPadClick(
+    state: Adding,
+    viewEvent: CalculatorEvent
+  ): Adding = state.copy(
+    calculatorState = CalculatorStateReducer.reduceState(state.calculatorState, viewEvent)
+  ).also { newState ->
+    if (viewEvent is NumberPadActionClick) viewEffects.send(MorphEqualsToCheck)
+    if (isOperatorAdded(state, viewEvent)) viewEffects.send(MorphCheckToEquals)
+    if (isOperatorDeleted(state, newState, viewEvent)) viewEffects.send(MorphCheckToEquals)
+  }
+
+  private fun isOperatorAdded(
+    state: Adding,
+    viewEvent: CalculatorEvent
+  ) = (state.calculatorState !is BinaryOperation
+    && (viewEvent is CalculatorEvent.MinusClick || viewEvent is CalculatorEvent.PlusClick))
+
+  private fun isOperatorDeleted(
+    state: Adding,
+    newState: Adding,
+    viewEvent: CalculatorEvent
+  ) = state.calculatorState is BinaryOperation &&
+    viewEvent is DeleteOneClick &&
+    newState.calculatorState is CalculatorState.SingleValue
+
+  private fun wereAddTransactionClicked(
+    state: Adding,
+    viewEvent: CalculatorEvent
+  ) = state.calculatorState is CalculatorState.SingleValue && viewEvent is NumberPadActionClick
+
+  private fun switchTransactionType(viewEvent: TransactionTypeSwitch) {
+    reduceSpecificState<Adding> {
       it.copy(transactionType = viewEvent.newType)
     }
-    is CalculatorEvent -> reduceSpecificState<Adding> { state ->
-      if (state.calculatorState is CalculatorState.SingleValue && viewEvent is NumberPadActionClick) {
-        viewEffects.send(PlayReverseAddAnimation)
-        viewEffects.send(HideTransactionMenu)
-        TransactionsLoaded(
-          transactions = loadedTransactions,
-          refreshing = false
-        )
-      } else {
-        state.copy(
-          calculatorState = CalculatorStateReducer.reduceState(state.calculatorState, viewEvent)
-        )
-      }
+  }
+
+  private fun goBack() = reduceState { state ->
+    if (state is Adding) {
+      viewEffects.send(PlayReverseAddAnimation)
+      viewEffects.send(HideTransactionMenu)
+      TransactionsLoaded(
+        transactions = loadedTransactions,
+        refreshing = true
+      )
+    } else {
+      state.also { viewEffects.send(Back) }
     }
-    is MemoChange -> error("TODO")
+  }
+
+  private fun goToAddTransaction() = setState {
+    viewEffects.send(ShowAddTransactionMenu)
+    viewEffects.send(PlayAddAnimation)
+    Adding(transactionType = TransactionType.EXPENSE)
   }
 }

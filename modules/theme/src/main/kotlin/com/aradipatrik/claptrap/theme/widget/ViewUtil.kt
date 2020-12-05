@@ -2,12 +2,16 @@ package com.aradipatrik.claptrap.theme.widget
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.drawable.AnimatedVectorDrawable
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.DimenRes
+import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.viewbinding.ViewBinding
 
 
@@ -51,4 +55,7 @@ object ViewUtil {
       isClickable = false
       isFocusable = false
     }
+
+  fun Fragment.getAnimatedVectorDrawable(@DrawableRes drawable: Int) =
+    ContextCompat.getDrawable(requireContext(), drawable) as AnimatedVectorDrawable
 }

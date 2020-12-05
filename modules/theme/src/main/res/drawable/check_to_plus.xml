@@ -10,12 +10,12 @@
             android:viewportHeight="24">
             <path
                 android:name="path_2"
-                android:pathData="M 5 12 L 19 12"
+                android:pathData="M 4 13 L 9.666 18.666"
                 android:strokeColor="#000000"
                 android:strokeWidth="2"/>
             <path
                 android:name="path_3"
-                android:pathData="M 12 5 L 12 19"
+                android:pathData="M 20.33 6.66 L 8.6 18.33"
                 android:strokeColor="#000000"
                 android:strokeWidth="2"/>
         </vector>

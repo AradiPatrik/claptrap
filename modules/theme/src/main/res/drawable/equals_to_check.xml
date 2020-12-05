@@ -25,7 +25,7 @@
             <objectAnimator
                 android:propertyName="pathData"
                 android:duration="300"
-                android:valueFrom="M 4 16 L 20 16"
+                android:valueFrom="M 5 15 L 19 15"
                 android:valueTo="M 4 13 L 9.666 18.66"
                 android:valueType="pathType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
@@ -36,7 +36,7 @@
             <objectAnimator
                 android:propertyName="pathData"
                 android:duration="300"
-                android:valueFrom="M 20 8 L 4 8"
+                android:valueFrom="M 19 9 L 5 9"
                 android:valueTo="M 20.33 6.66 L 8.6 18.33"
                 android:valueType="pathType"
                 android:interpolator="@android:interpolator/fast_out_slow_in"/>
