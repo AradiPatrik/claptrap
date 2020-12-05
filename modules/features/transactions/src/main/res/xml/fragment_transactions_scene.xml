@@ -45,6 +45,8 @@
     </Constraint>
 
     <Constraint android:id="@id/fab_background">
+      <Transform android:elevation="3dp" />
+
       <CustomAttribute
         motion:attributeName="cardBackgroundColor"
         motion:customColorValue="?attr/colorAccent" />
@@ -60,6 +62,8 @@
         motion:layout_constraintEnd_toEndOf="parent"
         motion:layout_constraintStart_toStartOf="parent"
         motion:layout_constraintTop_toTopOf="parent" />
+
+      <Transform android:elevation="3dp" />
 
       <CustomAttribute
         motion:attributeName="cardBackgroundColor"
@@ -101,6 +105,8 @@
     android:id="@+id/action_visible"
     motion:deriveConstraintsFrom="@id/fab_at_middle">
     <Constraint android:id="@+id/fab_background">
+      <Transform android:elevation="3dp" />
+
       <Layout
         android:layout_width="0dp"
         android:layout_height="0dp"
@@ -200,6 +206,10 @@
       <CustomAttribute
         motion:attributeName="colorFilter"
         motion:customColorValue="?attr/colorOnSecondary" />
+    </Constraint>
+
+    <Constraint android:id="@+id/fab_background">
+      <Transform android:elevation="16dp" />
     </Constraint>
   </ConstraintSet>
 </MotionScene>

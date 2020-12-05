@@ -151,12 +151,14 @@ class TransactionsFragment : ClapTrapFragment<
       playReverseTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
       playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
       binding.fabIcon.morph()
+      binding.fabBackground.isEnabled = true
       binding.fabBackground.isClickable = true
     }
   }.ignore()
 
   private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
     with(binding.transactionsMotionLayout) {
+      binding.fabBackground.isEnabled = false
       binding.fabBackground.isClickable = false
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
       playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
