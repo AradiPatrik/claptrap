@@ -56,7 +56,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     is TransactionTypeSwitch -> switchTransactionType(viewEvent)
     is CalculatorEvent -> handleCalculatorEvent(viewEvent)
     is CategorySelected -> selectCategory(viewEvent.category)
-    is MemoChange -> error("TODO")
+    is MemoChange -> changeMemo(viewEvent.memo)
+  }
+
+  private fun changeMemo(newMemo: String) = reduceSpecificState<Adding> { state ->
+    state.copy(memo = newMemo)
   }
 
   private fun selectCategory(category: Category) = reduceSpecificState<Adding> { state ->

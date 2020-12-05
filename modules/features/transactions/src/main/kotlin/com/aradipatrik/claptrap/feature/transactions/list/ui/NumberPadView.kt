@@ -6,9 +6,11 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import com.aradipatrik.claptrap.feature.transactions.databinding.ViewNumberPadBinding
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
+import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
+import ru.ldralighieri.corbind.widget.textChanges
 import kotlin.properties.Delegates
 
 class NumberPadView @JvmOverloads constructor(
@@ -17,6 +19,12 @@ class NumberPadView @JvmOverloads constructor(
   @AttrRes defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
   private val binding = inflateAndAddUsing(ViewNumberPadBinding::inflate)
+
+  var memo: String by Delegates.observable("") { _, _, newValue ->
+    if (binding.memoEditText.text.toString() != newValue) {
+      binding.memoEditText.setText(newValue)
+    }
+  }
 
   val digitClicks = merge(
     binding.numberPadNumber0.clicks().map { 0 },
@@ -40,6 +48,11 @@ class NumberPadView @JvmOverloads constructor(
   val deleteOneClicks = binding.numberPadDeleteOne.clicks()
 
   val actionClicks = binding.numberPadAction.clicks()
+
+  val memoChanges = binding.memoEditText
+    .textChanges()
+    .drop(1)
+    .map { it.toString() }
 
   var calculatorDisplayText: String by Delegates.observable("") { _, _, newValue ->
     binding.expressionDisplay.text = newValue

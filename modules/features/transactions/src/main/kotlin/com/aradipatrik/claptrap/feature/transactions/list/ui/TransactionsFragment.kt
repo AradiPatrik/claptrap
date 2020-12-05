@@ -18,6 +18,7 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapp
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CategorySelected
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
@@ -59,7 +60,8 @@ class TransactionsFragment : ClapTrapFragment<
     binding.numberPad.pointClicks.map { PointClick },
     binding.numberPad.deleteOneClicks.map { DeleteOneClick },
     binding.numberPad.actionClicks.map { NumberPadActionClick },
-    categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) }
+    categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
+    binding.numberPad.memoChanges.map { MemoChange(it) }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -116,6 +118,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
     binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
+    binding.numberPad.memo = viewState.memo
 
     categoryAdapter.submitList(viewState.categories.map {
       CategoryListItem(it, it.id == viewState.selectedCategory?.id)
