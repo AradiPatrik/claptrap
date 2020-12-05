@@ -89,17 +89,23 @@ class TransactionAdapter :
     previousList: MutableList<TransactionListItem>,
     currentList: MutableList<TransactionListItem>
   ) {
-    if (isFirstListSubmitted()) {
-      currentList.firstOrNull()?.let { firstItem ->
-        _headerChangeEvents.value = when (firstItem) {
-          is TransactionListItem.Header -> firstItem.title
-          is TransactionListItem.Item -> firstItem.transactionPresentation.monthAsText
-        }
+    val firstItemPosition = getFirstVisiblePosition()
+
+    val firstVisibleItem = if (firstItemPosition == -1) {
+      currentList.firstOrNull()
+    } else {
+      currentList[firstItemPosition]
+    }
+
+    firstVisibleItem?.let { firstItem ->
+      _headerChangeEvents.value = when (firstItem) {
+        is TransactionListItem.Header -> firstItem.title
+        is TransactionListItem.Item -> firstItem.transactionPresentation.monthAsText
       }
     }
   }
 
-  private fun isFirstListSubmitted() = layoutManager.findFirstVisibleItemPosition() == -1
+  private fun getFirstVisiblePosition() = layoutManager.findFirstVisibleItemPosition()
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     _layoutManager = null
