@@ -1,8 +1,14 @@
 package com.aradipatrik.claptrap.domain
 
 enum class CategoryIcon {
+  CAR,
   CART,
-  DOLLAR_SIGN,
-  LIPSTICK,
-  WEIGHTS
+  HEALTH,
+  HOME,
+  FOOD,
+  SALARY,
+  SOCIAL,
+  TRANSPORTATION,
+  WORK,
+  WORKOUT
 }

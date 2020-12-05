@@ -26,6 +26,7 @@
     <item name="colorOnBackground">@color/black_900</item>
     <item name="colorOnSurface">@color/black_900</item>
     <item name="colorOnError">@color/white_50</item>
+    <item name="colorOnSurfacePrimary">?attr/colorOnSurface</item>
     <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <!--Material type attributes-->

@@ -2,4 +2,5 @@
 <resources>
   <attr name="colorOnPrimarySurfaceAlphaMedium" format="color"/>
   <attr name="colorOnPrimarySurfaceAlphaLow" format="color"/>
+  <attr name="colorOnSurfacePrimary" format="color" />
 </resources>

@@ -15,6 +15,7 @@
     <item name="colorOnBackground">@color/white_50</item>
     <item name="colorOnSurface">@color/white_50</item>
     <item name="colorOnError">@color/black_900</item>
+    <item name="colorOnSurfacePrimary">?attr/colorPrimary</item>
     <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="android:windowLightStatusBar" tools:targetApi="m">false</item>

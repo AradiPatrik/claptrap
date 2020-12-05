@@ -68,6 +68,7 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
       binding.transactionNote.text = item.transactionPresentation.note
       binding.transactionAmount.text = item.transactionPresentation.amount
       binding.transactionAmountIcon.text = item.transactionPresentation.currencySymbol
+      binding.categoryIcon.setImageResource(item.transactionPresentation.categoryIcon)
     }
   }
 }
