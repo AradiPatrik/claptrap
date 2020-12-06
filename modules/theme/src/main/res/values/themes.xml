@@ -29,6 +29,7 @@
     <item name="colorOnSurfacePrimary">?attr/colorOnSurface</item>
     <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
+    <item name="colorSecondaryPrimary">?attr/colorSecondaryVariant</item>
     <item name="foregroundElevation">2dp</item>
     <item name="behindForegroundElevation">1dp</item>
     <!--Material type attributes-->

@@ -7,7 +7,7 @@ sealed class TransactionsViewEvent {
   object ActionClick : TransactionsViewEvent()
   object BackClick : TransactionsViewEvent()
   data class TransactionTypeSwitch(val newType: TransactionType) : TransactionsViewEvent()
-  object MonthSelectorClick : TransactionsViewEvent()
+  object YearMonthSelectorClick : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {
     data class MemoChange(val memo: String) : AddTransactionViewEvent()

@@ -3,6 +3,7 @@
   <attr name="colorOnPrimarySurfaceAlphaMedium" format="color"/>
   <attr name="colorOnPrimarySurfaceAlphaLow" format="color"/>
   <attr name="colorOnSurfacePrimary" format="color" />
+  <attr name="colorSecondaryPrimary" format="color" />
 
   <attr name="foregroundElevation" format="dimension" />
   <attr name="behindForegroundElevation" format="dimension" />

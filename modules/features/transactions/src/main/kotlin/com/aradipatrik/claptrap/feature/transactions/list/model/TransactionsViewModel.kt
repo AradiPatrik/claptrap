@@ -58,11 +58,17 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MemoChange -> changeMemo(viewEvent.memo)
     is CalendarClick -> showDatePicker()
     is DateSelected -> setDate(viewEvent.date)
-    is MonthSelectorClick -> showMonthSelector()
+    is YearMonthSelectorClick -> showMonthSelector()
   }
 
-  private fun showMonthSelector() = sideEffect {
-    viewEffects.send(ShowMonthSelectorMenu)
+  private fun showMonthSelector() = reduceSpecificState<TransactionsLoaded> { state ->
+    if (state.isYearMonthSelectorOpen) {
+      viewEffects.send(HideYearMonthSelector)
+    } else {
+      viewEffects.send(ShowYearMontSelector)
+    }
+
+    state.copy(isYearMonthSelectorOpen = !state.isYearMonthSelectorOpen)
   }
 
   private fun setDate(date: DateTime) = reduceSpecificState<Adding> { state ->
@@ -144,6 +150,9 @@ class TransactionsViewModel @ViewModelInject constructor(
         transactions = loadedTransactions,
         refreshing = true
       )
+    } else if (state is TransactionsLoaded && state.isYearMonthSelectorOpen) {
+      viewEffects.send(HideYearMonthSelector)
+      state.copy(isYearMonthSelectorOpen = false)
     } else {
       state.also { viewEffects.send(Back) }
     }

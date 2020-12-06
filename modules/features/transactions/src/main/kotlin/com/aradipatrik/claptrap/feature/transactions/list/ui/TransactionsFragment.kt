@@ -1,9 +1,7 @@
 package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import android.annotation.SuppressLint
-import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -32,11 +30,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -64,7 +59,7 @@ class TransactionsFragment : ClapTrapFragment<
     categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
     binding.numberPad.memoChanges.map { MemoChange(it) },
     binding.numberPad.calendarClicks.map { CalendarClick },
-    binding.yearSelectorButton.clicks().map { MonthSelectorClick }
+    binding.yearSelectorButton.clicks().map { YearMonthSelectorClick }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -145,7 +140,8 @@ class TransactionsFragment : ClapTrapFragment<
   override fun react(viewEffect: TransactionsViewEffect) = when(viewEffect) {
     is TransactionsViewEffect.ShowAddTransactionMenu -> backdrop
       .switchMenu(AddTransactionMenuFragment())
-    is TransactionsViewEffect.ShowMonthSelectorMenu -> playShowMonthSelectionAnimation()
+    is TransactionsViewEffect.ShowYearMontSelector -> playShowYearMonthSelectorAnimation()
+    TransactionsViewEffect.HideYearMonthSelector -> playHideYearMonthSelectorAnimation()
     is TransactionsViewEffect.HideTransactionMenu -> backdrop.clearMenu()
     is TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
     is TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
@@ -155,7 +151,13 @@ class TransactionsFragment : ClapTrapFragment<
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
   }
 
-  private fun playShowMonthSelectionAnimation() = lifecycleScope.launchWhenResumed {
+  private fun playHideYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
+    with(binding.transactionsMotionLayout) {
+      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
+    }
+  }.ignore()
+
+  private fun playShowYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
     with(binding.transactionsMotionLayout) {
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
     }

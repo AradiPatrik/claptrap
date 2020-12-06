@@ -135,7 +135,7 @@ class TransactionAdapter :
   }
 
   private fun isFirstInList(holder: TransactionViewHolder) =
-    holder.adapterPosition == layoutManager.findFirstVisibleItemPosition()
+    holder.adapterPosition == layoutManager.findFirstVisibleItemPosition() - 1
 
   override fun getItemViewType(position: Int) = when (getItem(position)) {
     is TransactionListItem.Header -> VIEW_TYPE_HEADER

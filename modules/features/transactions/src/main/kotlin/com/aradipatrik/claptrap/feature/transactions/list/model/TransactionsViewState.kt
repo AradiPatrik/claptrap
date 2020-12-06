@@ -14,6 +14,7 @@ sealed class TransactionsViewState {
     val transactions: List<Transaction>,
     val refreshing: Boolean,
     val yearMonth: YearMonth = YearMonth.now(),
+    val isYearMonthSelectorOpen: Boolean = false
   ) : TransactionsViewState()
 
   data class Adding(
