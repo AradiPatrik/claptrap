@@ -55,7 +55,6 @@ class TransactionsFragment : ClapTrapFragment<
 
   override val viewEvents: Flow<TransactionsViewEvent> get() = merge(
     binding.fabBackground.clicks().map { ActionClick },
-    binding.frontLayer.clicks().map { ActionClick },
     backPressEvents.consumeAsFlow().map { BackClick },
     binding.numberPad.digitClicks.map { NumberClick(it) },
     binding.numberPad.plusClicks.map { PlusClick },
