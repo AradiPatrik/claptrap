@@ -13,5 +13,6 @@ sealed class TransactionsViewEffect {
 
   object Back : TransactionsViewEffect()
 
+  object ShowMonthSelectorMenu : TransactionsViewEffect()
   data class ShowDatePickerAt(val date: DateTime) : TransactionsViewEffect()
 }

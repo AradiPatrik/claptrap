@@ -15,10 +15,9 @@ import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
@@ -64,7 +63,8 @@ class TransactionsFragment : ClapTrapFragment<
     binding.numberPad.actionClicks.map { NumberPadActionClick },
     categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
     binding.numberPad.memoChanges.map { MemoChange(it) },
-    binding.numberPad.calendarClicks.map { CalendarClick }
+    binding.numberPad.calendarClicks.map { CalendarClick },
+    binding.yearSelectorButton.clicks().map { MonthSelectorClick }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -114,7 +114,7 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   override fun render(viewState: TransactionsViewState) = when (viewState) {
-    TransactionsViewState.Loading -> renderLoading()
+    is TransactionsViewState.Loading -> renderLoading()
     is TransactionsViewState.TransactionsLoaded -> renderLoaded(viewState)
     is TransactionsViewState.Adding -> renderAdding(viewState)
   }
@@ -145,14 +145,21 @@ class TransactionsFragment : ClapTrapFragment<
   override fun react(viewEffect: TransactionsViewEffect) = when(viewEffect) {
     is TransactionsViewEffect.ShowAddTransactionMenu -> backdrop
       .switchMenu(AddTransactionMenuFragment())
-    TransactionsViewEffect.HideTransactionMenu -> backdrop.clearMenu()
-    TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
-    TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
-    TransactionsViewEffect.Back -> backdrop.back()
-    TransactionsViewEffect.MorphCheckToEquals -> binding.fabIcon.morph()
-    TransactionsViewEffect.MorphEqualsToCheck -> binding.fabIcon.morph()
+    is TransactionsViewEffect.ShowMonthSelectorMenu -> playShowMonthSelectionAnimation()
+    is TransactionsViewEffect.HideTransactionMenu -> backdrop.clearMenu()
+    is TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
+    is TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
+    is TransactionsViewEffect.Back -> backdrop.back()
+    is TransactionsViewEffect.MorphCheckToEquals -> binding.fabIcon.morph()
+    is TransactionsViewEffect.MorphEqualsToCheck -> binding.fabIcon.morph()
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
   }
+
+  private fun playShowMonthSelectionAnimation() = lifecycleScope.launchWhenResumed {
+    with(binding.transactionsMotionLayout) {
+      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
+    }
+  }.ignore()
 
   private fun showDatePicker() = lifecycleScope.launchWhenResumed {
     val selectedDateInstant = MaterialDatePicker.Builder

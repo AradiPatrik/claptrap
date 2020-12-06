@@ -58,6 +58,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MemoChange -> changeMemo(viewEvent.memo)
     is CalendarClick -> showDatePicker()
     is DateSelected -> setDate(viewEvent.date)
+    is MonthSelectorClick -> showMonthSelector()
+  }
+
+  private fun showMonthSelector() = sideEffect {
+    viewEffects.send(ShowMonthSelectorMenu)
   }
 
   private fun setDate(date: DateTime) = reduceSpecificState<Adding> { state ->

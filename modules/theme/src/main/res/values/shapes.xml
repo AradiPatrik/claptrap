@@ -33,4 +33,10 @@
     <!--Your custom shape here-->
   </style>
 
+  <style name="ShapeAppearance.Claptrap.TopRightCornerCut" parent="ShapeAppearance.Claptrap.LargeComponent">
+    <item name="cornerFamilyTopRight">cut</item>
+    <item name="cornerSizeTopRight">84dp</item>
+    <item name="cornerSizeTopLeft">24dp</item>
+  </style>
+
 </resources>

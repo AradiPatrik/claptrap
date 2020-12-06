@@ -5,13 +5,15 @@ import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.NumberOnCalculator
 import org.joda.time.DateTime
+import org.joda.time.YearMonth
 
 sealed class TransactionsViewState {
   object Loading : TransactionsViewState()
 
   data class TransactionsLoaded(
     val transactions: List<Transaction>,
-    val refreshing: Boolean
+    val refreshing: Boolean,
+    val yearMonth: YearMonth = YearMonth.now(),
   ) : TransactionsViewState()
 
   data class Adding(

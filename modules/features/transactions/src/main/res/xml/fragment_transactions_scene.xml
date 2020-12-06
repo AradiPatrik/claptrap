@@ -5,20 +5,20 @@
   <Transition
     motion:constraintSetEnd="@+id/fab_at_middle"
     motion:constraintSetStart="@+id/fab_at_bottom"
-    motion:duration="300"
+    motion:duration="@dimen/default_animation_speed"
     motion:motionInterpolator="easeInOut"
     motion:pathMotionArc="startHorizontal" />
 
   <Transition
     motion:constraintSetEnd="@+id/action_visible"
     motion:constraintSetStart="@+id/fab_at_middle"
-    motion:duration="300"
+    motion:duration="@dimen/default_animation_speed"
     motion:motionInterpolator="easeInOut" />
 
   <Transition
     motion:constraintSetEnd="@+id/categories_visible"
     motion:constraintSetStart="@+id/action_visible"
-    motion:duration="300"
+    motion:duration="@dimen/default_animation_speed"
     motion:motionInterpolator="easeInOut">
     <KeyFrameSet>
       <KeyAttribute
@@ -31,7 +31,7 @@
   <Transition
     motion:constraintSetEnd="@id/action_visible"
     motion:constraintSetStart="@+id/categories_visible"
-    motion:duration="300" />
+    motion:duration="@dimen/default_animation_speed" />
 
   <Include motion:constraintSet="@xml/constraint_set_transactions_fab_at_bottom" />
 
@@ -40,5 +40,31 @@
   <Include motion:constraintSet="@xml/constraint_set_transactions_action_visible" />
 
   <Include motion:constraintSet="@xml/constraint_set_transactions_categories_visible" />
+
+  <ConstraintSet android:id="@+id/month_selector_shown">
+    <Constraint android:id="@+id/front_layer">
+      <Layout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="112dp"
+        motion:layout_constraintTop_toTopOf="parent"
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintEnd_toEndOf="parent"
+        motion:layout_constraintBottom_toBottomOf="@id/card_bottom" />
+    </Constraint>
+
+    <Constraint android:id="@+id/year_selection_layer">
+      <Layout
+        motion:layout_constraintTop_toTopOf="parent"
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintEnd_toEndOf="parent"
+        android:layout_width="0dp"
+        android:layout_height="300dp" />
+    </Constraint>
+
+    <Constraint android:id="@id/fab_background">
+      <Transform android:elevation="3dp" />
+    </Constraint>
+  </ConstraintSet>
 
 </MotionScene>

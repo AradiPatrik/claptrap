@@ -29,6 +29,8 @@
     <item name="colorOnSurfacePrimary">?attr/colorOnSurface</item>
     <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
+    <item name="foregroundElevation">2dp</item>
+    <item name="behindForegroundElevation">1dp</item>
     <!--Material type attributes-->
     <item name="textAppearanceHeadline1">@style/TextAppearance.Claptrap.Headline1</item>
     <item name="textAppearanceHeadline2">@style/TextAppearance.Claptrap.Headline2</item>

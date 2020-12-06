@@ -4,7 +4,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  tools:layout_height="48dp">
+  tools:layout_height="48dp"
+  android:paddingTop="2dp">
 
   <com.aradipatrik.claptrap.theme.widget.AnimatedVectorDrawableImageButton
     android:id="@+id/back_button"
@@ -44,8 +45,7 @@
       android:textColor="?attr/colorOnPrimarySurface"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
       app:chipStrokeWidth="2dp"
-      app:chipSurfaceColor="@color/chip_background_color"
-      app:rippleColor="?attr/colorOnPrimarySurfaceAlphaMedium" />
+      app:chipSurfaceColor="@color/chip_background_color"/>
 
     <com.google.android.material.chip.Chip
       android:id="@+id/income_chip"
@@ -57,7 +57,6 @@
       android:textColor="?attr/colorOnPrimarySurface"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
       app:chipStrokeWidth="2dp"
-      app:chipSurfaceColor="@color/chip_background_color"
-      app:rippleColor="?attr/colorOnPrimarySurfaceAlphaMedium" />
+      app:chipSurfaceColor="@color/chip_background_color"/>
   </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
