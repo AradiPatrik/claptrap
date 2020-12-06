@@ -8,10 +8,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
+import kotlinx.coroutines.flow.*
 
 typealias InflaterFunction<B> = (LayoutInflater, ViewGroup?, Boolean) -> B
 
@@ -24,6 +23,8 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
   abstract val viewModel: ClaptrapViewModel<VS, EV, EF>
 
   abstract val viewEvents: Flow<EV>
+
+  protected val extraViewEventChannel: Channel<EV> = Channel(BUFFERED)
 
   abstract fun render(viewState: VS)
 
@@ -55,7 +56,7 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
       .onEach(::render)
       .launchInWhenResumed(lifecycleScope)
 
-    viewEvents
+    merge(viewEvents, extraViewEventChannel.consumeAsFlow())
       .onEach(viewModel::processInput)
       .launchInWhenResumed(lifecycleScope)
 

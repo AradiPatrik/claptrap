@@ -16,9 +16,8 @@ import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransac
 import com.aradipatrik.claptrap.feature.transactions.list.model.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CategorySelected
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
@@ -28,13 +27,17 @@ import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitFor
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.getAnimatedVectorDrawable
+import com.aradipatrik.claptrap.theme.widget.ViewUtil.showAndWaitWith
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -61,7 +64,8 @@ class TransactionsFragment : ClapTrapFragment<
     binding.numberPad.deleteOneClicks.map { DeleteOneClick },
     binding.numberPad.actionClicks.map { NumberPadActionClick },
     categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
-    binding.numberPad.memoChanges.map { MemoChange(it) }
+    binding.numberPad.memoChanges.map { MemoChange(it) },
+    binding.numberPad.calendarClicks.map { CalendarClick }
   )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -119,6 +123,7 @@ class TransactionsFragment : ClapTrapFragment<
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
     binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
     binding.numberPad.memo = viewState.memo
+    binding.numberPad.date = viewState.date
 
     categoryAdapter.submitList(viewState.categories.map {
       CategoryListItem(it, it.id == viewState.selectedCategory?.id)
@@ -147,7 +152,17 @@ class TransactionsFragment : ClapTrapFragment<
     TransactionsViewEffect.Back -> backdrop.back()
     TransactionsViewEffect.MorphCheckToEquals -> binding.fabIcon.morph()
     TransactionsViewEffect.MorphEqualsToCheck -> binding.fabIcon.morph()
+    is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
   }
+
+  private fun showDatePicker() = lifecycleScope.launchWhenResumed {
+    val selectedDateInstant = MaterialDatePicker.Builder
+      .datePicker()
+      .build()
+      .showAndWaitWith(childFragmentManager)
+
+    extraViewEventChannel.send(DateSelected(DateTime(selectedDateInstant)))
+  }.ignore()
 
   private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
     with(binding.transactionsMotionLayout) {

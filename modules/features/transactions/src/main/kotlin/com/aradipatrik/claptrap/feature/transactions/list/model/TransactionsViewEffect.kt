@@ -1,5 +1,7 @@
 package com.aradipatrik.claptrap.feature.transactions.list.model
 
+import org.joda.time.DateTime
+
 sealed class TransactionsViewEffect {
   object ShowAddTransactionMenu : TransactionsViewEffect()
   object HideTransactionMenu : TransactionsViewEffect()
@@ -10,4 +12,6 @@ sealed class TransactionsViewEffect {
   object MorphEqualsToCheck : TransactionsViewEffect()
 
   object Back : TransactionsViewEffect()
+
+  data class ShowDatePickerAt(val date: DateTime) : TransactionsViewEffect()
 }

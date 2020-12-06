@@ -9,6 +9,7 @@ import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.widget.textChanges
 import kotlin.properties.Delegates
@@ -24,6 +25,10 @@ class NumberPadView @JvmOverloads constructor(
     if (binding.memoEditText.text.toString() != newValue) {
       binding.memoEditText.setText(newValue)
     }
+  }
+
+  var date: DateTime? by Delegates.observable(null) { _, _, newValue ->
+    binding.numberPadCalendar.text = newValue?.toString("MM / dd")
   }
 
   val digitClicks = merge(
@@ -48,6 +53,8 @@ class NumberPadView @JvmOverloads constructor(
   val deleteOneClicks = binding.numberPadDeleteOne.clicks()
 
   val actionClicks = binding.numberPadAction.clicks()
+
+  val calendarClicks = binding.numberPadCalendar.clicks()
 
   val memoChanges = binding.memoEditText
     .textChanges()

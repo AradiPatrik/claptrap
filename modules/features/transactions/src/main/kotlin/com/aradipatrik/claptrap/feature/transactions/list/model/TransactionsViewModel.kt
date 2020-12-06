@@ -20,7 +20,7 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
-import kotlinx.coroutines.launch
+import org.joda.time.DateTime
 
 class TransactionsViewModel @ViewModelInject constructor(
   transactionInteractor: TransactionInteractor,
@@ -31,10 +31,9 @@ class TransactionsViewModel @ViewModelInject constructor(
   private var loadedTransactions = emptyList<Transaction>()
 
   init {
-    viewModelScope.launch {
-      val transactions = transactionInteractor.getAllTransactions().take(1).single()
-      setLoadedTransactions(transactions)
-    }
+    transactionInteractor.getAllTransactions()
+      .onEach(::setLoadedTransactions)
+      .launchIn(viewModelScope)
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
@@ -52,11 +51,21 @@ class TransactionsViewModel @ViewModelInject constructor(
 
   override fun processInput(viewEvent: TransactionsViewEvent) = when(viewEvent) {
     is ActionClick -> goToAddTransaction()
-    BackClick -> goBack()
+    is BackClick -> goBack()
     is TransactionTypeSwitch -> switchTransactionType(viewEvent)
     is CalculatorEvent -> handleCalculatorEvent(viewEvent)
     is CategorySelected -> selectCategory(viewEvent.category)
     is MemoChange -> changeMemo(viewEvent.memo)
+    is CalendarClick -> showDatePicker()
+    is DateSelected -> setDate(viewEvent.date)
+  }
+
+  private fun setDate(date: DateTime) = reduceSpecificState<Adding> { state ->
+    state.copy(date = date)
+  }
+
+  private fun showDatePicker() = withState<Adding> { state ->
+    viewEffects.send(ShowDatePickerAt(state.date))
   }
 
   private fun changeMemo(newMemo: String) = reduceSpecificState<Adding> { state ->
