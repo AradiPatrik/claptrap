@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
+import kotlin.math.abs
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
   override fun areItemsTheSame(
@@ -113,13 +114,13 @@ class TransactionAdapter :
   }
 
   override fun onViewDetachedFromWindow(holder: TransactionViewHolder) {
-    if (isFirstInList(holder)) {
+    if (isInTopOfList(holder)) {
       notifyFirstItemChanged(holder)
     }
   }
 
   override fun onViewAttachedToWindow(holder: TransactionViewHolder) {
-    if (isFirstInList(holder)) {
+    if (isInTopOfList(holder)) {
       notifyFirstItemChanged(holder)
     }
   }
@@ -134,8 +135,14 @@ class TransactionAdapter :
     }
   }
 
-  private fun isFirstInList(holder: TransactionViewHolder) =
-    holder.adapterPosition == layoutManager.findFirstVisibleItemPosition() - 1
+  private fun isInTopOfList(holder: TransactionViewHolder): Boolean {
+    val distanceFromTop =
+      abs(holder.adapterPosition - layoutManager.findFirstVisibleItemPosition())
+    val distanceFromBottom =
+      abs(holder.adapterPosition - layoutManager.findLastVisibleItemPosition())
+
+    return distanceFromTop < distanceFromBottom
+  }
 
   override fun getItemViewType(position: Int) = when (getItem(position)) {
     is TransactionListItem.Header -> VIEW_TYPE_HEADER

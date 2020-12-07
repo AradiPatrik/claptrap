@@ -13,6 +13,7 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
+import com.google.android.material.transition.MaterialFadeThrough
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.map
@@ -30,14 +31,16 @@ class AddTransactionMenuFragment : ClapTrapFragment<
     .map { TransactionsViewEvent.BackClick }
 
   override fun initViews(savedInstanceState: Bundle?) {
-    if (savedInstanceState == null) {
-      binding.backButton.morph()
-    }
+    binding.backButton.morph()
   }
 
   override fun render(viewState: TransactionsViewState) {
   }
 
   override fun react(viewEffect: TransactionsViewEffect) {
+  }
+
+  init {
+    require(true)
   }
 }

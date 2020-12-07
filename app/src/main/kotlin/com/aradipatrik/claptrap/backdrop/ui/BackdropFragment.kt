@@ -31,7 +31,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -111,13 +110,13 @@ class BackdropFragment : ClapTrapFragment<
 
   override fun render(viewState: BackdropViewState) = when (viewState) {
     is BackdropViewState.OnTopLevelScreen -> activateScreen(viewState.topLevelScreen)
-    is BackdropViewState.CustomMenuShowing -> showCustomMenu(viewState.menuFragment)
+    is BackdropViewState.CustomMenuShowing -> { }
   }
 
-  private fun showCustomMenu(menuFragment: Fragment) {
+  private fun showCustomMenu(menuFragment: Class<out Fragment>) {
     childFragmentManager.commit {
       setReorderingAllowed(true)
-      replace(R.id.custom_menu_container, menuFragment, MENU_FRAGMENT_TAG)
+      replace(R.id.custom_menu_container, menuFragment, null, MENU_FRAGMENT_TAG)
     }
 
     binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
@@ -174,6 +173,7 @@ class BackdropFragment : ClapTrapFragment<
       )
     }.ignore()
     is NavigateToDestination -> navigateToTopLevelScreen(viewEffect.destination)
+    is BackdropViewEffect.ShowCustomMenu -> showCustomMenu(viewEffect.menuFragment)
   }
 
   private fun navigateToTopLevelScreen(topLevelScreen: TopLevelScreen) {
@@ -206,8 +206,8 @@ class BackdropFragment : ClapTrapFragment<
     binding.backdropMotionLayout.playReverseTransition(R.id.toolbar_shown, R.id.menu_shown)
   }
 
-  override fun switchMenu(menuFragment: Fragment) =
-    viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragment))
+  override fun switchMenu(menuFragmentClass: Class<out Fragment>) =
+    viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragmentClass))
 
   override fun clearMenu() {
     viewModel.processInput(BackdropViewEvent.RemoveCustomMenu)

@@ -58,16 +58,10 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MemoChange -> changeMemo(viewEvent.memo)
     is CalendarClick -> showDatePicker()
     is DateSelected -> setDate(viewEvent.date)
-    is YearMonthSelectorClick -> showMonthSelector()
+    is YearMonthSelectorClick -> toggleYearMonthSelector()
   }
 
-  private fun showMonthSelector() = reduceSpecificState<TransactionsLoaded> { state ->
-    if (state.isYearMonthSelectorOpen) {
-      viewEffects.send(HideYearMonthSelector)
-    } else {
-      viewEffects.send(ShowYearMontSelector)
-    }
-
+  private fun toggleYearMonthSelector() = reduceSpecificState<TransactionsLoaded> { state ->
     state.copy(isYearMonthSelectorOpen = !state.isYearMonthSelectorOpen)
   }
 
@@ -97,9 +91,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     }
   }
 
-  private suspend fun handleAddTransaction(): TransactionsLoaded {
-    viewEffects.send(PlayReverseAddAnimation)
-    viewEffects.send(HideTransactionMenu)
+  private fun handleAddTransaction(): TransactionsLoaded {
     return TransactionsLoaded(
       transactions = loadedTransactions,
       refreshing = false
@@ -112,9 +104,9 @@ class TransactionsViewModel @ViewModelInject constructor(
   ): Adding = state.copy(
     calculatorState = CalculatorStateReducer.reduceState(state.calculatorState, viewEvent)
   ).also { newState ->
-    if (viewEvent is NumberPadActionClick) viewEffects.send(MorphEqualsToCheck)
-    if (isOperatorAdded(state, viewEvent)) viewEffects.send(MorphCheckToEquals)
-    if (isOperatorDeleted(state, newState, viewEvent)) viewEffects.send(MorphCheckToEquals)
+    if (viewEvent is NumberPadActionClick) viewEffects.send(ToggleNumberPadAction)
+    if (isOperatorAdded(state, viewEvent)) viewEffects.send(ToggleNumberPadAction)
+    if (isOperatorDeleted(state, newState, viewEvent)) viewEffects.send(ToggleNumberPadAction)
   }
 
   private fun isOperatorAdded(
@@ -144,14 +136,11 @@ class TransactionsViewModel @ViewModelInject constructor(
 
   private fun goBack() = reduceState { state ->
     if (state is Adding) {
-      viewEffects.send(PlayReverseAddAnimation)
-      viewEffects.send(HideTransactionMenu)
       TransactionsLoaded(
         transactions = loadedTransactions,
         refreshing = true
       )
     } else if (state is TransactionsLoaded && state.isYearMonthSelectorOpen) {
-      viewEffects.send(HideYearMonthSelector)
       state.copy(isYearMonthSelectorOpen = false)
     } else {
       state.also { viewEffects.send(Back) }
@@ -159,8 +148,6 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun goToAddTransaction() = setState {
-    viewEffects.send(ShowAddTransactionMenu)
-    viewEffects.send(PlayAddAnimation)
     reduceSpecificState<Adding> { state ->
       val categories = categoryInteractor.getAllCategories().take(1).single()
       state.copy(

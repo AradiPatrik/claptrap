@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
@@ -47,20 +48,21 @@ class TransactionsFragment : ClapTrapFragment<
 
   override val viewModel by activityViewModels<TransactionsViewModel>()
 
-  override val viewEvents: Flow<TransactionsViewEvent> get() = merge(
-    binding.fabBackground.clicks().map { ActionClick },
-    backPressEvents.consumeAsFlow().map { BackClick },
-    binding.numberPad.digitClicks.map { NumberClick(it) },
-    binding.numberPad.plusClicks.map { PlusClick },
-    binding.numberPad.minusClicks.map { MinusClick },
-    binding.numberPad.pointClicks.map { PointClick },
-    binding.numberPad.deleteOneClicks.map { DeleteOneClick },
-    binding.numberPad.actionClicks.map { NumberPadActionClick },
-    categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
-    binding.numberPad.memoChanges.map { MemoChange(it) },
-    binding.numberPad.calendarClicks.map { CalendarClick },
-    binding.yearSelectorButton.clicks().map { YearMonthSelectorClick }
-  )
+  override val viewEvents: Flow<TransactionsViewEvent>
+    get() = merge(
+      binding.fabBackground.clicks().map { ActionClick },
+      backPressEvents.consumeAsFlow().map { BackClick },
+      binding.numberPad.digitClicks.map { NumberClick(it) },
+      binding.numberPad.plusClicks.map { PlusClick },
+      binding.numberPad.minusClicks.map { MinusClick },
+      binding.numberPad.pointClicks.map { PointClick },
+      binding.numberPad.deleteOneClicks.map { DeleteOneClick },
+      binding.numberPad.actionClicks.map { NumberPadActionClick },
+      categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
+      binding.numberPad.memoChanges.map { MemoChange(it) },
+      binding.numberPad.calendarClicks.map { CalendarClick },
+      binding.yearSelectorButton.clicks().map { YearMonthSelectorClick }
+    )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
 
@@ -126,6 +128,10 @@ class TransactionsFragment : ClapTrapFragment<
     viewState.selectedCategory?.let { category ->
       binding.numberPad.setCategoryIconRes(category.icon.drawableRes)
     }
+
+    if (isUiInTransactionsState() && !isAnimationInProgress()) {
+      playAddAnimation()
+    }
   }
 
   private fun renderLoading() {
@@ -135,19 +141,38 @@ class TransactionsFragment : ClapTrapFragment<
     transactionAdapter.submitList(
       transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
     )
+
+    if (!isAnimationInProgress()) {
+      if (viewState.isYearMonthSelectorOpen && !isYearMonthSelectorOpen()) {
+        playShowYearMonthSelectorAnimation()
+      } else if (!viewState.isYearMonthSelectorOpen && isYearMonthSelectorOpen()) {
+        playHideYearMonthSelectorAnimation()
+      } else if (isUiInAddingState()) {
+        playReverseAddAnimation()
+      }
+    }
   }
 
-  override fun react(viewEffect: TransactionsViewEffect) = when(viewEffect) {
-    is TransactionsViewEffect.ShowAddTransactionMenu -> backdrop
-      .switchMenu(AddTransactionMenuFragment())
-    is TransactionsViewEffect.ShowYearMontSelector -> playShowYearMonthSelectorAnimation()
-    TransactionsViewEffect.HideYearMonthSelector -> playHideYearMonthSelectorAnimation()
-    is TransactionsViewEffect.HideTransactionMenu -> backdrop.clearMenu()
-    is TransactionsViewEffect.PlayAddAnimation -> playAddAnimation()
-    is TransactionsViewEffect.PlayReverseAddAnimation -> playReverseAddAnimation()
+  private fun isAnimationInProgress() =
+    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
+      binding.transactionsMotionLayout.progress != 0.0f &&
+      binding.transactionsMotionLayout.progress != 1.0f
+
+  private fun isYearMonthSelectorOpen() =
+    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
+      binding.transactionsMotionLayout.currentState == R.id.month_selector_shown
+
+  private fun isUiInAddingState() =
+    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
+      binding.transactionsMotionLayout.currentState == R.id.categories_visible
+
+  private fun isUiInTransactionsState() =
+    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
+      binding.transactionsMotionLayout.currentState == R.id.fab_at_bottom
+
+  override fun react(viewEffect: TransactionsViewEffect) = when (viewEffect) {
     is TransactionsViewEffect.Back -> backdrop.back()
-    is TransactionsViewEffect.MorphCheckToEquals -> binding.fabIcon.morph()
-    is TransactionsViewEffect.MorphEqualsToCheck -> binding.fabIcon.morph()
+    is TransactionsViewEffect.ToggleNumberPadAction -> binding.fabIcon.morph()
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
   }
 
@@ -174,6 +199,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
     with(binding.transactionsMotionLayout) {
+      backdrop.clearMenu()
       if (!binding.fabIcon.isAtStartState) {
         binding.fabIcon.morph()
       }
@@ -191,6 +217,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
     with(binding.transactionsMotionLayout) {
+      backdrop.switchMenu(AddTransactionMenuFragment::class.java)
       binding.fabBackground.isEnabled = false
       binding.fabBackground.isClickable = false
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)

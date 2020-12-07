@@ -4,7 +4,7 @@ import androidx.fragment.app.Fragment
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 
 interface Backdrop {
-  fun switchMenu(menuFragment: Fragment)
+  fun switchMenu(menuFragmentClass: Class<out Fragment>)
   fun clearMenu()
   fun back()
 }
