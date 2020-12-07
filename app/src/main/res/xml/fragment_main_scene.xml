@@ -68,7 +68,9 @@
     <Constraint android:id="@+id/statistics_menu_item">
       <PropertySet android:visibility="invisible" />
     </Constraint>
+  </ConstraintSet>
 
+  <ConstraintSet android:id="@+id/menu_shown">
     <Constraint android:id="@id/child_host">
       <Layout
         android:layout_width="0dp"
@@ -77,7 +79,7 @@
         motion:layout_constraintBottom_toBottomOf="parent"
         motion:layout_constraintEnd_toEndOf="parent"
         motion:layout_constraintStart_toStartOf="parent"
-        motion:layout_constraintTop_toBottomOf="@+id/custom_menu_container" />
+        motion:layout_constraintTop_toBottomOf="@+id/statistics_menu_item" />
     </Constraint>
   </ConstraintSet>
 </MotionScene>

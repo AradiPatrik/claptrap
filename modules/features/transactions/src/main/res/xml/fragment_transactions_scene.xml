@@ -6,20 +6,17 @@
     motion:constraintSetEnd="@+id/fab_at_middle"
     motion:constraintSetStart="@+id/fab_at_bottom"
     motion:duration="@dimen/default_animation_speed"
-    motion:motionInterpolator="easeInOut"
     motion:pathMotionArc="startHorizontal" />
 
   <Transition
     motion:constraintSetEnd="@+id/action_visible"
     motion:constraintSetStart="@+id/fab_at_middle"
-    motion:duration="@dimen/default_animation_speed"
-    motion:motionInterpolator="easeInOut" />
+    motion:duration="@dimen/default_animation_speed"/>
 
   <Transition
     motion:constraintSetEnd="@+id/categories_visible"
     motion:constraintSetStart="@+id/action_visible"
-    motion:duration="@dimen/default_animation_speed"
-    motion:motionInterpolator="easeInOut">
+    motion:duration="@dimen/default_animation_speed">
     <KeyFrameSet>
       <KeyAttribute
         android:alpha="1"
@@ -32,6 +29,11 @@
     motion:constraintSetEnd="@id/action_visible"
     motion:constraintSetStart="@+id/categories_visible"
     motion:duration="@dimen/default_animation_speed" />
+
+  <Transition
+    motion:constraintSetStart="@+id/fab_at_bottom"
+    motion:constraintSetEnd="@+id/month_selector_shown"
+    motion:duration="300" />
 
   <Include motion:constraintSet="@xml/constraint_set_transactions_fab_at_bottom" />
 

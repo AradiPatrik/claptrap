@@ -158,12 +158,8 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: BackdropViewEffect) = when (viewEffect) {
-    BackdropViewEffect.RevealBackLayer -> {
-      revealBackLayer()
-    }
-    BackdropViewEffect.ConcealBackLayer -> {
-      concealBackLayer()
-    }
+    BackdropViewEffect.RevealBackLayer -> revealBackLayer()
+    BackdropViewEffect.ConcealBackLayer -> concealBackLayer()
     BackdropViewEffect.MorphFromBackToMenu -> lifecycleScope.launchWhenResumed {
       binding.menuIcon.playOneShotAnimation(
         ContextCompat.getDrawable(

@@ -22,8 +22,9 @@
     <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     <item name="android:navigationBarDividerColor" tools:ignore="NewApi">#151515</item>
     <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
-    <item name="foregroundElevation">1dp</item>
+    <item name="foregroundElevation">1.1dp</item>
     <item name="behindForegroundElevation">0.4dp</item>
-    <item name="colorSecondaryPrimary">?attr/colorPrimary</item>
+    <item name="colorPrimaryVariantPrimary">?attr/colorPrimary</item>
+    <item name="colorSecondaryVariantSecondary">?attr/colorSecondary</item>
   </style>
 </resources>

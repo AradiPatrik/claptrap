@@ -9,7 +9,7 @@
     <!--colorSecondary colors are most often used as accents on components, such as FABs and -->
     <!--selection controls.-->
     <item name="colorPrimary">@color/blue_300</item>
-    <item name="colorPrimaryVariant">@color/blue_400</item>
+    <item name="colorPrimaryVariant">@color/blue_600</item>
     <item name="colorSecondary">@color/amber_200</item>
     <item name="colorSecondaryVariant">@color/amber_300</item>
     <!--colorBackground appears behind scrollable content and is used for the default window-->
@@ -29,7 +29,8 @@
     <item name="colorOnSurfacePrimary">?attr/colorOnSurface</item>
     <item name="colorOnPrimarySurfaceAlphaMedium">@color/white_alpha_medium</item>
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
-    <item name="colorSecondaryPrimary">?attr/colorSecondaryVariant</item>
+    <item name="colorPrimaryVariantPrimary">?attr/colorPrimaryVariant</item>
+    <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
     <item name="foregroundElevation">2dp</item>
     <item name="behindForegroundElevation">1dp</item>
     <!--Material type attributes-->

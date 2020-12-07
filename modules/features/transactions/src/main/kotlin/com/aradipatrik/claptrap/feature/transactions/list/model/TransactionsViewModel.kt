@@ -91,12 +91,10 @@ class TransactionsViewModel @ViewModelInject constructor(
     }
   }
 
-  private fun handleAddTransaction(): TransactionsLoaded {
-    return TransactionsLoaded(
-      transactions = loadedTransactions,
-      refreshing = false
-    )
-  }
+  private fun handleAddTransaction() = TransactionsLoaded(
+    transactions = loadedTransactions,
+    refreshing = false
+  )
 
   private suspend fun handleNumberPadClick(
     state: Adding,
