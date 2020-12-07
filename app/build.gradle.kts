@@ -67,4 +67,14 @@ android {
       getByName("prod").java.srcDir("src/live/kotlin")
     }
   }
+
+  buildTypes {
+    getByName("release") {
+      isMinifyEnabled = true
+      isShrinkResources = true
+      proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      manifestPlaceholders["enableCrashReporting"] = "true"
+      signingConfig = signingConfigs.getByName("debug")
+    }
+  }
 }

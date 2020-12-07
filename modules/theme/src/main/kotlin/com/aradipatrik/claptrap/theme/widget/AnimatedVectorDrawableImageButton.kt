@@ -73,7 +73,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
     startToEndAnimatedVectorDrawable = oldStartToEndDrawable
   }
 
-  private suspend fun morphAndWait() {
+  suspend fun morphAndWait() {
     val animatedDrawable = if (isAtStartState) {
       startToEndAnimatedVectorDrawable
     } else {
