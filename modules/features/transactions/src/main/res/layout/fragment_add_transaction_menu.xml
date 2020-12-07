@@ -38,12 +38,14 @@
       style="@style/Widget.MaterialComponents.Chip.Choice"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:elevation="?attr/foregroundElevation"
       android:text="@string/expense"
       android:textAppearance="?attr/textAppearanceCaption"
-      android:textColor="?attr/colorOnPrimarySurface"
-      app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
-      app:chipStrokeWidth="2dp"
-      app:chipSurfaceColor="@color/chip_background_color"
+      android:textColor="@color/chip_text_color_on_primary"
+      app:chipBackgroundColor="?colorSurface"
+      app:chipStrokeColor="@color/chip_border_color_on_primary"
+      app:chipStrokeWidth="1dp"
+      app:chipSurfaceColor="?colorSurface"
       app:singleSelection="true" />
 
     <com.google.android.material.chip.Chip
@@ -51,11 +53,13 @@
       style="@style/Widget.MaterialComponents.Chip.Choice"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
+      android:elevation="?attr/foregroundElevation"
       android:text="@string/income"
       android:textAppearance="?attr/textAppearanceCaption"
-      android:textColor="?attr/colorOnPrimarySurface"
-      app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaMedium"
-      app:chipStrokeWidth="2dp"
-      app:chipSurfaceColor="@color/chip_background_color" />
+      android:textColor="@color/chip_text_color_on_primary"
+      app:chipBackgroundColor="?colorSurface"
+      app:chipStrokeColor="@color/chip_border_color_on_primary"
+      app:chipStrokeWidth="1dp"
+      app:chipSurfaceColor="?colorSurface" />
   </com.google.android.material.chip.ChipGroup>
 </androidx.constraintlayout.widget.ConstraintLayout>
