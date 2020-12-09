@@ -15,6 +15,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlin.math.abs
+import kotlin.math.max
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
   override fun areItemsTheSame(
@@ -113,35 +114,19 @@ class TransactionAdapter :
     _layoutManager = null
   }
 
-  override fun onViewDetachedFromWindow(holder: TransactionViewHolder) {
-    if (isInTopOfList(holder)) {
-      notifyFirstItemChanged(holder)
-    }
-  }
-
   override fun onViewAttachedToWindow(holder: TransactionViewHolder) {
-    if (isInTopOfList(holder)) {
-      notifyFirstItemChanged(holder)
-    }
+    notifyFirstItemChanged()
   }
 
-  private fun notifyFirstItemChanged(holder: TransactionViewHolder) {
-    _headerChangeEvents.value = when (holder) {
-      is TransactionViewHolder.TransactionHeaderViewHolder -> holder.headerItem.title
-      is TransactionViewHolder.TransactionItemViewHolder -> holder
-        .transactionListItem
-        .transactionPresentation
-        .monthAsText
+  private fun notifyFirstItemChanged() {
+    val position = max(0, layoutManager.findFirstCompletelyVisibleItemPosition() - 1)
+
+    if (position >= 0) {
+      _headerChangeEvents.value = when (val item = getItem(position)) {
+        is TransactionListItem.Header -> item.title
+        is TransactionListItem.Item -> item.transactionPresentation.monthAsText
+      }
     }
-  }
-
-  private fun isInTopOfList(holder: TransactionViewHolder): Boolean {
-    val distanceFromTop =
-      abs(holder.adapterPosition - layoutManager.findFirstVisibleItemPosition())
-    val distanceFromBottom =
-      abs(holder.adapterPosition - layoutManager.findLastVisibleItemPosition())
-
-    return distanceFromTop < distanceFromBottom
   }
 
   override fun getItemViewType(position: Int) = when (getItem(position)) {

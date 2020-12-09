@@ -6,6 +6,7 @@
   android:layout_height="wrap_content"
   android:scrollbars="none">
   <com.google.android.material.chip.ChipGroup
+    android:id="@+id/month_chip_group"
     android:layout_width="wrap_content"
     app:singleSelection="true"
     app:checkedChip="@+id/month_button_december"

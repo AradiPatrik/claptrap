@@ -26,5 +26,5 @@ data class TransactionPresentation(
     }
   }
 
-  val monthAsText: String = domain.date.monthOfYear().asText
+  val monthAsText: String = domain.date.toString("MMMM dd")
 }

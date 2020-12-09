@@ -2,12 +2,16 @@ package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import com.aradipatrik.claptrap.domain.Category
 import org.joda.time.DateTime
+import org.joda.time.YearMonth
 
 sealed class TransactionsViewEvent {
   object ActionClick : TransactionsViewEvent()
   object BackClick : TransactionsViewEvent()
   data class TransactionTypeSwitch(val newType: TransactionType) : TransactionsViewEvent()
   object YearMonthSelectorClick : TransactionsViewEvent()
+  data class MonthSelected(val month: Int) : TransactionsViewEvent()
+  object YearIncreased : TransactionsViewEvent()
+  object YearDecreased : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {
     data class MemoChange(val memo: String) : AddTransactionViewEvent()

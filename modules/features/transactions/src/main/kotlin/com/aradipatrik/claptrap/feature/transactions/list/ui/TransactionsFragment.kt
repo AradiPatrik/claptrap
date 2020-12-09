@@ -62,7 +62,10 @@ class TransactionsFragment : ClapTrapFragment<
       categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
       binding.numberPad.memoChanges.map { MemoChange(it) },
       binding.numberPad.calendarClicks.map { CalendarClick },
-      binding.yearSelectorButton.clicks().map { YearMonthSelectorClick }
+      binding.yearSelectorButton.clicks().map { YearMonthSelectorClick },
+      binding.monthSelectionChipGroup.monthClicks.map { MonthSelected(it) },
+      binding.yearDecreaseChevron.clicks().map { YearDecreased },
+      binding.yearIncreaseChevron.clicks().map { YearIncreased },
     )
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
@@ -92,6 +95,7 @@ class TransactionsFragment : ClapTrapFragment<
 
     if (savedInstanceState != null) {
       binding.transactionsMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
+
       if (savedInstanceState.getBoolean(IS_ON_CALCULATOR)) {
         binding.fabIcon.startToEndAnimatedVectorDrawable = checkToEquals
         binding.fabIcon.endToStartAnimatedVectorDrawable = equalsToCheck
@@ -99,6 +103,10 @@ class TransactionsFragment : ClapTrapFragment<
         binding.fabBackground.isEnabled = false
         binding.fabBackground.isClickable = false
       }
+
+      binding.yearSelectorButton.isActivated =
+        savedInstanceState.getBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY)
+
       if (!savedInstanceState.getBoolean(FAB_ICON_STATE_KEY)) binding.fabIcon.morph()
     }
   }
@@ -110,6 +118,7 @@ class TransactionsFragment : ClapTrapFragment<
     outState.putBoolean(
       IS_ON_CALCULATOR, binding.fabIcon.startToEndAnimatedVectorDrawable == checkToEquals
     )
+    outState.putBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY, binding.yearSelectorButton.isActivated)
   }
 
   override fun render(viewState: TransactionsViewState) = when (viewState) {
@@ -143,6 +152,9 @@ class TransactionsFragment : ClapTrapFragment<
     transactionAdapter.submitList(
       transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
     )
+
+    binding.yearSelectionDisplay.text = viewState.yearMonth.year.toString()
+    binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
 
     if (!isAnimationPlaying) {
       when {
@@ -258,5 +270,6 @@ class TransactionsFragment : ClapTrapFragment<
     private const val MOTION_LAYOUT_STATE_KEY = "TRANSACTION_MOTION_LAYOUT_STATE"
     private const val FAB_ICON_STATE_KEY = "FAB_ICON_STATE_KEY"
     private const val IS_ON_CALCULATOR = "IS_ON_CALCULATOR"
+    private const val IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY = "IS_YEAR_MONTH_SELECTOR_ACTIVE"
   }
 }

@@ -36,8 +36,8 @@
     android:id="@+id/year_selection_layer"
     android:layout_width="0dp"
     android:layout_height="300dp"
-    app:cardCornerRadius="24dp"
     android:focusable="false"
+    app:cardCornerRadius="24dp"
     app:cardElevation="?attr/behindForegroundElevation"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
@@ -61,12 +61,13 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginEnd="16dp"
-    android:src="@drawable/ic_chevron_left"
-    app:tint="?attr/colorOnSurface"
     android:elevation="?attr/behindForegroundElevation"
+    android:foreground="?attr/selectableItemBackground"
+    android:src="@drawable/ic_chevron_left"
     app:layout_constraintBottom_toBottomOf="@id/year_selection_display"
     app:layout_constraintEnd_toStartOf="@id/year_selection_display"
-    app:layout_constraintTop_toTopOf="@id/year_selection_display" />
+    app:layout_constraintTop_toTopOf="@id/year_selection_display"
+    app:tint="?attr/colorOnSurface" />
 
   <TextView
     android:id="@+id/year_selection_display"
@@ -85,24 +86,25 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
-    android:src="@drawable/ic_chevron_right"
     android:elevation="?attr/behindForegroundElevation"
+    android:foreground="?attr/selectableItemBackground"
+    android:src="@drawable/ic_chevron_right"
     app:layout_constraintBottom_toBottomOf="@id/year_selection_display"
     app:layout_constraintStart_toEndOf="@id/year_selection_display"
     app:layout_constraintTop_toTopOf="@id/year_selection_display"
     app:tint="?attr/colorOnSurface" />
 
   <com.aradipatrik.claptrap.feature.transactions.list.ui.YearMonthSelectionView
-    android:elevation="?attr/behindForegroundElevation"
     android:id="@+id/month_selection_chip_group"
     android:layout_width="0dp"
     android:layout_height="48dp"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/year_selection_display"
-    android:layout_marginTop="16dp"
     android:layout_marginStart="16dp"
-    android:layout_marginEnd="16dp"/>
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="16dp"
+    android:elevation="?attr/behindForegroundElevation"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/year_selection_display" />
 
   <com.aradipatrik.claptrap.feature.transactions.list.ui.AnimatedHeaderView
     android:id="@+id/transactions_header"

@@ -10,10 +10,11 @@ import kotlin.random.nextInt
 internal object CommonMockGenerator {
 
   internal fun Random.nextDate(
-    yearRange: IntRange
+    yearRange: IntRange,
+    monthRange: IntRange = 1..12
   ) = DateTime(
     nextInt(yearRange),
-    nextInt(1, 13),
+    nextInt(monthRange),
     nextInt(1, 29),
     nextInt(0, 24),
     nextInt(0, 60)

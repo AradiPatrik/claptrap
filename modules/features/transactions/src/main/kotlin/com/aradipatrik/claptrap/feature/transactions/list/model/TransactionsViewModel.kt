@@ -21,35 +21,34 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import org.joda.time.DateTime
+import org.joda.time.YearMonth
 
 class TransactionsViewModel @ViewModelInject constructor(
-  transactionInteractor: TransactionInteractor,
+  private val transactionInteractor: TransactionInteractor,
   private val categoryInteractor: CategoryInteractor
 ) : ClaptrapViewModel<TransactionsViewState, TransactionsViewEvent, TransactionsViewEffect>(
   Loading
 ) {
   private var loadedTransactions = emptyList<Transaction>()
-
-  init {
-    transactionInteractor.getAllTransactions()
-      .onEach(::setLoadedTransactions)
-      .launchIn(viewModelScope)
-  }
+  private var getTransactionsInCurrentYearMonthJob =
+    listenToTransactionsOfYearMonth(YearMonth.now())
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
     loadedTransactions = transactions
 
-    if (state is Loading || state is TransactionsLoaded) {
-      TransactionsLoaded(
-        transactions = transactions,
-        refreshing = false
-      )
-    } else {
-      state
+    when (state) {
+      is Loading -> TransactionsLoaded(transactions = transactions, refreshing = false)
+      is TransactionsLoaded -> state.copy(transactions = transactions)
+      else -> state
     }
   }
 
-  override fun processInput(viewEvent: TransactionsViewEvent) = when(viewEvent) {
+  private fun listenToTransactionsOfYearMonth(yearMonth: YearMonth) = transactionInteractor
+    .getAllTransactionsInYearMonth(yearMonth)
+    .onEach(::setLoadedTransactions)
+    .launchIn(viewModelScope)
+
+  override fun processInput(viewEvent: TransactionsViewEvent) = when (viewEvent) {
     is ActionClick -> goToAddTransaction()
     is BackClick -> goBack()
     is TransactionTypeSwitch -> switchTransactionType(viewEvent)
@@ -59,6 +58,32 @@ class TransactionsViewModel @ViewModelInject constructor(
     is CalendarClick -> showDatePicker()
     is DateSelected -> setDate(viewEvent.date)
     is YearMonthSelectorClick -> toggleYearMonthSelector()
+    is MonthSelected -> selectYearMonth(viewEvent.month)
+    is YearIncreased -> increaseYear()
+    is YearDecreased -> decreaseYear()
+  }
+
+  private fun decreaseYear() = reduceSpecificState<TransactionsLoaded> { state ->
+    val newYearMonth = state.yearMonth.withYear(state.yearMonth.year - 1)
+    startListeningToNewYearMonth(newYearMonth)
+    state.copy(yearMonth = newYearMonth)
+  }
+
+  private fun increaseYear() = reduceSpecificState<TransactionsLoaded> { state ->
+    val newYearMonth = state.yearMonth.withYear(state.yearMonth.year + 1)
+    startListeningToNewYearMonth(newYearMonth)
+    state.copy(yearMonth = newYearMonth)
+  }
+
+  private fun selectYearMonth(month: Int) = reduceSpecificState<TransactionsLoaded> { state ->
+    val newYearMonth = state.yearMonth.withMonthOfYear(month)
+    startListeningToNewYearMonth(newYearMonth)
+    state.copy(yearMonth = newYearMonth)
+  }
+
+  private fun startListeningToNewYearMonth(newYearMonth: YearMonth) {
+    getTransactionsInCurrentYearMonthJob.cancel()
+    getTransactionsInCurrentYearMonthJob = listenToTransactionsOfYearMonth(newYearMonth)
   }
 
   private fun toggleYearMonthSelector() = reduceSpecificState<TransactionsLoaded> { state ->
@@ -85,14 +110,15 @@ class TransactionsViewModel @ViewModelInject constructor(
     viewEvent: CalculatorEvent
   ) = reduceSpecificState<Adding> { state ->
     if (wereAddTransactionClicked(state, viewEvent)) {
-      handleAddTransaction()
+      handleAddTransaction(state)
     } else {
       handleNumberPadClick(state, viewEvent)
     }
   }
 
-  private fun handleAddTransaction() = TransactionsLoaded(
+  private fun handleAddTransaction(state: Adding) = TransactionsLoaded(
     transactions = loadedTransactions,
+    yearMonth = state.transactionsYearMonth,
     refreshing = false
   )
 
@@ -136,6 +162,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     if (state is Adding) {
       TransactionsLoaded(
         transactions = loadedTransactions,
+        yearMonth = state.transactionsYearMonth,
         refreshing = true
       )
     } else if (state is TransactionsLoaded && state.isYearMonthSelectorOpen) {
@@ -145,7 +172,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     }
   }
 
-  private fun goToAddTransaction() = setState {
+  private fun goToAddTransaction() = reduceSpecificState<TransactionsLoaded> { oldState ->
     reduceSpecificState<Adding> { state ->
       val categories = categoryInteractor.getAllCategories().take(1).single()
       state.copy(
@@ -153,6 +180,6 @@ class TransactionsViewModel @ViewModelInject constructor(
         selectedCategory = categories.first()
       )
     }
-    Adding(TransactionType.EXPENSE)
+    Adding(TransactionType.EXPENSE, transactionsYearMonth = oldState.yearMonth)
   }
 }

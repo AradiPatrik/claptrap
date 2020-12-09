@@ -8,6 +8,7 @@ import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.n
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextMoney
 import com.aradipatrik.claptrap.fakeinteractors.generators.LoremIpsum.nextCapitalWord
 import com.aradipatrik.claptrap.fakeinteractors.generators.LoremIpsum.nextWords
+import org.joda.time.YearMonth
 import kotlin.random.Random
 
 internal object TransactionMockGenerator {
@@ -21,6 +22,17 @@ internal object TransactionMockGenerator {
     nextId(),
     nextMoney(),
     nextDate(2020..2020),
+    nextWords(count = 3, capitalize = true),
+    nextCategory()
+  )
+
+  fun Random.nextTransactionInYearMonth(yearMonth: YearMonth) = Transaction(
+    nextId(),
+    nextMoney(),
+    nextDate(
+      yearRange = yearMonth.year..yearMonth.year,
+      monthRange = yearMonth.monthOfYear..yearMonth.monthOfYear
+    ),
     nextWords(count = 3, capitalize = true),
     nextCategory()
   )

@@ -8,10 +8,10 @@ import javax.inject.Inject
 class TransactionListBuilderDelegate @Inject constructor() {
   fun generateListItemsFrom(transactions: List<Transaction>) = transactions
     .sortedByDescending(Transaction::date)
-    .groupBy { it.date.monthOfYear }
+    .groupBy { it.date.dayOfMonth }
     .flatMap { (_, transactions) ->
       mutableListOf<TransactionListItem>().apply {
-        add(TransactionListItem.Header(transactions.first().date.monthOfYear().asText))
+        add(TransactionListItem.Header(transactions.first().date.toString("MMMM dd")))
         addAll(
           transactions
             .map(TransactionPresentation::fromTransaction)

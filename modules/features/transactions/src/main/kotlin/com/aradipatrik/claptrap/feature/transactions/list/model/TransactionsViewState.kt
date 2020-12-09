@@ -23,6 +23,7 @@ sealed class TransactionsViewState {
     val date: DateTime = DateTime.now(),
     val selectedCategory: Category? = null,
     val memo: String = "",
+    val transactionsYearMonth: YearMonth,
     val calculatorState: CalculatorState = CalculatorState.SingleValue(NumberOnCalculator("0"))
   ) : TransactionsViewState()
 }
