@@ -37,7 +37,7 @@ class EditTransactionFragment :
   }
 
   private fun renderEditingState(editing: Editing) {
-    binding.transactionIdDisplay.text = editing.transaction?.note ?: ""
+
   }
 
   override fun react(viewEffect: EditTransactionViewEffect) {
