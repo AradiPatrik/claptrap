@@ -8,8 +8,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import org.joda.time.YearMonth
 import javax.inject.Inject
+import javax.inject.Singleton
 import kotlin.random.Random
 
+@Singleton
 class TransactionInteractorFake @Inject constructor() : TransactionInteractor {
   private val transactions = MutableStateFlow(mapOf(YearMonth.now() to initialTransactions))
 

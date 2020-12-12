@@ -16,14 +16,17 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.Calcu
 import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
+import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.launch
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import timber.log.Timber
 import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
@@ -61,7 +64,13 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MonthSelected -> selectYearMonth(viewEvent.month)
     is YearIncreased -> increaseYear()
     is YearDecreased -> decreaseYear()
+    is TransactionItemClicked -> goToEditTransaction(viewEvent.transactionId)
   }
+
+  private fun goToEditTransaction(transactionId: String) = viewModelScope.launch {
+    Timber.tag("SendEvent").d("navigation requested")
+    viewEffects.emit(NavigateToEditTransaction(transactionId))
+  }.ignore()
 
   private fun decreaseYear() = reduceSpecificState<TransactionsLoaded> { state ->
     val newYearMonth = state.yearMonth.withYear(state.yearMonth.year - 1)
@@ -95,7 +104,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun showDatePicker() = withState<Adding> { state ->
-    viewEffects.send(ShowDatePickerAt(state.date))
+    viewEffects.emit(ShowDatePickerAt(state.date))
   }
 
   private fun changeMemo(newMemo: String) = reduceSpecificState<Adding> { state ->
@@ -126,7 +135,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun saveTransaction(newTransaction: Transaction) = sideEffect {
-    viewEffects.send(ScrollToTransaction(newTransaction.id))
+    viewEffects.emit(ScrollToTransaction(newTransaction.id))
     transactionInteractor.saveTransaction(newTransaction)
   }
 
@@ -136,9 +145,9 @@ class TransactionsViewModel @ViewModelInject constructor(
   ): Adding = state.copy(
     calculatorState = CalculatorStateReducer.reduceState(state.calculatorState, viewEvent)
   ).also { newState ->
-    if (viewEvent is NumberPadActionClick) viewEffects.send(ToggleNumberPadAction)
-    if (isOperatorAdded(state, viewEvent)) viewEffects.send(ToggleNumberPadAction)
-    if (isOperatorDeleted(state, newState, viewEvent)) viewEffects.send(ToggleNumberPadAction)
+    if (viewEvent is NumberPadActionClick) viewEffects.emit(ToggleNumberPadAction)
+    if (isOperatorAdded(state, viewEvent)) viewEffects.emit(ToggleNumberPadAction)
+    if (isOperatorDeleted(state, newState, viewEvent)) viewEffects.emit(ToggleNumberPadAction)
   }
 
   private fun isOperatorAdded(
@@ -176,7 +185,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     } else if (state is TransactionsLoaded && state.isYearMonthSelectorOpen) {
       state.copy(isYearMonthSelectorOpen = false)
     } else {
-      state.also { viewEffects.send(Back) }
+      state.also { viewEffects.emit(Back) }
     }
   }
 
@@ -188,7 +197,11 @@ class TransactionsViewModel @ViewModelInject constructor(
         selectedCategory = categories.first()
       )
     }
-    Adding(TransactionType.EXPENSE, transactionsYearMonth = oldState.yearMonth)
+    Adding(
+      TransactionType.EXPENSE,
+      transactionsYearMonth = oldState.yearMonth,
+      oldTransactions = oldState.transactions
+    )
   }
 }
 

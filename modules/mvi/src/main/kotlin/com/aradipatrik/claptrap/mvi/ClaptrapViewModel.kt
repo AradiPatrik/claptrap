@@ -2,24 +2,18 @@ package com.aradipatrik.claptrap.mvi
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import kotlin.concurrent.timerTask
-import kotlin.system.measureNanoTime
-import kotlin.system.measureTimeMillis
-import kotlin.time.measureTime
 
 typealias StateReducer<T, V> = suspend (T) -> V
 typealias SideEffect<T> = suspend (T) -> Unit
-typealias StateSetter<T> = suspend () -> T
 
 abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
   val reducerChannel = Channel<StateReducer<S, S>>(BUFFERED)
-  val viewEffects = BroadcastChannel<EF>(BUFFERED)
+  val viewEffects = MutableSharedFlow<EF>()
 
   private val _viewState = MutableStateFlow(initialState)
   val viewState: StateFlow<S> = _viewState
@@ -30,10 +24,7 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
         reducer.invoke(state)
       }
       .distinctUntilChanged()
-      .onEach {
-        Timber.tag(this::class.simpleName).d(it.toString())
-        _viewState.value = it
-      }
+      .onEach { _viewState.value = it }
       .launchIn(viewModelScope)
   }
 
@@ -48,7 +39,9 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
   protected inline fun <reified T: S> reduceSpecificState(noinline stateReducer: StateReducer<T, S>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
-        require(state is T)
+        require(state is T) {
+          Timber.tag("Claptrap").e("${state!!::class} is not ${T::class}")
+        }
         stateReducer.invoke(state)
       }
     }
@@ -57,7 +50,9 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
   protected inline fun <reified T: S> withState(noinline sideEffect: SideEffect<T>) {
     viewModelScope.launch {
       reducerChannel.send { state ->
-        require(state is T)
+        require(state is T) {
+          Timber.tag("Claptrap").e("${state!!::class} is not ${T::class}")
+        }
         state.also { sideEffect(state) }
       }
     }

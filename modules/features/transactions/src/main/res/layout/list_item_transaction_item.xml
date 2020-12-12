@@ -4,7 +4,8 @@
   xmlns:tools="http://schemas.android.com/tools"
   android:layout_width="match_parent"
   android:layout_height="@dimen/list_item_two_line_height"
-  tools:background="?attr/colorSurface">
+  tools:background="?attr/colorSurface"
+  android:foreground="?attr/selectableItemBackground">
 
   <ImageView
     android:id="@+id/category_icon"

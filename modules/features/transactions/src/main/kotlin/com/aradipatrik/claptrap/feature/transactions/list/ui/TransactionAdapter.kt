@@ -11,11 +11,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionHeaderBinding
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.*
+import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import kotlin.math.max
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
@@ -48,12 +49,9 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   class TransactionHeaderViewHolder(
     private val binding: ListItemTransactionHeaderBinding
   ) : TransactionViewHolder(binding.root) {
-    private var _headerItem: TransactionListItem.Header? = null
-    val headerItem get() = _headerItem!!
 
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Header) { "Expected transaction list item got: $item" }
-      _headerItem = item
       binding.headerText.text = item.title
     }
   }
@@ -61,12 +59,14 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   class TransactionItemViewHolder(
     private val binding: ListItemTransactionItemBinding
   ) : TransactionViewHolder(binding.root) {
-    private var _transactionListItem: TransactionListItem.Item? = null
-    val transactionListItem get() = _transactionListItem!!
+    private var transactionListItem: TransactionListItem.Item? = null
+
+    val clicks = binding.root.clicks()
+      .map { transactionListItem!!.transactionPresentation.domain.id }
 
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Item) { "Expected transaction list item got: $item" }
-      _transactionListItem = item
+      transactionListItem = item
       binding.transactionDate.text = item.transactionPresentation.date
       binding.transactionNote.text = item.transactionPresentation.note
       binding.transactionAmount.text = item.transactionPresentation.amount
@@ -81,6 +81,10 @@ class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
   private val _headerChangeEvents = MutableStateFlow<String?>(null)
   val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
     .distinctUntilChanged()
+
+  private val viewEventFlow =
+    MutableSharedFlow<TransactionsViewEvent.TransactionItemClicked>()
+  val viewEvents: Flow<TransactionsViewEvent> = viewEventFlow
 
   private var _layoutManager: LinearLayoutManager? = null
   private val layoutManager: LinearLayoutManager get() = _layoutManager!!
@@ -173,9 +177,18 @@ class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
     )
     VIEW_TYPE_ITEM -> TransactionViewHolder.TransactionItemViewHolder(
       ListItemTransactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-    )
+    ).also(::listenToItemClicks)
     else -> error("Unexpected view type: $viewType")
   }
+
+  private fun listenToItemClicks(viewHolder: TransactionViewHolder.TransactionItemViewHolder) =
+    viewHolder.clicks
+      .map {
+        Timber.tag("Clicks").d("clicked item")
+        TransactionsViewEvent.TransactionItemClicked(it)
+      }
+      .onEach(viewEventFlow::emit)
+      .launchInWhenResumed(lifecycleScope)
 
   override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
     holder.bindItem(getItem(position))

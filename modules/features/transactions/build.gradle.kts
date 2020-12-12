@@ -22,7 +22,6 @@ dependencies {
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
 
-
   implementation(Libraries.Coroutines.core)
   implementation(Libraries.Coroutines.binding)
   implementation(Libraries.Coroutines.materialBinding)
@@ -31,6 +30,18 @@ dependencies {
 
   implementation(Libraries.Dagger.hilt)
   implementation(Libraries.Dagger.hiltLifecycle)
+  compileOnly(Libraries.Dagger.assistedInject)
+  kapt(Libraries.Dagger.assistedInjectKapt)
   kapt(Libraries.Dagger.hiltKapt)
   kapt(Libraries.Dagger.hiltAndroidXKapt)
+}
+
+android {
+  defaultConfig {
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+      }
+    }
+  }
 }

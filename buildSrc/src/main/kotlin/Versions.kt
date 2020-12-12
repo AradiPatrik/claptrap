@@ -22,6 +22,7 @@ object Versions {
   object Dagger {
     const val hilt = "2.28-alpha"
     const val hiltAndroidX = "1.0.0-alpha01"
+    const val assistedInject = "0.6.0"
   }
 
   object Logging {
@@ -43,7 +44,7 @@ object Versions {
   }
 
   object Coroutines {
-    const val core = "1.3.9"
+    const val core = "1.4.2"
     const val corbind = "1.4.0"
   }
 

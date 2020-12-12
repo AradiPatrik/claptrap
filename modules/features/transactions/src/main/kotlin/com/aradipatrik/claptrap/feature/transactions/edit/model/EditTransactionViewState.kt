@@ -1,5 +1,5 @@
 package com.aradipatrik.claptrap.feature.transactions.edit.model
 
 sealed class EditTransactionViewState {
-  object Placeholder : EditTransactionViewState()
+  data class Placeholder(val transactionId: String) : EditTransactionViewState()
 }

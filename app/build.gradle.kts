@@ -6,9 +6,8 @@ dependencies {
   implementation(project(":navigation"))
   implementation(project(":data:network"))
   implementation(project(":data:disk"))
+
   implementation(project(":features:common"))
-
-
   implementation(project(":features:transactions"))
   implementation(project(":features:statistics"))
   implementation(project(":features:wallets"))
@@ -34,11 +33,21 @@ dependencies {
 
   implementation(Libraries.Dagger.hilt)
   implementation(Libraries.Dagger.hiltLifecycle)
+  compileOnly(Libraries.Dagger.assistedInject)
+  kapt(Libraries.Dagger.assistedInjectKapt)
   kapt(Libraries.Dagger.hiltKapt)
   kapt(Libraries.Dagger.hiltAndroidXKapt)
 }
 
 android {
+  defaultConfig {
+    javaCompileOptions {
+      annotationProcessorOptions {
+        arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
+      }
+    }
+  }
+
   productFlavors {
     flavorDimensions("environment")
     register("mock") {

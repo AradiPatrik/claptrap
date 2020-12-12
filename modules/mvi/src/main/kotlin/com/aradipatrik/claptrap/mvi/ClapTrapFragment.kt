@@ -8,9 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
+import timber.log.Timber
 
 typealias InflaterFunction<B> = (LayoutInflater, ViewGroup?, Boolean) -> B
 
@@ -24,7 +23,7 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
 
   abstract val viewEvents: Flow<EV>
 
-  protected val extraViewEventChannel: Channel<EV> = Channel(BUFFERED)
+  protected val extraViewEventsFlow = MutableSharedFlow<EV>()
 
   abstract fun render(viewState: VS)
 
@@ -53,16 +52,19 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
     }
 
     viewModel.viewState
+      .onEach { Timber.tag("Render").d("${this::class.java.simpleName}::$it") }
       .onEach(::render)
-      .launchInWhenResumed(lifecycleScope)
+      .launchInWhenResumed(viewLifecycleOwner.lifecycleScope)
 
-    merge(viewEvents, extraViewEventChannel.consumeAsFlow())
+    merge(viewEvents, extraViewEventsFlow)
+      .onEach { Timber.tag("Process").d("${this::class.java.simpleName}::$it") }
       .onEach(viewModel::processInput)
-      .launchInWhenResumed(lifecycleScope)
+      .launchInWhenResumed(viewLifecycleOwner.lifecycleScope)
 
-    viewModel.viewEffects.asFlow()
+    viewModel.viewEffects
+      .onEach { Timber.tag("React").d("${this::class.java.simpleName}::$it") }
       .onEach(::react)
-      .launchInWhenResumed(lifecycleScope)
+      .launchInWhenResumed(viewLifecycleOwner.lifecycleScope)
   }
 
   override fun onDestroyView() {

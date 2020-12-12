@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import kotlin.properties.Delegates
 
 @AndroidEntryPoint
@@ -92,6 +93,10 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   private fun initNavigation() {
+    backdropNavController.addOnDestinationChangedListener { controller, destination, bundle ->
+      Timber.tag("Navigation").d("Current destination: $destination")
+
+    }
     requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, onBackPressedCallback)
   }
 

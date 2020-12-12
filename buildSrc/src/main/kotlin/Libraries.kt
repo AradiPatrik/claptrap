@@ -49,12 +49,17 @@ object Libraries {
       "androidx.hilt:hilt-compiler:${Versions.Dagger.hiltAndroidX}"
     const val hiltPlugin = "dagger.hilt.android.plugin"
     const val hiltKapt = "com.google.dagger:hilt-android-compiler:${Versions.Dagger.hilt}"
+    const val assistedInject =
+      "com.squareup.inject:assisted-inject-annotations-dagger2:${Versions.Dagger.assistedInject}"
+    const val assistedInjectKapt =
+      "com.squareup.inject:assisted-inject-processor-dagger2:${Versions.Dagger.assistedInject}"
   }
 
   object Coroutines {
     const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Coroutines.core}"
     const val binding = "ru.ldralighieri.corbind:corbind:${Versions.Coroutines.corbind}"
-    const val materialBinding = "ru.ldralighieri.corbind:corbind-material:${Versions.Coroutines.corbind}"
+    const val materialBinding =
+      "ru.ldralighieri.corbind:corbind-material:${Versions.Coroutines.corbind}"
   }
 
   object Network {

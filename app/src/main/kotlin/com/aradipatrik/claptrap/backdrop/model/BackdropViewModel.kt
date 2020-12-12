@@ -13,16 +13,16 @@ class BackdropViewModel :
   override fun processInput(viewEvent: BackdropViewEvent) = when (viewEvent) {
     is SelectTopLevelScreen -> reduceSpecificState<OnTopLevelScreen> { oldState ->
       if (oldState.topLevelScreen != viewEvent.topLevelScreen) {
-        viewEffects.send(NavigateToDestination(viewEvent.topLevelScreen))
+        viewEffects.emit(NavigateToDestination(viewEvent.topLevelScreen))
       }
       oldState.copy(topLevelScreen = viewEvent.topLevelScreen)
     }
     is SwitchToCustomMenu -> reduceState { oldState ->
-      viewEffects.send(ShowCustomMenu(viewEvent.menuFragmentClass))
+      viewEffects.emit(ShowCustomMenu(viewEvent.menuFragmentClass))
       BackdropViewState.CustomMenuShowing(oldState.topLevelScreen)
     }
     is RemoveCustomMenu -> reduceState { oldState ->
-      viewEffects.send(MorphFromBackToMenu)
+      viewEffects.emit(MorphFromBackToMenu)
       OnTopLevelScreen(oldState.topLevelScreen, isBackLayerConcealed = true)
     }
     BackdropConcealToggle -> reduceSpecificState<OnTopLevelScreen> { state ->

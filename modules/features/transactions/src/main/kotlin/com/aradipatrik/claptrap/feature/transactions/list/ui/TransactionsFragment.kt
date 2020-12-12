@@ -3,6 +3,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -12,13 +13,16 @@ import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.transactions.common.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
-import com.aradipatrik.claptrap.feature.transactions.list.model.*
-import com.aradipatrik.claptrap.feature.transactions.common.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
@@ -30,11 +34,10 @@ import com.aradipatrik.claptrap.theme.widget.ViewUtil.getAnimatedVectorDrawable
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.channels.Channel
-import kotlinx.coroutines.channels.Channel.Factory.BUFFERED
 import kotlinx.coroutines.flow.*
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -53,7 +56,7 @@ class TransactionsFragment : ClapTrapFragment<
   override val viewEvents: Flow<TransactionsViewEvent>
     get() = merge(
       binding.fabBackground.clicks().map { ActionClick },
-      backPressEvents.consumeAsFlow().map { BackClick },
+      backPressEvents.map { BackClick },
       binding.numberPad.digitClicks.map { NumberClick(it) },
       binding.numberPad.plusClicks.map { PlusClick },
       binding.numberPad.minusClicks.map { MinusClick },
@@ -67,9 +70,10 @@ class TransactionsFragment : ClapTrapFragment<
       binding.monthSelectionChipGroup.monthClicks.map { MonthSelected(it) },
       binding.yearDecreaseChevron.clicks().map { YearDecreased },
       binding.yearIncreaseChevron.clicks().map { YearIncreased },
+      transactionAdapter.viewEvents
     )
 
-  private val backPressEvents = Channel<Unit>(BUFFERED)
+  private val backPressEvents = MutableSharedFlow<Unit>()
 
   private val transactionAdapter by lazy { TransactionAdapter(lifecycleScope) }
   private val categoryAdapter by lazy { CategoryAdapter() }
@@ -189,6 +193,16 @@ class TransactionsFragment : ClapTrapFragment<
     is TransactionsViewEffect.ToggleNumberPadAction -> binding.fabIcon.morph()
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
     is TransactionsViewEffect.ScrollToTransaction -> scrollTo(viewEffect.transactionId)
+    is TransactionsViewEffect.NavigateToEditTransaction -> navigateToEdit(viewEffect.transactionId)
+  }
+
+  private fun navigateToEdit(transactionId: String) {
+    Timber.tag("Navigation").d("$this: navigating to edit")
+    backdrop.backdropNavController
+      .navigate(
+        R.id.action_fragment_transactions_to_fragment_edit_transaction,
+        bundleOf("transactionId" to transactionId)
+      )
   }
 
   private fun scrollTo(transactionId: String) {
@@ -223,7 +237,7 @@ class TransactionsFragment : ClapTrapFragment<
       .build()
       .showAndWaitWith(childFragmentManager)
 
-    extraViewEventChannel.send(DateSelected(DateTime(selectedDateInstant)))
+    extraViewEventsFlow.emit(DateSelected(DateTime(selectedDateInstant)))
   }.ignore()
 
   private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
@@ -266,8 +280,8 @@ class TransactionsFragment : ClapTrapFragment<
   }.ignore()
 
   override fun onBack(): BackEffect {
-    lifecycleScope.launchWhenResumed {
-      backPressEvents.send(Unit)
+    viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+      backPressEvents.emit(Unit)
     }
     return BackEffect.NO_POP
   }
