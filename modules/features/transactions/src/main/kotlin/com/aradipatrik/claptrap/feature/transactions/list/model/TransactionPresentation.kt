@@ -2,7 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import androidx.annotation.DrawableRes
 import com.aradipatrik.claptrap.domain.Transaction
-import com.aradipatrik.claptrap.feature.transactions.list.model.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.feature.transactions.common.CategoryIconMapper.drawableRes
 import java.util.*
 
 data class TransactionPresentation(

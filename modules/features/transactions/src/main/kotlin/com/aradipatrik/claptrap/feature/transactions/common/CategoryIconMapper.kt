@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.list.model
+package com.aradipatrik.claptrap.feature.transactions.common
 
 import com.aradipatrik.claptrap.domain.CategoryIcon
 import com.aradipatrik.claptrap.feature.transactions.R

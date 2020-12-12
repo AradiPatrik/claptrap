@@ -73,6 +73,8 @@ class BackdropFragment : ClapTrapFragment<
   private val nestedNavController
     get() = nestedNavHostFragment.navController
 
+  override val backdropNavController get() = nestedNavController
+
   private var menuItemsActive by Delegates.observable(false) { _, _, newValue ->
     binding.transactionsMenuItem.shouldGenerateClickEvents = newValue
     binding.statisticsMenuItem.shouldGenerateClickEvents = newValue

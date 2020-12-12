@@ -19,6 +19,8 @@ dependencies {
   implementation(Libraries.AndroidX.Lifecycle.lifecycle)
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Ktx.fragment)
+  implementation(Libraries.AndroidX.Navigation.core)
+  implementation(Libraries.AndroidX.Navigation.extensions)
 
 
   implementation(Libraries.Coroutines.core)

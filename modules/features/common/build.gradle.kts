@@ -10,6 +10,8 @@ dependencies {
   implementation(Libraries.Coroutines.core)
   implementation(Libraries.Coroutines.binding)
   implementation(Libraries.Coroutines.materialBinding)
+  implementation(Libraries.AndroidX.Navigation.core)
+  implementation(Libraries.AndroidX.Navigation.extensions)
 
   implementation(Libraries.Logging.timber)
 
