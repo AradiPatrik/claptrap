@@ -10,6 +10,7 @@
     android:layout_width="wrap_content"
     app:singleSelection="true"
     app:checkedChip="@+id/month_button_december"
+    app:selectionRequired="true"
     style="@style/Widget.MaterialComponents.Chip.Choice"
     android:layout_height="wrap_content">
     <View

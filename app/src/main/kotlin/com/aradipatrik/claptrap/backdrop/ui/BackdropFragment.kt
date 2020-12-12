@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
+import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -72,12 +73,16 @@ class BackdropFragment : ClapTrapFragment<
   private val nestedNavController
     get() = nestedNavHostFragment.navController
 
+  private var menuItemsActive by Delegates.observable(false) { _, _, newValue ->
+    binding.transactionsMenuItem.shouldGenerateClickEvents = newValue
+    binding.statisticsMenuItem.shouldGenerateClickEvents = newValue
+    binding.walletsMenuItem.shouldGenerateClickEvents = newValue
+  }
+
   private val onBackPressedCallback = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
       if (binding.backdropMotionLayout.isOpen) {
-        lifecycleScope.launchWhenResumed {
-          viewModel.viewEffects.send(BackdropViewEffect.ConcealBackLayer)
-        }
+        concealBackLayer()
       } else {
         notifyChildrenOfBackEventAndPopIfNecessary(nestedNavHostFragment, nestedNavController)
       }
@@ -109,8 +114,13 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   override fun render(viewState: BackdropViewState) = when (viewState) {
-    is BackdropViewState.OnTopLevelScreen -> activateScreen(viewState.topLevelScreen)
+    is BackdropViewState.OnTopLevelScreen -> renderTopLevelScreen(viewState)
     is BackdropViewState.CustomMenuShowing -> { }
+  }
+
+  private fun renderTopLevelScreen(onTopLevelScreen: BackdropViewState.OnTopLevelScreen) {
+    concealRevealBackLayer(onTopLevelScreen.isBackLayerConcealed)
+    activateScreen(onTopLevelScreen.topLevelScreen)
   }
 
   private fun showCustomMenu(menuFragment: Class<out Fragment>) {
@@ -137,6 +147,14 @@ class BackdropFragment : ClapTrapFragment<
     setTitle(topLevelScreen)
   }
 
+  private fun concealRevealBackLayer(
+    shouldLayerBeConcealed: Boolean
+  ) = with(binding.backdropMotionLayout) {
+    menuItemsActive = !shouldLayerBeConcealed
+    if (currentState == R.id.menu_shown && shouldLayerBeConcealed) concealBackLayer()
+    if (currentState == R.id.toolbar_shown && !shouldLayerBeConcealed) revealBackLayer()
+  }
+
   private fun setTitle(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
     TopLevelScreen.TRANSACTION_HISTORY -> binding.title.text =
       getString(R.string.transaction_history)
@@ -158,8 +176,6 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: BackdropViewEffect) = when (viewEffect) {
-    BackdropViewEffect.RevealBackLayer -> revealBackLayer()
-    BackdropViewEffect.ConcealBackLayer -> concealBackLayer()
     BackdropViewEffect.MorphFromBackToMenu -> lifecycleScope.launchWhenResumed {
       binding.menuIcon.playOneShotAnimation(
         ContextCompat.getDrawable(

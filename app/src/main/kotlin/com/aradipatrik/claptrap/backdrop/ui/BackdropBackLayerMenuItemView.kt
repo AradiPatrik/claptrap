@@ -12,6 +12,7 @@ import com.aradipatrik.claptrap.databinding.ViewBackdropMenuItemBinding
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.getDimenValue
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
+import kotlinx.coroutines.flow.filter
 import ru.ldralighieri.corbind.view.clicks
 
 class BackdropBackLayerMenuItemView @JvmOverloads constructor(
@@ -24,6 +25,7 @@ class BackdropBackLayerMenuItemView @JvmOverloads constructor(
   private val deactivatedAlpha by lazy { context.getDimenValue(R.dimen.alpha_medium) }
   private val clickAreaActiveAlpha by lazy { context.getDimenValue(R.dimen.alpha_low) }
   private val binding = inflateAndAddUsing(ViewBackdropMenuItemBinding::inflate)
+  var shouldGenerateClickEvents = true
 
   init {
     withStyleable(R.styleable.BackdropBackLayerMenuItemView, attrs) {
@@ -54,4 +56,5 @@ class BackdropBackLayerMenuItemView @JvmOverloads constructor(
   }
 
   val clicks = binding.backdropMenuItemTapArea.clicks()
+    .filter { shouldGenerateClickEvents }
 }
