@@ -20,6 +20,7 @@ sealed class TransactionsViewState {
   data class Adding(
     val transactionType: TransactionType = TransactionType.EXPENSE,
     val categories: List<Category> = emptyList(),
+    val oldTransactions: List<Transaction> = emptyList(),
     val date: DateTime = DateTime.now(),
     val selectedCategory: Category? = null,
     val memo: String = "",

@@ -70,7 +70,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private val backPressEvents = Channel<Unit>(BUFFERED)
 
-  private val transactionAdapter by lazy { TransactionAdapter() }
+  private val transactionAdapter by lazy { TransactionAdapter(lifecycleScope) }
   private val categoryAdapter by lazy { CategoryAdapter() }
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
@@ -187,6 +187,11 @@ class TransactionsFragment : ClapTrapFragment<
     is TransactionsViewEffect.Back -> backdrop.back()
     is TransactionsViewEffect.ToggleNumberPadAction -> binding.fabIcon.morph()
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
+    is TransactionsViewEffect.ScrollToTransaction -> scrollTo(viewEffect.transactionId)
+  }
+
+  private fun scrollTo(transactionId: String) {
+    transactionAdapter.currentScrollTargetId = transactionId
   }
 
   private suspend fun playAnimationWithMotionLayout(

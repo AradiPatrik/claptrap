@@ -3,6 +3,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
@@ -10,11 +11,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionHeaderBinding
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
-import kotlin.math.abs
 import kotlin.math.max
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
@@ -75,7 +76,7 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   }
 }
 
-class TransactionAdapter :
+class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
   ListAdapter<TransactionListItem, TransactionViewHolder>(TransactionItemItemCallback) {
   private val _headerChangeEvents = MutableStateFlow<String?>(null)
   val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
@@ -84,8 +85,14 @@ class TransactionAdapter :
   private var _layoutManager: LinearLayoutManager? = null
   private val layoutManager: LinearLayoutManager get() = _layoutManager!!
 
+  private var _recyclerView: RecyclerView? = null
+  private val recyclerView: RecyclerView get() = _recyclerView!!
+
+  var currentScrollTargetId: String? = null
+
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     _layoutManager = recyclerView.layoutManager as LinearLayoutManager
+    _recyclerView = recyclerView
   }
 
   override fun onCurrentListChanged(
@@ -106,15 +113,41 @@ class TransactionAdapter :
         is TransactionListItem.Item -> firstItem.transactionPresentation.monthAsText
       }
     }
+
+    currentScrollTargetId?.let {
+      findItemAndScrollTo(currentList, it)
+    }
+  }
+
+  private fun findItemAndScrollTo(
+    currentList: List<TransactionListItem>,
+    scrollTargetId: String
+  ) {
+    val scrollTargetPosition = currentList.indexOfFirst {
+      it is TransactionListItem.Item && it.transactionPresentation.domain.id == scrollTargetId
+    }
+
+    currentScrollTargetId = null
+
+    lifecycleScope.launchWhenResumed {
+      // Needed because we want to wait until our recycler view is shown by the animation
+      delay(SMOOTH_SCROLL_DELAY)
+      recyclerView.smoothScrollToPosition(scrollTargetPosition)
+    }
   }
 
   private fun getFirstVisiblePosition() = layoutManager.findFirstVisibleItemPosition()
 
   override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
     _layoutManager = null
+    _recyclerView = null
   }
 
   override fun onViewAttachedToWindow(holder: TransactionViewHolder) {
+    notifyFirstItemChanged()
+  }
+
+  override fun onViewDetachedFromWindow(holder: TransactionViewHolder) {
     notifyFirstItemChanged()
   }
 
@@ -151,3 +184,4 @@ class TransactionAdapter :
 
 private const val VIEW_TYPE_HEADER = 0
 private const val VIEW_TYPE_ITEM = 1
+private const val SMOOTH_SCROLL_DELAY = 600L

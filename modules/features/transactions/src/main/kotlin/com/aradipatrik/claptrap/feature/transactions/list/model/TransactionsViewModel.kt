@@ -20,8 +20,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
+import org.joda.money.CurrencyUnit
+import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
   private val transactionInteractor: TransactionInteractor,
@@ -29,13 +32,10 @@ class TransactionsViewModel @ViewModelInject constructor(
 ) : ClaptrapViewModel<TransactionsViewState, TransactionsViewEvent, TransactionsViewEffect>(
   Loading
 ) {
-  private var loadedTransactions = emptyList<Transaction>()
   private var getTransactionsInCurrentYearMonthJob =
     listenToTransactionsOfYearMonth(YearMonth.now())
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
-    loadedTransactions = transactions
-
     when (state) {
       is Loading -> TransactionsLoaded(transactions = transactions, refreshing = false)
       is TransactionsLoaded -> state.copy(transactions = transactions)
@@ -52,7 +52,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     is ActionClick -> goToAddTransaction()
     is BackClick -> goBack()
     is TransactionTypeSwitch -> switchTransactionType(viewEvent)
-    is CalculatorEvent -> handleCalculatorEvent(viewEvent)
+    is CalculatorEvent -> addTransactionOrAppendToNumberDisplay(viewEvent)
     is CategorySelected -> selectCategory(viewEvent.category)
     is MemoChange -> changeMemo(viewEvent.memo)
     is CalendarClick -> showDatePicker()
@@ -106,23 +106,31 @@ class TransactionsViewModel @ViewModelInject constructor(
     state.copy(selectedCategory = category)
   }
 
-  private fun handleCalculatorEvent(
+  private fun addTransactionOrAppendToNumberDisplay(
     viewEvent: CalculatorEvent
   ) = reduceSpecificState<Adding> { state ->
     if (wereAddTransactionClicked(state, viewEvent)) {
-      handleAddTransaction(state)
+      addTransactionOfState(state)
     } else {
-      handleNumberPadClick(state, viewEvent)
+      addNumberOrOperatorToState(state, viewEvent)
     }
   }
 
-  private fun handleAddTransaction(state: Adding) = TransactionsLoaded(
-    transactions = loadedTransactions,
-    yearMonth = state.transactionsYearMonth,
-    refreshing = false
-  )
+  private fun addTransactionOfState(state: Adding): TransactionsLoaded {
+    saveTransaction(createTransactionFromAddingState(state))
+    return TransactionsLoaded(
+      transactions = state.oldTransactions,
+      yearMonth = state.transactionsYearMonth,
+      refreshing = false
+    )
+  }
 
-  private suspend fun handleNumberPadClick(
+  private fun saveTransaction(newTransaction: Transaction) = sideEffect {
+    viewEffects.send(ScrollToTransaction(newTransaction.id))
+    transactionInteractor.saveTransaction(newTransaction)
+  }
+
+  private suspend fun addNumberOrOperatorToState(
     state: Adding,
     viewEvent: CalculatorEvent
   ): Adding = state.copy(
@@ -161,7 +169,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   private fun goBack() = reduceState { state ->
     if (state is Adding) {
       TransactionsLoaded(
-        transactions = loadedTransactions,
+        transactions = state.oldTransactions,
         yearMonth = state.transactionsYearMonth,
         refreshing = true
       )
@@ -182,4 +190,18 @@ class TransactionsViewModel @ViewModelInject constructor(
     }
     Adding(TransactionType.EXPENSE, transactionsYearMonth = oldState.yearMonth)
   }
+}
+
+private fun createTransactionFromAddingState(state: Adding): Transaction {
+  require(state.selectedCategory != null) {
+    "Add should not be called without a selected category"
+  }
+
+  return Transaction(
+    id = UUID.randomUUID().toString(),
+    money = Money.of(CurrencyUnit.USD, state.calculatorState.value.asBigDecimal),
+    note = state.memo,
+    date = state.date,
+    category = state.selectedCategory
+  )
 }

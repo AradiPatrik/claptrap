@@ -1,5 +1,6 @@
 package com.aradipatrik.claptrap.fakeinteractors.transaction
 
+import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.of
 import com.aradipatrik.claptrap.fakeinteractors.generators.TransactionMockGenerator.nextTransactionInYearMonth
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
@@ -24,6 +25,12 @@ class TransactionInteractorFake @Inject constructor() : TransactionInteractor {
       transactions.value = transactions.value +
         (yearMonth to (100 of { Random.nextTransactionInYearMonth(yearMonth) }))
     }
+  }
+
+  override suspend fun saveTransaction(transaction: Transaction) {
+    val yearMonth = YearMonth.fromDateFields(transaction.date.toDate())
+    transactions.value = transactions.value +
+      (yearMonth to ((transactions.value[yearMonth] ?: emptyList()) + transaction))
   }
 }
 

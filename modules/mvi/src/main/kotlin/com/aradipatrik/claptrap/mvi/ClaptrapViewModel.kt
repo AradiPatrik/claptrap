@@ -37,14 +37,6 @@ abstract class ClaptrapViewModel<S, EV, EF>(initialState: S) : ViewModel() {
       .launchIn(viewModelScope)
   }
 
-  protected fun setState(stateSetter: StateSetter<S>) {
-    viewModelScope.launch {
-      reducerChannel.send {
-        stateSetter.invoke()
-      }
-    }
-  }
-
   protected fun reduceState(stateReducer: StateReducer<S, S>) {
     viewModelScope.launch {
       reducerChannel.send {

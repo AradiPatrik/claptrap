@@ -6,4 +6,5 @@ sealed class TransactionsViewEffect {
   object ToggleNumberPadAction : TransactionsViewEffect()
   object Back : TransactionsViewEffect()
   data class ShowDatePickerAt(val date: DateTime) : TransactionsViewEffect()
+  data class ScrollToTransaction(val transactionId: String) : TransactionsViewEffect()
 }

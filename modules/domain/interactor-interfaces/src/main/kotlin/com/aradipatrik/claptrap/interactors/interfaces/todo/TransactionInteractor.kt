@@ -8,4 +8,6 @@ interface TransactionInteractor {
   fun getAllTransactions(): Flow<List<Transaction>>
 
   fun getAllTransactionsInYearMonth(yearMonth: YearMonth): Flow<List<Transaction>>
+
+  suspend fun saveTransaction(transaction: Transaction)
 }
