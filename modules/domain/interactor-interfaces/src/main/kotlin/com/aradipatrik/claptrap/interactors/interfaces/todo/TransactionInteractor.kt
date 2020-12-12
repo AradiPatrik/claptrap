@@ -5,9 +5,11 @@ import kotlinx.coroutines.flow.Flow
 import org.joda.time.YearMonth
 
 interface TransactionInteractor {
-  fun getAllTransactions(): Flow<List<Transaction>>
+  fun getAllTransactionsFlow(): Flow<List<Transaction>>
 
-  fun getAllTransactionsInYearMonth(yearMonth: YearMonth): Flow<List<Transaction>>
+  fun getAllTransactionsInYearMonthFlow(yearMonth: YearMonth): Flow<List<Transaction>>
 
   suspend fun saveTransaction(transaction: Transaction)
+
+  suspend fun getTransaction(transactionId: String): Transaction
 }

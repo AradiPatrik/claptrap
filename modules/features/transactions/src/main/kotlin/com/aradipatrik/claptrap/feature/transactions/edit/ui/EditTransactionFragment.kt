@@ -7,8 +7,8 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewModel
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
-import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -32,11 +32,14 @@ class EditTransactionFragment :
 
   override val viewEvents: Flow<EditTransactionViewEvent> get() = emptyFlow()
 
-  override fun render(viewState: EditTransactionViewState) {
-    binding.transactionIdDisplay.text = (viewState as EditTransactionViewState.Placeholder).transactionId
+  override fun render(viewState: EditTransactionViewState) = when(viewState) {
+    is Editing -> renderEditingState(viewState)
+  }
+
+  private fun renderEditingState(editing: Editing) {
+    binding.transactionIdDisplay.text = editing.transaction?.note ?: ""
   }
 
   override fun react(viewEffect: EditTransactionViewEffect) {
-
   }
 }

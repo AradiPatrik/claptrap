@@ -47,7 +47,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun listenToTransactionsOfYearMonth(yearMonth: YearMonth) = transactionInteractor
-    .getAllTransactionsInYearMonth(yearMonth)
+    .getAllTransactionsInYearMonthFlow(yearMonth)
     .onEach(::setLoadedTransactions)
     .launchIn(viewModelScope)
 
