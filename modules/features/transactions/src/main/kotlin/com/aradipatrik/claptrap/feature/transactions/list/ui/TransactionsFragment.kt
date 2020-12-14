@@ -13,9 +13,10 @@ import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
-import com.aradipatrik.claptrap.feature.transactions.common.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
+import com.aradipatrik.claptrap.feature.transactions.edit.ui.EditTransactionMenuFragment
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
@@ -34,7 +35,9 @@ import com.aradipatrik.claptrap.theme.widget.ViewUtil.getAnimatedVectorDrawable
 import com.aradipatrik.claptrap.theme.widget.ViewUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
 import timber.log.Timber
@@ -48,8 +51,8 @@ class TransactionsFragment : ClapTrapFragment<
   FragmentTransactionsBinding
   >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate), BackListener {
 
-  @Inject
-  lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
+  @Inject lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
+  @Inject lateinit var transactionAdapterFactory: TransactionAdapter.Factory
 
   override val viewModel by activityViewModels<TransactionsViewModel>()
 
@@ -75,7 +78,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private val backPressEvents = MutableSharedFlow<Unit>()
 
-  private val transactionAdapter by lazy { TransactionAdapter(lifecycleScope) }
+  private val transactionAdapter by lazy { transactionAdapterFactory.create(lifecycleScope) }
   private val categoryAdapter by lazy { CategoryAdapter() }
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
@@ -98,7 +101,7 @@ class TransactionsFragment : ClapTrapFragment<
       .onEach(binding.transactionsHeader::text::set)
       .launchInWhenResumed(lifecycleScope)
 
-    if (savedInstanceState != null) {
+    if (savedInstanceState != null && savedInstanceState.containsViewState()) {
       binding.transactionsMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
 
       if (savedInstanceState.getBoolean(IS_ON_CALCULATOR)) {
@@ -116,8 +119,7 @@ class TransactionsFragment : ClapTrapFragment<
     }
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
+  override fun saveViewState(outState: Bundle) {
     binding.transactionsMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
     outState.putBoolean(FAB_ICON_STATE_KEY, binding.fabIcon.isAtStartState)
     outState.putBoolean(
@@ -197,11 +199,11 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   private fun navigateToEdit(transactionId: String) {
-    Timber.tag("Navigation").d("$this: navigating to edit")
+    val arguments = bundleOf("transactionId" to transactionId)
     backdrop.backdropNavController
       .navigate(
         R.id.action_fragment_transactions_to_fragment_edit_transaction,
-        bundleOf("transactionId" to transactionId)
+        arguments
       )
   }
 

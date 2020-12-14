@@ -61,8 +61,7 @@ class BackdropFragment : ClapTrapFragment<
     }
   }
 
-  override fun onSaveInstanceState(outState: Bundle) {
-    super.onSaveInstanceState(outState)
+  override fun saveViewState(outState: Bundle) {
     binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
     outState.putBoolean(MENU_STATE_KEY, binding.menuIcon.isAtStartState)
   }
@@ -122,7 +121,8 @@ class BackdropFragment : ClapTrapFragment<
 
   override fun render(viewState: BackdropViewState) = when (viewState) {
     is BackdropViewState.OnTopLevelScreen -> renderTopLevelScreen(viewState)
-    is BackdropViewState.CustomMenuShowing -> { }
+    is BackdropViewState.CustomMenuShowing -> {
+    }
   }
 
   private fun renderTopLevelScreen(onTopLevelScreen: BackdropViewState.OnTopLevelScreen) {
@@ -130,10 +130,10 @@ class BackdropFragment : ClapTrapFragment<
     activateScreen(onTopLevelScreen.topLevelScreen)
   }
 
-  private fun showCustomMenu(menuFragment: Class<out Fragment>) {
+  private fun showCustomMenu(menuFragment: Class<out Fragment>, arguments: Bundle?) {
     childFragmentManager.commit {
       setReorderingAllowed(true)
-      replace(R.id.custom_menu_container, menuFragment, null, MENU_FRAGMENT_TAG)
+      replace(R.id.custom_menu_container, menuFragment, arguments, MENU_FRAGMENT_TAG)
     }
 
     binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
@@ -192,7 +192,8 @@ class BackdropFragment : ClapTrapFragment<
       )
     }.ignore()
     is NavigateToDestination -> navigateToTopLevelScreen(viewEffect.destination)
-    is BackdropViewEffect.ShowCustomMenu -> showCustomMenu(viewEffect.menuFragment)
+    is BackdropViewEffect.ShowCustomMenu ->
+      showCustomMenu(viewEffect.menuFragment, viewEffect.args)
   }
 
   private fun navigateToTopLevelScreen(topLevelScreen: TopLevelScreen) {
@@ -205,11 +206,12 @@ class BackdropFragment : ClapTrapFragment<
     )
   }
 
-  private val TopLevelScreen.destinationId get() = when(this) {
-    TopLevelScreen.TRANSACTION_HISTORY -> R.id.nav_graph_transactions
-    TopLevelScreen.WALLETS -> R.id.nav_graph_wallets
-    TopLevelScreen.STATISTICS -> R.id.nav_graph_statistics
-  }
+  private val TopLevelScreen.destinationId
+    get() = when (this) {
+      TopLevelScreen.TRANSACTION_HISTORY -> R.id.nav_graph_transactions
+      TopLevelScreen.WALLETS -> R.id.nav_graph_wallets
+      TopLevelScreen.STATISTICS -> R.id.nav_graph_statistics
+    }
 
   private fun revealBackLayer() {
     if (binding.menuIcon.isAtStartState) {
@@ -227,6 +229,10 @@ class BackdropFragment : ClapTrapFragment<
 
   override fun switchMenu(menuFragmentClass: Class<out Fragment>) =
     viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragmentClass))
+
+  override fun switchMenu(menuFragmentClass: Class<out Fragment>, arguments: Bundle) {
+    viewModel.processInput(BackdropViewEvent.SwitchToCustomMenu(menuFragmentClass, arguments))
+  }
 
   override fun clearMenu() {
     viewModel.processInput(BackdropViewEvent.RemoveCustomMenu)

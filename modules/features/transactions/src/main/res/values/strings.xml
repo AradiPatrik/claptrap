@@ -5,4 +5,5 @@
   <string name="categories_title">Categories</string>
   <string name="select_month_title">Select Month</string>
   <string name="edit_transaction_label_memo">Memo</string>
+  <string name="edit_transaction">Edit Transaction</string>
 </resources>

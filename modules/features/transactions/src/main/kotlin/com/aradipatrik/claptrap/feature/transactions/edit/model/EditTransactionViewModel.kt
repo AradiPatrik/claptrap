@@ -3,17 +3,19 @@ package com.aradipatrik.claptrap.feature.transactions.edit.model
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import timber.log.Timber
 
 class EditTransactionViewModel @AssistedInject constructor(
   private val transactionInteractor: TransactionInteractor,
   @Assisted private val transactionId: String
 ) : ClaptrapViewModel<EditTransactionViewState,
   EditTransactionViewEvent,
-  EditTransactionViewEffect>(Editing()) {
+  EditTransactionViewEffect>(Loading) {
   init {
     reduceState {
       Editing(transactionInteractor.getTransaction(transactionId))
@@ -38,6 +40,9 @@ class EditTransactionViewModel @AssistedInject constructor(
   }
 
   override fun processInput(viewEvent: EditTransactionViewEvent) {
-    TODO("Not yet implemented")
+  }
+
+  init {
+    Timber.tag("APDEBUG").d("initied edited transaction view model")
   }
 }

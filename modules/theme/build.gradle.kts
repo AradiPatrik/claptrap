@@ -5,4 +5,5 @@ dependencies {
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Lifecycle.lifecycle)
   implementation(Libraries.AndroidX.Lifecycle.viewModel)
+  implementation(Libraries.Logging.timber)
 }

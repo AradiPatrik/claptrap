@@ -33,6 +33,10 @@ dependencies {
 
   implementation(Libraries.Dagger.hilt)
   implementation(Libraries.Dagger.hiltLifecycle)
+
+  implementation(Libraries.Date.jodaTime)
+  implementation(Libraries.Money.jodaMoney)
+
   compileOnly(Libraries.Dagger.assistedInject)
   kapt(Libraries.Dagger.assistedInjectKapt)
   kapt(Libraries.Dagger.hiltKapt)

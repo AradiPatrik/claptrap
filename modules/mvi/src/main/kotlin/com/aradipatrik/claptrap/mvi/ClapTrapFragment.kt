@@ -69,6 +69,19 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
 
   override fun onDestroyView() {
     super.onDestroyView()
+
     _binding = null
   }
+
+  override fun onSaveInstanceState(outState: Bundle) {
+    super.onSaveInstanceState(outState)
+    _binding?.let {
+      outState.putBoolean("couldSaveViewState", true)
+      saveViewState(outState)
+    } ?: outState.putBoolean("couldSaveViewState", false)
+  }
+
+  protected fun Bundle.containsViewState() = getBoolean("couldSaveViewState", false)
+
+  protected open fun saveViewState(outState: Bundle) { }
 }

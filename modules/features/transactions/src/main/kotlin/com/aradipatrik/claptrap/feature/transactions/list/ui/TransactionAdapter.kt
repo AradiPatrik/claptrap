@@ -12,7 +12,10 @@ import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransac
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.feature.transactions.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
+import com.squareup.inject.assisted.Assisted
+import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks
@@ -76,8 +79,15 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
   }
 }
 
-class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
-  ListAdapter<TransactionListItem, TransactionViewHolder>(TransactionItemItemCallback) {
+class TransactionAdapter @AssistedInject constructor(
+  private val dateToStringMapper: DateToStringMapper,
+  @Assisted private val lifecycleScope: LifecycleCoroutineScope
+) : ListAdapter<TransactionListItem, TransactionViewHolder>(TransactionItemItemCallback) {
+  @AssistedInject.Factory
+  interface Factory {
+    fun create(lifecycleScope: LifecycleCoroutineScope): TransactionAdapter
+  }
+
   private val _headerChangeEvents = MutableStateFlow<String?>(null)
   val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
     .distinctUntilChanged()
@@ -114,7 +124,9 @@ class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
     firstVisibleItem?.let { firstItem ->
       _headerChangeEvents.value = when (firstItem) {
         is TransactionListItem.Header -> firstItem.title
-        is TransactionListItem.Item -> firstItem.transactionPresentation.monthAsText
+        is TransactionListItem.Item -> dateToStringMapper.mapLongMonthDay(
+          firstItem.transactionPresentation.domain.date
+        )
       }
     }
 
@@ -131,12 +143,14 @@ class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
       it is TransactionListItem.Item && it.transactionPresentation.domain.id == scrollTargetId
     }
 
-    currentScrollTargetId = null
+    if (scrollTargetPosition != -1) {
+      currentScrollTargetId = null
 
-    lifecycleScope.launchWhenResumed {
-      // Needed because we want to wait until our recycler view is shown by the animation
-      delay(SMOOTH_SCROLL_DELAY)
-      recyclerView.smoothScrollToPosition(scrollTargetPosition)
+      lifecycleScope.launchWhenResumed {
+        // Needed because we want to wait until our recycler view is shown by the animation
+        delay(SMOOTH_SCROLL_DELAY)
+        recyclerView.smoothScrollToPosition(scrollTargetPosition)
+      }
     }
   }
 
@@ -161,7 +175,9 @@ class TransactionAdapter(private val lifecycleScope: LifecycleCoroutineScope) :
     if (position >= 0) {
       _headerChangeEvents.value = when (val item = getItem(position)) {
         is TransactionListItem.Header -> item.title
-        is TransactionListItem.Item -> item.transactionPresentation.monthAsText
+        is TransactionListItem.Item -> dateToStringMapper.mapLongMonthDay(
+          item.transactionPresentation.domain.date
+        )
       }
     }
   }

@@ -18,7 +18,7 @@ class BackdropViewModel :
       oldState.copy(topLevelScreen = viewEvent.topLevelScreen)
     }
     is SwitchToCustomMenu -> reduceState { oldState ->
-      viewEffects.emit(ShowCustomMenu(viewEvent.menuFragmentClass))
+      viewEffects.emit(ShowCustomMenu(viewEvent.menuFragmentClass, viewEvent.args))
       BackdropViewState.CustomMenuShowing(oldState.topLevelScreen)
     }
     is RemoveCustomMenu -> reduceState { oldState ->

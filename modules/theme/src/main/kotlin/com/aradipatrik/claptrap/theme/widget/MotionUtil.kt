@@ -7,6 +7,7 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.os.bundleOf
 import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 import kotlin.coroutines.resume
 
 object MotionUtil {
@@ -65,7 +66,10 @@ object MotionUtil {
 
   private fun MotionLayout.doRestore(savedInstanceState: Bundle?, key: String) =
     savedInstanceState?.let {
-      val motionBundle = savedInstanceState.getBundle(key) ?: error("$key state was not saved")
+      val motionBundle = savedInstanceState.getBundle(key) ?: return Unit.also {
+        Timber.tag("MotionUtil").i("Did not found bundle, skipping state restore")
+      }
+
       setTransition(
         motionBundle.getInt("claptrap.motion.startState", -1)
           .takeIf { it != -1 }

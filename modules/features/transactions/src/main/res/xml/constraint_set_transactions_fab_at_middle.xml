@@ -4,8 +4,8 @@
   xmlns:motion="http://schemas.android.com/apk/res-auto">
   <Constraint android:id="@+id/fab_background">
     <Layout
-      android:layout_width="48dp"
-      android:layout_height="48dp"
+      android:layout_width="56dp"
+      android:layout_height="56dp"
       motion:layout_constraintBottom_toBottomOf="parent"
       motion:layout_constraintEnd_toEndOf="parent"
       motion:layout_constraintStart_toStartOf="parent"
@@ -19,7 +19,7 @@
 
     <CustomAttribute
       motion:attributeName="radius"
-      motion:customDimension="24dp" />
+      motion:customDimension="32dp" />
   </Constraint>
 
   <Constraint android:id="@+id/fab_icon">

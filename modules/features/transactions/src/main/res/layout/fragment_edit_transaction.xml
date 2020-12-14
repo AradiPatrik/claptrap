@@ -19,79 +19,86 @@
     app:layout_constraintTop_toTopOf="parent" />
 
   <com.google.android.material.textfield.TextInputLayout
-    android:elevation="?attr/foregroundElevation"
     android:id="@+id/memo_text_input_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:hint="@string/edit_transaction_label_memo"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintEnd_toEndOf="parent"
     android:layout_marginHorizontal="16dp"
+    android:elevation="?attr/foregroundElevation"
+    android:hint="@string/edit_transaction_label_memo"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
+
     <com.google.android.material.textfield.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:elevation="?attr/foregroundElevation"
     android:id="@+id/amount_text_input_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
     android:layout_marginHorizontal="16dp"
+    android:elevation="?attr/foregroundElevation"
     android:hint="@string/edit_transaction_label_memo"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/memo_text_input_layout">
+
     <com.google.android.material.textfield.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:elevation="?attr/foregroundElevation"
     android:id="@+id/date_text_input_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
+    android:layout_marginHorizontal="16dp"
+    android:elevation="?attr/foregroundElevation"
     android:hint="@string/edit_transaction_label_memo"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    app:layout_constraintStart_toStartOf="parent"
+    app:startIconDrawable="@drawable/ic_calendar"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/amount_text_input_layout">
+
     <com.google.android.material.textfield.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.textfield.TextInputLayout
-    android:elevation="?attr/foregroundElevation"
     android:id="@+id/category_text_input_layout"
+    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
     android:layout_width="0dp"
     android:layout_height="wrap_content"
-    android:hint="@string/edit_transaction_label_memo"
     android:layout_marginHorizontal="16dp"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    app:layout_constraintStart_toStartOf="parent"
+    android:elevation="?attr/foregroundElevation"
+    android:hint="@string/edit_transaction_label_memo"
     app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/date_text_input_layout">
+
     <com.google.android.material.textfield.TextInputEditText
       android:layout_width="match_parent"
       android:layout_height="wrap_content" />
   </com.google.android.material.textfield.TextInputLayout>
 
   <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:elevation="?attr/foregroundElevation"
     android:id="@+id/edit_done_fab"
-    app:layout_constraintEnd_toEndOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    android:layout_marginBottom="24dp"
-    android:layout_marginEnd="24dp"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    app:tint="?attr/colorOnSurface"
-    app:backgroundTint="?attr/colorAccent" />
+    android:layout_marginEnd="24dp"
+    android:layout_marginBottom="24dp"
+    android:elevation="?attr/foregroundElevation"
+    app:backgroundTint="?attr/colorAccent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:srcCompat="@drawable/ic_check"
+    app:tint="?attr/colorOnSecondary" />
 
   <View
     android:id="@+id/card_bottom"
