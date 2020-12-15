@@ -19,7 +19,6 @@ import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 import kotlin.math.max
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
@@ -65,16 +64,20 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var transactionListItem: TransactionListItem.Item? = null
 
     val clicks = binding.root.clicks()
-      .map { transactionListItem!!.transactionPresentation.domain.id }
+      .map { binding to transactionListItem!!.transactionPresentation.domain.id }
 
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Item) { "Expected transaction list item got: $item" }
       transactionListItem = item
-      binding.transactionDate.text = item.transactionPresentation.date
-      binding.transactionNote.text = item.transactionPresentation.note
-      binding.transactionAmount.text = item.transactionPresentation.amount
-      binding.transactionAmountIcon.text = item.transactionPresentation.currencySymbol
-      binding.categoryIcon.setImageResource(item.transactionPresentation.categoryIcon)
+      with(binding) {
+        transactionDate.text = item.transactionPresentation.date
+        transactionNote.text = item.transactionPresentation.note
+        transactionAmount.text = item.transactionPresentation.amount
+        transactionAmountIcon.text = item.transactionPresentation.currencySymbol
+        categoryIcon.setImageResource(item.transactionPresentation.categoryIcon)
+
+        root.transitionName = item.transactionPresentation.domain.id
+      }
     }
   }
 }
@@ -199,9 +202,8 @@ class TransactionAdapter @AssistedInject constructor(
 
   private fun listenToItemClicks(viewHolder: TransactionViewHolder.TransactionItemViewHolder) =
     viewHolder.clicks
-      .map {
-        Timber.tag("Clicks").d("clicked item")
-        TransactionsViewEvent.TransactionItemClicked(it)
+      .map { (itemView, id) ->
+        TransactionsViewEvent.TransactionItemClicked(itemView, id)
       }
       .onEach(viewEventFlow::emit)
       .launchInWhenResumed(lifecycleScope)

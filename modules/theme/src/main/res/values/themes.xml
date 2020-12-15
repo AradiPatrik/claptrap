@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
   <!--Top level DayNight theme to be used in AndroidManifest.xml-->
-  <style name="Theme.Claptrap" parent="Base.Theme.Claptrap"/>
+  <style name="Theme.Claptrap" parent="Base.Theme.Claptrap" />
   <!--Base custom theme which will be shared between both light and dark theme variants-->
   <style name="Base.Theme.Claptrap" parent="Base.Theme.MaterialThemeBuilder">
     <!--Material color attributes (light theme) -->
@@ -31,6 +31,7 @@
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="colorPrimaryVariantPrimary">?attr/colorPrimaryVariant</item>
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
+    <item name="aboveForegroundElevation">4dp</item>
     <item name="foregroundElevation">2dp</item>
     <item name="behindForegroundElevation">1dp</item>
     <!--Material type attributes-->
@@ -49,7 +50,8 @@
     <item name="textAppearanceOverline">@style/TextAppearance.Claptrap.Overline</item>
     <!--Material shape attributes-->
     <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.Claptrap.SmallComponent</item>
-    <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Claptrap.MediumComponent</item>
+    <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.Claptrap.MediumComponent
+    </item>
     <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.Claptrap.LargeComponent</item>
     <!--Component styles-->
     <item name="materialAlertDialogTheme">@style/ThemeOverlay.MaterialComponents.Dialog.Alert</item>
@@ -60,7 +62,8 @@
   <style name="Base.Theme.MaterialThemeBuilder" parent="Theme.MaterialComponents.DayNight.NoActionBar">
     <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorPrimaryVariant</item>
     <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
-    <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground</item>
+    <item name="android:navigationBarColor" tools:ignore="NewApi">?android:attr/colorBackground
+    </item>
     <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
     <item name="android:windowBackground">?attr/colorPrimarySurface</item>
   </style>

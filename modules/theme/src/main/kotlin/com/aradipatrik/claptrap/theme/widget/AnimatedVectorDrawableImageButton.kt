@@ -8,11 +8,11 @@ import android.util.AttributeSet
 import androidx.annotation.AttrRes
 import androidx.appcompat.widget.AppCompatImageButton
 import com.aradipatrik.claptrap.theme.R
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.withStyleable
 import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
-class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
+class AnimatedVectorDrawableImageButton @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
   @AttrRes defStyleAttr: Int = 0
@@ -21,6 +21,7 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
 
   lateinit var startToEndAnimatedVectorDrawable: AnimatedVectorDrawable
   lateinit var endToStartAnimatedVectorDrawable: AnimatedVectorDrawable
+  var shouldAnimateAutomaticallyOnClicks = true
 
   init {
     withStyleable(R.styleable.AnimatedVectorDrawableImageButton, attrs) {
@@ -36,7 +37,9 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
   }
 
   override fun performClick(): Boolean {
-    morph()
+    if (shouldAnimateAutomaticallyOnClicks) {
+      morph()
+    }
 
     return super.performClick()
   }
@@ -105,10 +108,12 @@ class AnimatedVectorDrawableImageButton@JvmOverloads constructor(
   }
 
   fun reset() {
-    setImageDrawable(if (isAtStartState) {
-      startToEndAnimatedVectorDrawable
-    } else {
-      endToStartAnimatedVectorDrawable
-    })
+    setImageDrawable(
+      if (isAtStartState) {
+        startToEndAnimatedVectorDrawable
+      } else {
+        endToStartAnimatedVectorDrawable
+      }
+    )
   }
 }

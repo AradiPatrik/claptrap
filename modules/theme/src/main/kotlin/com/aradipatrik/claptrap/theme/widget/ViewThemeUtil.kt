@@ -19,7 +19,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import kotlin.coroutines.resume
 
 
-object ViewUtil {
+object ViewThemeUtil {
   fun View.withStyleable(
     styleable: IntArray,
     attrs: AttributeSet?,
@@ -47,18 +47,6 @@ object ViewUtil {
     resources.getValue(dimen, typedValue, resolveRefs)
     return typedValue.float
   }
-
-  var View.visibleInMotionLayout: Boolean
-    get() = alpha > 0.0f && isClickable
-    set(value) = if (value) {
-      alpha = 1.0f
-      isClickable = true
-      isFocusable = true
-    } else {
-      alpha = 0.0f
-      isClickable = false
-      isFocusable = false
-    }
 
   fun Fragment.getAnimatedVectorDrawable(@DrawableRes drawable: Int) =
     ContextCompat.getDrawable(requireContext(), drawable) as AnimatedVectorDrawable

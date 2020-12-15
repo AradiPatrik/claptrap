@@ -1,12 +1,7 @@
 package com.aradipatrik.claptrap.feature.transactions.edit.ui
 
 import android.os.Bundle
-import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
-import androidx.navigation.navGraphViewModels
 import com.aradipatrik.claptrap.common.backdrop.FragmentExt.menuDestinationViewModels
-import com.aradipatrik.claptrap.common.backdrop.backdrop
-import com.aradipatrik.claptrap.common.backdrop.menuBackDrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentMenuEditTransactionBinding
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
@@ -17,9 +12,7 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class EditTransactionMenuFragment : ClapTrapFragment<
@@ -32,12 +25,11 @@ class EditTransactionMenuFragment : ClapTrapFragment<
   override val viewModel by menuDestinationViewModels<EditTransactionViewModel>()
 
   override val viewEvents
-    get() = merge(
-      binding.root.clicks().map { BackClick }
-    )
+    get() = binding.backButton.clicks().map { BackClick }
 
   override fun initViews(savedInstanceState: Bundle?) {
     binding.backButton.morph()
+    binding.backButton.shouldAnimateAutomaticallyOnClicks = false
   }
 
   override fun render(viewState: EditTransactionViewState) {

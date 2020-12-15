@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-  <attr name="colorOnPrimarySurfaceAlphaMedium" format="color"/>
-  <attr name="colorOnPrimarySurfaceAlphaLow" format="color"/>
+  <attr name="colorOnPrimarySurfaceAlphaMedium" format="color" />
+  <attr name="colorOnPrimarySurfaceAlphaLow" format="color" />
   <attr name="colorOnSurfacePrimary" format="color" />
   <attr name="colorPrimaryVariantPrimary" format="color" />
   <attr name="colorSecondaryVariantSecondary" format="color" />
 
+  <attr name="aboveForegroundElevation" format="dimension" />
   <attr name="foregroundElevation" format="dimension" />
   <attr name="behindForegroundElevation" format="dimension" />
 </resources>

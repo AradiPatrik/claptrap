@@ -5,7 +5,7 @@ import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import com.aradipatrik.claptrap.feature.transactions.databinding.ViewNumberPadBinding
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.inflateAndAddUsing
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
+  xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/motion_layout"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  xmlns:tools="http://schemas.android.com/tools"
-  tools:layout_height="24dp"
-  app:layoutDescription="@xml/view_animated_header_scene">
+  app:layoutDescription="@xml/view_animated_header_scene"
+  tools:layout_height="24dp">
 
   <TextView
     android:id="@+id/upper_view"
-    android:layout_width="wrap_content"
-    android:layout_height="0dp"
+    android:layout_width="480dp"
+    android:layout_height="24dp"
     android:layout_marginStart="24dp"
     android:elevation="1dp"
     android:text="March"
@@ -21,12 +21,12 @@
 
   <TextView
     android:id="@+id/lower_view"
-    android:layout_width="0dp"
-    android:layout_height="wrap_content"
+    android:layout_width="480dp"
+    android:layout_height="24dp"
+    android:alpha="0"
     android:elevation="1dp"
     android:text="May"
     android:textAppearance="?attr/textAppearanceSubtitle1"
     app:layout_constraintStart_toStartOf="@id/upper_view"
-    app:layout_constraintTop_toBottomOf="parent"
-    android:alpha="0"/>
+    app:layout_constraintTop_toBottomOf="parent" />
 </androidx.constraintlayout.motion.widget.MotionLayout>

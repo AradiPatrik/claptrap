@@ -1,8 +1,8 @@
 package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import com.aradipatrik.claptrap.domain.Category
+import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import org.joda.time.DateTime
-import org.joda.time.YearMonth
 
 sealed class TransactionsViewEvent {
   object ActionClick : TransactionsViewEvent()
@@ -12,7 +12,11 @@ sealed class TransactionsViewEvent {
   data class MonthSelected(val month: Int) : TransactionsViewEvent()
   object YearIncreased : TransactionsViewEvent()
   object YearDecreased : TransactionsViewEvent()
-  data class TransactionItemClicked(val transactionId: String) : TransactionsViewEvent()
+
+  data class TransactionItemClicked(
+    val itemView: ListItemTransactionItemBinding,
+    val transactionId: String
+  ) : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {
     data class MemoChange(val memo: String) : AddTransactionViewEvent()

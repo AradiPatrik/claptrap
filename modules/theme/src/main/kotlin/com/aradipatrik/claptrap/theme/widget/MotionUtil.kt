@@ -1,11 +1,14 @@
 package com.aradipatrik.claptrap.theme.widget
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.os.Bundle
-import android.os.Handler
 import android.view.ViewTreeObserver
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.motion.widget.TransitionAdapter
 import androidx.core.os.bundleOf
+import androidx.transition.Transition
+import androidx.transition.TransitionListenerAdapter
 import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import kotlin.coroutines.resume
@@ -92,5 +95,38 @@ object MotionUtil {
         "claptrap.motion.progress" to progress
       )
     )
+  }
+
+  suspend fun Animator.awaitEnd() = suspendCancellableCoroutine<Unit> { continuation ->
+    continuation.invokeOnCancellation { cancel() }
+
+    addListener(object : AnimatorListenerAdapter() {
+      private var endedSuccessfully = true
+
+      override fun onAnimationCancel(animation: Animator) {
+        endedSuccessfully = false
+      }
+
+      override fun onAnimationEnd(animation: Animator) {
+        animation.removeListener(this)
+
+        if (continuation.isActive) {
+          if (endedSuccessfully) {
+            continuation.resume(Unit)
+          } else {
+            continuation.cancel()
+          }
+        }
+      }
+    })
+  }
+
+  fun Transition.onTransitionEnd(block: () -> Unit): Transition = apply {
+    addListener(object : TransitionListenerAdapter() {
+      override fun onTransitionEnd(transition: Transition) {
+        block()
+        removeListener(this)
+      }
+    })
   }
 }

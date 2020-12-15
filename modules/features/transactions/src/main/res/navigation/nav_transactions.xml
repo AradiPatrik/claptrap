@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-  android:id="@+id/nav_graph_transactions"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
+  android:id="@+id/nav_graph_transactions"
   app:startDestination="@id/fragment_transactions">
   <fragment
     android:id="@+id/fragment_transactions"
@@ -12,13 +12,15 @@
     <action
       android:id="@+id/action_fragment_transactions_to_fragment_edit_transaction"
       app:destination="@id/fragment_edit_transaction"
-      app:enterAnim="@anim/nav_default_enter_anim"
-      app:exitAnim="@anim/nav_default_exit_anim" />
+      app:enterAnim="@anim/fragment_fade_enter"
+      app:exitAnim="@anim/fragment_fade_exit"
+      app:popEnterAnim="@anim/fragment_fade_enter"
+      app:popExitAnim="@anim/fragment_fade_exit" />
   </fragment>
 
   <fragment
     android:id="@+id/fragment_edit_transaction"
     android:name="com.aradipatrik.claptrap.feature.transactions.edit.ui.EditTransactionFragment"
     android:label="EditTransaction"
-    tools:layout="@layout/fragment_edit_transaction"/>
+    tools:layout="@layout/fragment_edit_transaction" />
 </navigation>

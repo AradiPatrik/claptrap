@@ -1,22 +1,24 @@
 package com.aradipatrik.claptrap.feature.transactions.list.ui
 
+import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
-import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
-import com.aradipatrik.claptrap.feature.transactions.edit.ui.EditTransactionMenuFragment
+import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
@@ -24,24 +26,27 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
+import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
+import com.aradipatrik.claptrap.theme.widget.MotionUtil.awaitEnd
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransitionAndWaitForFinish
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.getAnimatedVectorDrawable
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.showAndWaitWith
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getAnimatedVectorDrawable
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.max
 
 @AndroidEntryPoint
 class TransactionsFragment : ClapTrapFragment<
@@ -59,7 +64,6 @@ class TransactionsFragment : ClapTrapFragment<
   override val viewEvents: Flow<TransactionsViewEvent>
     get() = merge(
       binding.fabBackground.clicks().map { ActionClick },
-      backPressEvents.map { BackClick },
       binding.numberPad.digitClicks.map { NumberClick(it) },
       binding.numberPad.plusClicks.map { PlusClick },
       binding.numberPad.minusClicks.map { MinusClick },
@@ -76,8 +80,6 @@ class TransactionsFragment : ClapTrapFragment<
       transactionAdapter.viewEvents
     )
 
-  private val backPressEvents = MutableSharedFlow<Unit>()
-
   private val transactionAdapter by lazy { transactionAdapterFactory.create(lifecycleScope) }
   private val categoryAdapter by lazy { CategoryAdapter() }
 
@@ -89,6 +91,11 @@ class TransactionsFragment : ClapTrapFragment<
 
   @SuppressLint("BinaryOperationInTimber")
   override fun initViews(savedInstanceState: Bundle?) {
+    postponeEnterTransition()
+    binding.transactionRecyclerView.viewTreeObserver.addOnPreDrawListener {
+      startPostponedEnterTransition()
+      true
+    }
     binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
     binding.transactionRecyclerView.adapter = transactionAdapter
 
@@ -195,17 +202,50 @@ class TransactionsFragment : ClapTrapFragment<
     is TransactionsViewEffect.ToggleNumberPadAction -> binding.fabIcon.morph()
     is TransactionsViewEffect.ShowDatePickerAt -> showDatePicker()
     is TransactionsViewEffect.ScrollToTransaction -> scrollTo(viewEffect.transactionId)
-    is TransactionsViewEffect.NavigateToEditTransaction -> navigateToEdit(viewEffect.transactionId)
+    is TransactionsViewEffect.NavigateToEditTransaction ->
+      navigateToEdit(viewEffect.itemView, viewEffect.transactionId)
   }
 
-  private fun navigateToEdit(transactionId: String) {
+  private fun navigateToEdit(
+    clickedView: ListItemTransactionItemBinding,
+    transactionId: String
+  ) = lifecycleScope.launchWhenResumed {
     val arguments = bundleOf("transactionId" to transactionId)
+    val extras = FragmentNavigatorExtras(
+      clickedView.root to clickedView.root.transitionName,
+      clickedView.transactionAmountIcon to clickedView.transactionAmountIcon.transitionName,
+      clickedView.transactionDate to clickedView.transactionDate.transitionName,
+      clickedView.transactionAmount to clickedView.transactionAmount.transitionName,
+      clickedView.categoryIcon to clickedView.categoryIcon.transitionName,
+      clickedView.transactionNote to clickedView.transactionNote.transitionName
+    )
+
+    val animator = ValueAnimator.ofFloat(0.0f, 1.0f)
+      .apply {
+        duration = 300
+        addUpdateListener {
+          val animatedValue = it.animatedValue as Float
+          clickedView.root.cardElevation = (it.animatedValue as Float) * 32.0f
+          binding.fabIcon.alpha = max(0.0f, 1.0f - animatedValue * 2)
+          binding.fabIcon.scaleX = 1.0f - animatedValue
+          binding.fabIcon.scaleY = 1.0f - animatedValue
+          binding.fabBackground.scaleX = 1.0f - animatedValue
+          binding.fabBackground.scaleY = 1.0f - animatedValue
+        }
+        interpolator = FastOutSlowInInterpolator()
+      }
+
+    animator.start()
+    animator.awaitEnd()
+
     backdrop.backdropNavController
       .navigate(
         R.id.action_fragment_transactions_to_fragment_edit_transaction,
-        arguments
+        arguments,
+        null,
+        extras
       )
-  }
+  }.ignore()
 
   private fun scrollTo(transactionId: String) {
     transactionAdapter.currentScrollTargetId = transactionId
@@ -283,7 +323,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   override fun onBack(): BackEffect {
     viewLifecycleOwner.lifecycleScope.launchWhenResumed {
-      backPressEvents.emit(Unit)
+      extraViewEventsFlow.emit(BackClick)
     }
     return BackEffect.NO_POP
   }

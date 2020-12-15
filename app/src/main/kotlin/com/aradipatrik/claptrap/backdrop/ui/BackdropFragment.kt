@@ -32,7 +32,6 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import ru.ldralighieri.corbind.view.clicks
 import timber.log.Timber
-import kotlin.properties.Delegates
 
 @AndroidEntryPoint
 class BackdropFragment : ClapTrapFragment<
@@ -74,12 +73,6 @@ class BackdropFragment : ClapTrapFragment<
     get() = nestedNavHostFragment.navController
 
   override val backdropNavController get() = nestedNavController
-
-  private var menuItemsActive by Delegates.observable(false) { _, _, newValue ->
-    binding.transactionsMenuItem.shouldGenerateClickEvents = newValue
-    binding.statisticsMenuItem.shouldGenerateClickEvents = newValue
-    binding.walletsMenuItem.shouldGenerateClickEvents = newValue
-  }
 
   private val onBackPressedCallback = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
@@ -157,7 +150,6 @@ class BackdropFragment : ClapTrapFragment<
   private fun concealRevealBackLayer(
     shouldLayerBeConcealed: Boolean
   ) = with(binding.backdropMotionLayout) {
-    menuItemsActive = !shouldLayerBeConcealed
     if (currentState == R.id.menu_shown && shouldLayerBeConcealed) concealBackLayer()
     if (currentState == R.id.toolbar_shown && !shouldLayerBeConcealed) revealBackLayer()
   }

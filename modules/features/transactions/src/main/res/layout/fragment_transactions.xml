@@ -112,6 +112,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="24dp"
     android:elevation="2dp"
+    app:layout_constraintEnd_toEndOf="@id/front_layer"
     app:layout_constraintStart_toStartOf="@id/front_layer"
     app:layout_constraintTop_toTopOf="@id/front_layer" />
 

@@ -6,7 +6,7 @@ import android.widget.FrameLayout
 import androidx.annotation.AttrRes
 import com.aradipatrik.claptrap.feature.transactions.databinding.ViewYearMonthSelectionBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.Months
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.inflateAndAddUsing
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import org.joda.time.YearMonth
@@ -63,10 +63,11 @@ class YearMonthSelectionView @JvmOverloads constructor(
     }
   }
 
-  val monthClicks get() = binding.monthChipGroup.checkedChanges()
-    .map { id ->
-      1.rangeTo(12)
-        .first { getButtonForMonthNumber(it).id == id }
-    }
-    .drop(1)
+  val monthClicks
+    get() = binding.monthChipGroup.checkedChanges()
+      .map { id ->
+        1.rangeTo(12)
+          .first { getButtonForMonthNumber(it).id == id }
+      }
+      .drop(1)
 }

@@ -4,6 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
+import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
@@ -26,7 +27,6 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
-import timber.log.Timber
 import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
@@ -64,12 +64,14 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MonthSelected -> selectYearMonth(viewEvent.month)
     is YearIncreased -> increaseYear()
     is YearDecreased -> decreaseYear()
-    is TransactionItemClicked -> goToEditTransaction(viewEvent.transactionId)
+    is TransactionItemClicked -> goToEditTransaction(viewEvent.itemView, viewEvent.transactionId)
   }
 
-  private fun goToEditTransaction(transactionId: String) = viewModelScope.launch {
-    Timber.tag("SendEvent").d("navigation requested")
-    viewEffects.emit(NavigateToEditTransaction(transactionId))
+  private fun goToEditTransaction(
+    itemView: ListItemTransactionItemBinding,
+    transactionId: String
+  ) = viewModelScope.launch {
+    viewEffects.emit(NavigateToEditTransaction(itemView, transactionId))
   }.ignore()
 
   private fun decreaseYear() = reduceSpecificState<TransactionsLoaded> { state ->

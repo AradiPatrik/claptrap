@@ -9,9 +9,9 @@ import androidx.core.content.res.getDrawableOrThrow
 import androidx.core.content.res.getStringOrThrow
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.databinding.ViewBackdropMenuItemBinding
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.getDimenValue
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.inflateAndAddUsing
-import com.aradipatrik.claptrap.theme.widget.ViewUtil.withStyleable
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getDimenValue
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.inflateAndAddUsing
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.withStyleable
 import kotlinx.coroutines.flow.filter
 import ru.ldralighieri.corbind.view.clicks
 
