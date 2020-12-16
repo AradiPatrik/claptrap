@@ -58,8 +58,12 @@ class TransactionsFragment : ClapTrapFragment<
 
   @Inject lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
   @Inject lateinit var transactionAdapterFactory: TransactionAdapter.Factory
+  @Inject lateinit var categoryAdapterFactory: CategoryAdapter.Factory
 
   override val viewModel by activityViewModels<TransactionsViewModel>()
+
+  private val transactionAdapter by lazy { transactionAdapterFactory.create(lifecycleScope) }
+  private val categoryAdapter by lazy { categoryAdapterFactory.create(lifecycleScope) }
 
   override val viewEvents: Flow<TransactionsViewEvent>
     get() = merge(
@@ -79,9 +83,6 @@ class TransactionsFragment : ClapTrapFragment<
       binding.yearIncreaseChevron.clicks().map { YearIncreased },
       transactionAdapter.viewEvents
     )
-
-  private val transactionAdapter by lazy { transactionAdapterFactory.create(lifecycleScope) }
-  private val categoryAdapter by lazy { CategoryAdapter() }
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
   private val equalsToCheck by lazy { getAnimatedVectorDrawable(R.drawable.equals_to_check) }
@@ -212,12 +213,7 @@ class TransactionsFragment : ClapTrapFragment<
   ) = lifecycleScope.launchWhenResumed {
     val arguments = bundleOf("transactionId" to transactionId)
     val extras = FragmentNavigatorExtras(
-      clickedView.root to clickedView.root.transitionName,
-      clickedView.transactionAmountIcon to clickedView.transactionAmountIcon.transitionName,
-      clickedView.transactionDate to clickedView.transactionDate.transitionName,
-      clickedView.transactionAmount to clickedView.transactionAmount.transitionName,
-      clickedView.categoryIcon to clickedView.categoryIcon.transitionName,
-      clickedView.transactionNote to clickedView.transactionNote.transitionName
+      clickedView.root to clickedView.root.transitionName
     )
 
     val animator = ValueAnimator.ofFloat(0.0f, 1.0f)

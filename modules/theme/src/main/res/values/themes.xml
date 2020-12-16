@@ -31,9 +31,10 @@
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="colorPrimaryVariantPrimary">?attr/colorPrimaryVariant</item>
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
-    <item name="aboveForegroundElevation">4dp</item>
-    <item name="foregroundElevation">2dp</item>
-    <item name="behindForegroundElevation">1dp</item>
+    <item name="elevationLevelFour">5dp</item>
+    <item name="elevationLevelThree">4dp</item>
+    <item name="elevationLevelTwo">2dp</item>
+    <item name="elevationLevelOne">1dp</item>
     <!--Material type attributes-->
     <item name="textAppearanceHeadline1">@style/TextAppearance.Claptrap.Headline1</item>
     <item name="textAppearanceHeadline2">@style/TextAppearance.Claptrap.Headline2</item>

@@ -6,7 +6,8 @@
   <attr name="colorPrimaryVariantPrimary" format="color" />
   <attr name="colorSecondaryVariantSecondary" format="color" />
 
-  <attr name="aboveForegroundElevation" format="dimension" />
-  <attr name="foregroundElevation" format="dimension" />
-  <attr name="behindForegroundElevation" format="dimension" />
+  <attr name="elevationLevelFour" format="dimension" />
+  <attr name="elevationLevelThree" format="dimension" />
+  <attr name="elevationLevelTwo" format="dimension" />
+  <attr name="elevationLevelOne" format="dimension" />
 </resources>

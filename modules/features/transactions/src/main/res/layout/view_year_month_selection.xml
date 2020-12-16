@@ -28,7 +28,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -37,7 +37,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
@@ -54,7 +54,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -63,7 +63,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
@@ -80,7 +80,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -89,7 +89,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
@@ -106,7 +106,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -115,7 +115,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
@@ -132,7 +132,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -141,7 +141,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
@@ -158,7 +158,7 @@
       app:chipBackgroundColor="@color/chip_background_on_surface"
       app:chipStrokeWidth="1dp"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
-      android:elevation="?attr/foregroundElevation" />
+      android:elevation="?attr/elevationLevelTwo" />
 
     <com.google.android.material.chip.Chip
       style="@style/Widget.MaterialComponents.Chip.Choice"
@@ -167,7 +167,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?attr/textAppearanceSubtitle1"
-      android:elevation="?attr/foregroundElevation"
+      android:elevation="?attr/elevationLevelTwo"
       android:textColor="@color/chip_text_color"
       app:chipStrokeColor="?attr/colorOnPrimarySurfaceAlphaLow"
       app:chipBackgroundColor="@color/chip_background_on_surface"
