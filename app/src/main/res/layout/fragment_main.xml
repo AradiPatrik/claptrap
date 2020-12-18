@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:app="http://schemas.android.com/apk/res-auto"
   xmlns:tools="http://schemas.android.com/tools"
   android:id="@+id/backdrop_motion_layout"
@@ -53,6 +53,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/title"
+    android:visibility="invisible"
     app:title="@string/transaction_history" />
 
   <com.aradipatrik.claptrap.backdrop.ui.BackdropBackLayerMenuItemView
@@ -63,6 +64,7 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/transactions_menu_item"
+    android:visibility="invisible"
     app:title="@string/wallets" />
 
 
@@ -74,9 +76,10 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/wallets_menu_item"
+    android:visibility="invisible"
     app:title="@string/statistics" />
 
-  <fragment
+  <androidx.fragment.app.FragmentContainerView
     android:id="@+id/child_host"
     android:name="androidx.navigation.fragment.NavHostFragment"
     android:layout_width="0dp"
@@ -100,4 +103,4 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent" />
 
-</androidx.constraintlayout.motion.widget.MotionLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

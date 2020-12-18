@@ -4,7 +4,6 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
-import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
@@ -64,14 +63,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     is MonthSelected -> selectYearMonth(viewEvent.month)
     is YearIncreased -> increaseYear()
     is YearDecreased -> decreaseYear()
-    is TransactionItemClicked -> goToEditTransaction(viewEvent.itemView, viewEvent.transactionId)
+    is TransactionItemClicked -> goToEditTransaction(viewEvent.transactionId)
   }
 
-  private fun goToEditTransaction(
-    itemView: ListItemTransactionItemBinding,
-    transactionId: String
-  ) = viewModelScope.launch {
-    viewEffects.emit(NavigateToEditTransaction(itemView, transactionId))
+  private fun goToEditTransaction(transactionId: String) = viewModelScope.launch {
+    viewEffects.emit(NavigateToEditTransaction(transactionId))
   }.ignore()
 
   private fun decreaseYear() = reduceSpecificState<TransactionsLoaded> { state ->

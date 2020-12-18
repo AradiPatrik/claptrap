@@ -5,7 +5,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.commit
@@ -13,6 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
+import androidx.transition.TransitionInflater
+import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.backdrop.model.*
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.NavigateToDestination
@@ -23,10 +27,8 @@ import com.aradipatrik.claptrap.common.backdrop.Backdrop
 import com.aradipatrik.claptrap.databinding.FragmentMainBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransition
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransition
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
+import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
+import com.aradipatrik.claptrap.theme.widget.ViewUtils.modify
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -40,6 +42,13 @@ class BackdropFragment : ClapTrapFragment<
   BackdropViewEffect,
   FragmentMainBinding
   >(R.layout.fragment_main, FragmentMainBinding::inflate), Backdrop {
+  private var isBackLayerConcealed = true
+
+  private val revealConcealTransition by lazy {
+    TransitionInflater.from(requireContext())
+      .inflateTransition(R.transition.parallel_fade_change_bounds)
+  }
+
   override val viewModel by activityViewModels<BackdropViewModel>()
 
   override val viewEvents
@@ -55,15 +64,18 @@ class BackdropFragment : ClapTrapFragment<
     initNavigation()
 
     savedInstanceState?.let {
-      binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
-      if (!savedInstanceState.getBoolean(MENU_STATE_KEY)) binding.menuIcon.morph()
+      if (!savedInstanceState.getBoolean(CUSTOM_MENU_WAS_SHOWN)) {
+        binding.menuIcon.alpha = 0.0f
+        binding.title.alpha = 0.0f
+      }
     }
   }
 
   override fun saveViewState(outState: Bundle) {
-    binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
-    outState.putBoolean(MENU_STATE_KEY, binding.menuIcon.isAtStartState)
+    outState.putBoolean(CUSTOM_MENU_WAS_SHOWN, isMenuShowing())
   }
+
+  private fun isMenuShowing() = childFragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG) == null
 
   private val nestedNavHostFragment
     get() = childFragmentManager
@@ -76,7 +88,7 @@ class BackdropFragment : ClapTrapFragment<
 
   private val onBackPressedCallback = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
-      if (binding.backdropMotionLayout.isOpen) {
+      if (!isBackLayerConcealed) {
         concealBackLayer()
       } else {
         notifyChildrenOfBackEventAndPopIfNecessary(nestedNavHostFragment, nestedNavController)
@@ -129,7 +141,10 @@ class BackdropFragment : ClapTrapFragment<
       replace(R.id.custom_menu_container, menuFragment, arguments, MENU_FRAGMENT_TAG)
     }
 
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
+    binding.title.animate()
+      .setDuration(QUICK_ANIMATION_DURATION)
+      .alpha(0.0f)
+    binding.menuIcon.isInvisible = true
   }
 
   private fun hideCustomMenu() = childFragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG)?.let {
@@ -138,7 +153,10 @@ class BackdropFragment : ClapTrapFragment<
       remove(it)
     }
 
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_hidden, R.id.toolbar_shown)
+    binding.title.animate()
+      .setDuration(QUICK_ANIMATION_DURATION)
+      .alpha(1.0f)
+    binding.menuIcon.isInvisible = false
   }
 
   private fun activateScreen(topLevelScreen: TopLevelScreen) {
@@ -150,8 +168,8 @@ class BackdropFragment : ClapTrapFragment<
   private fun concealRevealBackLayer(
     shouldLayerBeConcealed: Boolean
   ) = with(binding.backdropMotionLayout) {
-    if (currentState == R.id.menu_shown && shouldLayerBeConcealed) concealBackLayer()
-    if (currentState == R.id.toolbar_shown && !shouldLayerBeConcealed) revealBackLayer()
+    if (!isBackLayerConcealed && shouldLayerBeConcealed) concealBackLayer()
+    if (isBackLayerConcealed && !shouldLayerBeConcealed) revealBackLayer()
   }
 
   private fun setTitle(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
@@ -209,14 +227,30 @@ class BackdropFragment : ClapTrapFragment<
     if (binding.menuIcon.isAtStartState) {
       binding.menuIcon.morph()
     }
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.menu_shown)
+
+    TransitionManager.beginDelayedTransition(binding.root, revealConcealTransition)
+    binding.root.modify {
+      connect(R.id.child_host, ConstraintSet.TOP, R.id.statistics_menu_item, ConstraintSet.BOTTOM)
+    }
+    binding.statisticsMenuItem.isInvisible = false
+    binding.walletsMenuItem.isInvisible = false
+    binding.transactionsMenuItem.isInvisible = false
+    isBackLayerConcealed = false
   }
 
   private fun concealBackLayer() {
     if (!binding.menuIcon.isAtStartState) {
       binding.menuIcon.morph()
     }
-    binding.backdropMotionLayout.playReverseTransition(R.id.toolbar_shown, R.id.menu_shown)
+
+    TransitionManager.beginDelayedTransition(binding.root)
+    binding.root.modify {
+      connect(R.id.child_host, ConstraintSet.TOP, R.id.title, ConstraintSet.BOTTOM)
+    }
+    binding.statisticsMenuItem.isInvisible = true
+    binding.walletsMenuItem.isInvisible = true
+    binding.transactionsMenuItem.isInvisible = true
+    isBackLayerConcealed = true
   }
 
   override fun switchMenu(menuFragmentClass: Class<out Fragment>) =
@@ -242,7 +276,7 @@ class BackdropFragment : ClapTrapFragment<
 
   companion object {
     private const val MOTION_LAYOUT_STATE_KEY = "MOTION_LAYOUT_STATE_KEY"
-    private const val MENU_STATE_KEY = "MENU_STATE_KEY"
+    private const val CUSTOM_MENU_WAS_SHOWN = "MENU_STATE_KEY"
     private const val MENU_FRAGMENT_TAG = "MENU_FRAGMENT_TAG"
   }
 

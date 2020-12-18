@@ -12,6 +12,7 @@ import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransac
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionItemClicked
 import com.aradipatrik.claptrap.feature.transactions.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.squareup.inject.assisted.Assisted
@@ -64,7 +65,7 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     private var transactionListItem: TransactionListItem.Item? = null
 
     val clicks = binding.root.clicks()
-      .map { binding to transactionListItem!!.transactionPresentation.domain.id }
+      .map { transactionListItem!!.transactionPresentation.domain.id }
 
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Item) { "Expected transaction list item got: $item" }
@@ -75,8 +76,6 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         transactionAmount.text = item.transactionPresentation.amount
         transactionAmountIcon.text = item.transactionPresentation.currencySymbol
         categoryIcon.setImageResource(item.transactionPresentation.categoryIcon)
-
-        root.transitionName = item.transactionPresentation.domain.id
       }
     }
   }
@@ -95,8 +94,7 @@ class TransactionAdapter @AssistedInject constructor(
   val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
     .distinctUntilChanged()
 
-  private val viewEventFlow =
-    MutableSharedFlow<TransactionsViewEvent.TransactionItemClicked>()
+  private val viewEventFlow = MutableSharedFlow<TransactionsViewEvent>()
   val viewEvents: Flow<TransactionsViewEvent> = viewEventFlow
 
   private var _layoutManager: LinearLayoutManager? = null
@@ -201,10 +199,7 @@ class TransactionAdapter @AssistedInject constructor(
   }
 
   private fun listenToItemClicks(viewHolder: TransactionViewHolder.TransactionItemViewHolder) =
-    viewHolder.clicks
-      .map { (itemView, id) ->
-        TransactionsViewEvent.TransactionItemClicked(itemView, id)
-      }
+    viewHolder.clicks.map { id -> TransactionItemClicked(id) }
       .onEach(viewEventFlow::emit)
       .launchInWhenResumed(lifecycleScope)
 

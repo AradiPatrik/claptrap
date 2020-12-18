@@ -1,8 +1,13 @@
 package com.aradipatrik.claptrap.feature.transactions.edit.ui
 
+import android.animation.AnimatorSet
+import android.animation.ObjectAnimator
+import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
+import android.view.animation.AnimationSet
+import android.view.animation.OvershootInterpolator
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
@@ -25,9 +30,12 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
 import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
+import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.awaitEnd
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.onTransitionEnd
+import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
 import org.joda.money.format.MoneyFormatter
@@ -65,38 +73,30 @@ class EditTransactionFragment : ClapTrapFragment<
 
   override val viewEvents: Flow<EditTransactionViewEvent> get() = emptyFlow()
 
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    if (savedInstanceState == null) {
-      sharedElementEnterTransition = TransitionInflater.from(context)
-        .inflateTransition(android.R.transition.move)
-        .onTransitionEnd { fadeInInputs() }
-    }
-  }
-
   override fun initViews(savedInstanceState: Bundle?) {
     backdrop.switchMenu(EditTransactionMenuFragment::class.java, requireArguments())
-    binding.frontLayer.transitionName = transactionId
-    if (savedInstanceState == null) {
-      viewsToFadeIn.onEach { it.alpha = 0.0f }
-    } else {
-      binding.editDoneFab.show()
-    }
+    viewsToFloatAndFadeIn.onEach { it.alpha = 0.0f }
+    animateViewsIn()
   }
 
-  private fun fadeInInputs() = lifecycleScope.launchWhenResumed {
-    val animator = ValueAnimator.ofFloat(0.0f, 1.0f).apply {
-      duration = 600
-      addUpdateListener { animator ->
-        val animatedValue = animator.animatedValue as Float
-        viewsToFadeIn.onEach { it.alpha = animatedValue }
-        binding.headerSeparator.alpha = animatedValue * 0.333f
-        binding.inputScrollView.translationY = 200.0f - 200.0f * animatedValue
-      }
-      interpolator = FastOutSlowInInterpolator()
-      start()
+  private fun animateViewsIn() = lifecycleScope.launchWhenResumed {
+    val overshootInterpolator = OvershootInterpolator()
+    val alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+    val translationY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 200.0f, 0.0f)
+
+    listOf(binding.editTransactionHeader, binding.deleteButton).map {
+      ObjectAnimator.ofPropertyValuesHolder(it, alpha).start()
     }
-    animator.awaitEnd()
+
+    viewsToFloatAndFadeIn.map {
+      ObjectAnimator.ofPropertyValuesHolder(it, alpha, translationY).apply {
+        duration = QUICK_ANIMATION_DURATION
+        interpolator = overshootInterpolator
+      }.start()
+
+      delay(QUICK_STAGGER_DURATION)
+    }
+
     binding.editDoneFab.show()
   }
 
@@ -134,13 +134,12 @@ class EditTransactionFragment : ClapTrapFragment<
     return BackEffect.NO_POP
   }
 
-  private val viewsToFadeIn
-    get() = listOf(
-      binding.inputsContainer.amountTextInputLayout,
-      binding.inputsContainer.categoryTextInputLayout,
-      binding.inputsContainer.dateTextInputLayout,
-      binding.inputsContainer.memoTextInputLayout,
-      binding.headerSeparator,
-      binding.editTransactionHeader
-    )
+  private val viewsToFloatAndFadeIn get() = listOf(
+    binding.inputsContainer.memoTextInputLayout,
+    binding.inputsContainer.amountTextInputLayout,
+    binding.inputsContainer.dateTextInputLayout,
+    binding.inputsContainer.categoryTextInputLayout
+  )
 }
+
+private const val QUICK_STAGGER_DURATION = 100L

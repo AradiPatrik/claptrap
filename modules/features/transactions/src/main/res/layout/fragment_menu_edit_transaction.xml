@@ -21,6 +21,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="16dp"
+    android:alpha="0.0"
     android:includeFontPadding="false"
     android:text="@string/transaction_editor"
     android:textAppearance="?attr/textAppearanceHeadline6"
