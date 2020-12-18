@@ -46,6 +46,19 @@ class TransactionInteractorFake @Inject constructor() : TransactionInteractor {
   ): Transaction = withContext(Dispatchers.IO) {
     transactions.value.values.flatten().first { transactionId == it.id }
   }
+
+  override suspend fun deleteTransaction(transactionId: String) {
+    val oldTransaction = getTransaction(transactionId)
+    val transactionYearMonth = YearMonth(oldTransaction.date.year, oldTransaction.date.monthOfYear)
+    val oldTransactionsInYearMonth = transactions.value[transactionYearMonth]
+
+    require(oldTransactionsInYearMonth != null) {
+      "There should be transactions in year month: $transactionYearMonth"
+    }
+
+    transactions.value = transactions.value + (transactionYearMonth to
+      oldTransactionsInYearMonth.filter { it.id != transactionId })
+  }
 }
 
 internal val initialTransactions = 100 of { Random.nextTransactionInYearMonth(YearMonth.now()) }

@@ -12,4 +12,6 @@ interface TransactionInteractor {
   suspend fun saveTransaction(transaction: Transaction)
 
   suspend fun getTransaction(transactionId: String): Transaction
+
+  suspend fun deleteTransaction(transactionId: String)
 }

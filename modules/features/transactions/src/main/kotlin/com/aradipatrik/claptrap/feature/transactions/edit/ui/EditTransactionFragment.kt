@@ -1,17 +1,12 @@
 package com.aradipatrik.claptrap.feature.transactions.edit.ui
 
-import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
-import android.animation.ValueAnimator
 import android.os.Bundle
 import android.view.View
-import android.view.animation.AnimationSet
 import android.view.animation.OvershootInterpolator
 import androidx.core.content.ContextCompat
-import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
-import androidx.transition.TransitionInflater
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.FragmentExt.destinationViewModels
@@ -23,6 +18,7 @@ import com.aradipatrik.claptrap.feature.transactions.di.LongYearMonthDayFormatte
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.BackClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.DeleteButtonClick
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewModel
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
@@ -31,15 +27,13 @@ import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
 import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.awaitEnd
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.onTransitionEnd
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
 import org.joda.money.format.MoneyFormatter
 import org.joda.time.format.DateTimeFormatter
+import ru.ldralighieri.corbind.view.clicks
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -71,7 +65,8 @@ class EditTransactionFragment : ClapTrapFragment<
     EditTransactionViewModel.provideFactory(viewModelFactory, transactionId)
   }
 
-  override val viewEvents: Flow<EditTransactionViewEvent> get() = emptyFlow()
+  override val viewEvents: Flow<EditTransactionViewEvent> get() = binding.deleteButton.clicks()
+    .map { DeleteButtonClick }
 
   override fun initViews(savedInstanceState: Bundle?) {
     backdrop.switchMenu(EditTransactionMenuFragment::class.java, requireArguments())

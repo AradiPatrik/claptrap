@@ -45,6 +45,12 @@ class EditTransactionViewModel @AssistedInject constructor(
 
   override fun processInput(viewEvent: EditTransactionViewEvent) = when (viewEvent) {
     EditTransactionViewEvent.BackClick -> goBack()
+    EditTransactionViewEvent.DeleteButtonClick -> deleteAndNavigateBack()
+  }
+
+  private fun deleteAndNavigateBack() = sideEffect {
+    transactionInteractor.deleteTransaction(transactionId)
+    viewEffects.emit(Back)
   }
 
   private fun goBack() = viewModelScope.launch { viewEffects.emit(Back) }
