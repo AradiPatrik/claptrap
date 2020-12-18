@@ -5,8 +5,10 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.util.AttributeSet
 import android.util.TypedValue
+import android.view.View
 import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.RecyclerView
+import timber.log.Timber
 
 
 class CornerCutRecyclerView @JvmOverloads constructor(

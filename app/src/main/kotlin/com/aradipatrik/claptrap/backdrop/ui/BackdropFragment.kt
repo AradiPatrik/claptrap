@@ -55,13 +55,13 @@ class BackdropFragment : ClapTrapFragment<
     initNavigation()
 
     savedInstanceState?.let {
-      binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
+//      binding.backdropMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
       if (!savedInstanceState.getBoolean(MENU_STATE_KEY)) binding.menuIcon.morph()
     }
   }
 
   override fun saveViewState(outState: Bundle) {
-    binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
+//    binding.backdropMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
     outState.putBoolean(MENU_STATE_KEY, binding.menuIcon.isAtStartState)
   }
 
@@ -76,11 +76,11 @@ class BackdropFragment : ClapTrapFragment<
 
   private val onBackPressedCallback = object : OnBackPressedCallback(true) {
     override fun handleOnBackPressed() {
-      if (binding.backdropMotionLayout.isOpen) {
-        concealBackLayer()
-      } else {
-        notifyChildrenOfBackEventAndPopIfNecessary(nestedNavHostFragment, nestedNavController)
-      }
+//      if (binding.backdropMotionLayout.isOpen) {
+//        concealBackLayer()
+//      } else {
+//        notifyChildrenOfBackEventAndPopIfNecessary(nestedNavHostFragment, nestedNavController)
+//      }
     }
   }
 
@@ -129,7 +129,7 @@ class BackdropFragment : ClapTrapFragment<
       replace(R.id.custom_menu_container, menuFragment, arguments, MENU_FRAGMENT_TAG)
     }
 
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
+//    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.toolbar_hidden)
   }
 
   private fun hideCustomMenu() = childFragmentManager.findFragmentByTag(MENU_FRAGMENT_TAG)?.let {
@@ -138,7 +138,7 @@ class BackdropFragment : ClapTrapFragment<
       remove(it)
     }
 
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_hidden, R.id.toolbar_shown)
+//    binding.backdropMotionLayout.playTransition(R.id.toolbar_hidden, R.id.toolbar_shown)
   }
 
   private fun activateScreen(topLevelScreen: TopLevelScreen) {
@@ -150,8 +150,8 @@ class BackdropFragment : ClapTrapFragment<
   private fun concealRevealBackLayer(
     shouldLayerBeConcealed: Boolean
   ) = with(binding.backdropMotionLayout) {
-    if (currentState == R.id.menu_shown && shouldLayerBeConcealed) concealBackLayer()
-    if (currentState == R.id.toolbar_shown && !shouldLayerBeConcealed) revealBackLayer()
+//    if (currentState == R.id.menu_shown && shouldLayerBeConcealed) concealBackLayer()
+//    if (currentState == R.id.toolbar_shown && !shouldLayerBeConcealed) revealBackLayer()
   }
 
   private fun setTitle(topLevelScreen: TopLevelScreen) = when (topLevelScreen) {
@@ -209,14 +209,14 @@ class BackdropFragment : ClapTrapFragment<
     if (binding.menuIcon.isAtStartState) {
       binding.menuIcon.morph()
     }
-    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.menu_shown)
+//    binding.backdropMotionLayout.playTransition(R.id.toolbar_shown, R.id.menu_shown)
   }
 
   private fun concealBackLayer() {
     if (!binding.menuIcon.isAtStartState) {
       binding.menuIcon.morph()
     }
-    binding.backdropMotionLayout.playReverseTransition(R.id.toolbar_shown, R.id.menu_shown)
+//    binding.backdropMotionLayout.playReverseTransition(R.id.toolbar_shown, R.id.menu_shown)
   }
 
   override fun switchMenu(menuFragmentClass: Class<out Fragment>) =

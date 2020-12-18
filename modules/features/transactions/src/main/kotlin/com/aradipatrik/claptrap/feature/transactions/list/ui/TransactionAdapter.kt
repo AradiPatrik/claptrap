@@ -19,6 +19,7 @@ import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks
+import ru.ldralighieri.corbind.view.longClicks
 import kotlin.math.max
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
@@ -66,6 +67,9 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val clicks = binding.root.clicks()
       .map { binding to transactionListItem!!.transactionPresentation.domain.id }
 
+    val longClicks = binding.root.longClicks()
+      .map { transactionListItem!!.transactionPresentation.domain.id }
+
     override fun bindItem(item: TransactionListItem) {
       require(item is TransactionListItem.Item) { "Expected transaction list item got: $item" }
       transactionListItem = item
@@ -95,8 +99,7 @@ class TransactionAdapter @AssistedInject constructor(
   val headerChangeEvents: Flow<String> = _headerChangeEvents.filterNotNull()
     .distinctUntilChanged()
 
-  private val viewEventFlow =
-    MutableSharedFlow<TransactionsViewEvent.TransactionItemClicked>()
+  private val viewEventFlow = MutableSharedFlow<TransactionsViewEvent>()
   val viewEvents: Flow<TransactionsViewEvent> = viewEventFlow
 
   private var _layoutManager: LinearLayoutManager? = null
@@ -137,6 +140,20 @@ class TransactionAdapter @AssistedInject constructor(
       findItemAndScrollTo(currentList, it)
     }
   }
+
+  /**
+   * This is a great big hack, I am driven to the edge of madness trying to figure out why
+   * when there's a deletion or insertion happening inside the recycler view, it can't figure
+   * out, that it should remove it's view, unless the user scrolls it. So now, when the item list
+   * changes we scroll the recycler view by a tiny amount so it actually removes the deleted item
+   * from itself. This might be happening because we are in a motion layout.
+   */
+  private fun makeRecyclerViewRealizeThatItsActuallyShowingItems() =
+    lifecycleScope.launchWhenResumed {
+      delay(SMOOTH_SCROLL_DELAY)
+      // I'm so sad :(
+      recyclerView.smoothScrollBy(100, 1)
+    }
 
   private fun findItemAndScrollTo(
     currentList: List<TransactionListItem>,
@@ -201,10 +218,13 @@ class TransactionAdapter @AssistedInject constructor(
   }
 
   private fun listenToItemClicks(viewHolder: TransactionViewHolder.TransactionItemViewHolder) =
-    viewHolder.clicks
-      .map { (itemView, id) ->
-        TransactionsViewEvent.TransactionItemClicked(itemView, id)
-      }
+    merge(
+      viewHolder.longClicks.map { TransactionsViewEvent.DeleteTransactionRequested(it) },
+      viewHolder.clicks
+        .map { (itemView, id) ->
+          TransactionsViewEvent.TransactionItemClicked(itemView, id)
+        }
+    )
       .onEach(viewEventFlow::emit)
       .launchInWhenResumed(lifecycleScope)
 

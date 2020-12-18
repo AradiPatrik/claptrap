@@ -3,9 +3,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 import android.animation.ValueAnimator
 import android.annotation.SuppressLint
 import android.os.Bundle
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
-import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
@@ -31,10 +29,6 @@ import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.awaitEnd
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.playReverseTransitionAndWaitForFinish
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.playTransitionAndWaitForFinish
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.restoreState
-import com.aradipatrik.claptrap.theme.widget.MotionUtil.saveState
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getAnimatedVectorDrawable
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
@@ -68,49 +62,32 @@ class TransactionsFragment : ClapTrapFragment<
   override val viewEvents: Flow<TransactionsViewEvent>
     get() = merge(
       binding.fabBackground.clicks().map { ActionClick },
-      binding.numberPad.digitClicks.map { NumberClick(it) },
-      binding.numberPad.plusClicks.map { PlusClick },
-      binding.numberPad.minusClicks.map { MinusClick },
-      binding.numberPad.pointClicks.map { PointClick },
-      binding.numberPad.deleteOneClicks.map { DeleteOneClick },
-      binding.numberPad.actionClicks.map { NumberPadActionClick },
       categoryAdapter.categorySelectedEvents.map { CategorySelected(it.category) },
-      binding.numberPad.memoChanges.map { MemoChange(it) },
-      binding.numberPad.calendarClicks.map { CalendarClick },
-      binding.yearSelectorButton.clicks().map { YearMonthSelectorClick },
-      binding.monthSelectionChipGroup.monthClicks.map { MonthSelected(it) },
-      binding.yearDecreaseChevron.clicks().map { YearDecreased },
-      binding.yearIncreaseChevron.clicks().map { YearIncreased },
       transactionAdapter.viewEvents
     )
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
   private val equalsToCheck by lazy { getAnimatedVectorDrawable(R.drawable.equals_to_check) }
-  private val plusToCheck by lazy { getAnimatedVectorDrawable(R.drawable.plus_to_check) }
-  private val checkToPlus by lazy { getAnimatedVectorDrawable(R.drawable.check_to_plus) }
-  private var isAnimationPlaying = false
 
-  @SuppressLint("BinaryOperationInTimber")
-  override fun initViews(savedInstanceState: Bundle?) {
+  override fun onActivityCreated(savedInstanceState: Bundle?) {
+    super.onActivityCreated(savedInstanceState)
     postponeEnterTransition()
     binding.transactionRecyclerView.viewTreeObserver.addOnPreDrawListener {
       startPostponedEnterTransition()
       true
     }
+
     binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
     binding.transactionRecyclerView.adapter = transactionAdapter
+  }
 
-    binding.categoryRecyclerView.layoutManager = GridLayoutManager(
-      requireContext(), 3
-    )
-    binding.categoryRecyclerView.adapter = categoryAdapter
-
+  @SuppressLint("BinaryOperationInTimber")
+  override fun initViews(savedInstanceState: Bundle?) {
     transactionAdapter.headerChangeEvents
       .onEach(binding.transactionsHeader::text::set)
       .launchInWhenResumed(lifecycleScope)
 
     if (savedInstanceState != null && savedInstanceState.containsViewState()) {
-      binding.transactionsMotionLayout.restoreState(savedInstanceState, MOTION_LAYOUT_STATE_KEY)
 
       if (savedInstanceState.getBoolean(IS_ON_CALCULATOR)) {
         binding.fabIcon.startToEndAnimatedVectorDrawable = checkToEquals
@@ -120,20 +97,15 @@ class TransactionsFragment : ClapTrapFragment<
         binding.fabBackground.isClickable = false
       }
 
-      binding.yearSelectorButton.isActivated =
-        savedInstanceState.getBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY)
-
       if (!savedInstanceState.getBoolean(FAB_ICON_STATE_KEY)) binding.fabIcon.morph()
     }
   }
 
   override fun saveViewState(outState: Bundle) {
-    binding.transactionsMotionLayout.saveState(outState, MOTION_LAYOUT_STATE_KEY)
     outState.putBoolean(FAB_ICON_STATE_KEY, binding.fabIcon.isAtStartState)
     outState.putBoolean(
       IS_ON_CALCULATOR, binding.fabIcon.startToEndAnimatedVectorDrawable == checkToEquals
     )
-    outState.putBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY, binding.yearSelectorButton.isActivated)
   }
 
   override fun render(viewState: TransactionsViewState) = when (viewState) {
@@ -143,21 +115,9 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   private fun renderAdding(viewState: TransactionsViewState.Adding) {
-    binding.numberPad.calculatorDisplayText = viewState.calculatorState.asDisplayText
-    binding.numberPad.memo = viewState.memo
-    binding.numberPad.date = viewState.date
-
     categoryAdapter.submitList(viewState.categories.map {
       CategoryListItem(it, it.id == viewState.selectedCategory?.id)
     })
-
-    viewState.selectedCategory?.let { category ->
-      binding.numberPad.setCategoryIconRes(category.icon.drawableRes)
-    }
-
-    if (!isAnimationPlaying && isUiInTransactionsState() || isYearMonthSelectorOpen()) {
-      playAddAnimation()
-    }
   }
 
   private fun renderLoading() {
@@ -167,36 +127,7 @@ class TransactionsFragment : ClapTrapFragment<
     transactionAdapter.submitList(
       transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
     )
-
-    binding.yearSelectionDisplay.text = viewState.yearMonth.year.toString()
-    binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
-
-    if (!isAnimationPlaying) {
-      when {
-        viewState.isYearMonthSelectorOpen && isYearMonthSelectorClosed() ->
-          playShowYearMonthSelectorAnimation()
-        !viewState.isYearMonthSelectorOpen && isYearMonthSelectorOpen() ->
-          playHideYearMonthSelectorAnimation()
-        isUiInAddingState() -> playReverseAddAnimation()
-      }
-    }
   }
-
-  private fun isYearMonthSelectorOpen() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.month_selector_shown
-
-  private fun isYearMonthSelectorClosed() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.fab_at_bottom
-
-  private fun isUiInAddingState() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.categories_visible
-
-  private fun isUiInTransactionsState() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.fab_at_bottom
 
   override fun react(viewEffect: TransactionsViewEffect) = when (viewEffect) {
     is TransactionsViewEffect.Back -> backdrop.back()
@@ -247,28 +178,6 @@ class TransactionsFragment : ClapTrapFragment<
     transactionAdapter.currentScrollTargetId = transactionId
   }
 
-  private suspend fun playAnimationWithMotionLayout(
-    animationBlock: suspend MotionLayout.() -> Unit
-  ) = with(binding.transactionsMotionLayout) {
-    isAnimationPlaying = true
-    animationBlock()
-    isAnimationPlaying = false
-  }
-
-  private fun playHideYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.yearSelectorButton.isActivated = false
-      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-    }
-  }.ignore()
-
-  private fun playShowYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.yearSelectorButton.isActivated = true
-      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-    }
-  }.ignore()
-
   private fun showDatePicker() = lifecycleScope.launchWhenResumed {
     val selectedDateInstant = MaterialDatePicker.Builder
       .datePicker()
@@ -276,45 +185,6 @@ class TransactionsFragment : ClapTrapFragment<
       .showAndWaitWith(childFragmentManager)
 
     extraViewEventsFlow.emit(DateSelected(DateTime(selectedDateInstant)))
-  }.ignore()
-
-  private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      backdrop.clearMenu()
-      if (!binding.fabIcon.isAtStartState) {
-        binding.fabIcon.morph()
-      }
-
-      binding.fabIcon.isAtStartState = false
-      binding.fabIcon.startToEndAnimatedVectorDrawable = plusToCheck
-      binding.fabIcon.endToStartAnimatedVectorDrawable = checkToPlus
-      playReverseTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
-      playReverseTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
-      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
-      binding.fabIcon.morph()
-      binding.fabBackground.isEnabled = true
-      binding.fabBackground.isClickable = true
-    }
-  }.ignore()
-
-  private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      if (isYearMonthSelectorOpen()) {
-        binding.yearSelectorButton.isActivated = false
-        playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-      }
-
-      backdrop.switchMenu(AddTransactionMenuFragment::class.java)
-      binding.fabBackground.isEnabled = false
-      binding.fabBackground.isClickable = false
-      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
-      playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
-      playTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
-      binding.fabIcon.morph()
-      binding.fabIcon.isAtStartState = true
-      binding.fabIcon.startToEndAnimatedVectorDrawable = checkToEquals
-      binding.fabIcon.endToStartAnimatedVectorDrawable = equalsToCheck
-    }
   }.ignore()
 
   override fun onBack(): BackEffect {

@@ -65,6 +65,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     is YearIncreased -> increaseYear()
     is YearDecreased -> decreaseYear()
     is TransactionItemClicked -> goToEditTransaction(viewEvent.itemView, viewEvent.transactionId)
+    is DeleteTransactionRequested -> deleteTransaction(viewEvent.transactionId)
+  }
+
+  private fun deleteTransaction(transactionId: String) = sideEffect {
+    transactionInteractor.deleteTransaction(transactionId)
   }
 
   private fun goToEditTransaction(

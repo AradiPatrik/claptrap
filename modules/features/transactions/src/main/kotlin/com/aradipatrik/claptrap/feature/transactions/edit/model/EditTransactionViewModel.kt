@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.Back
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.BackWithDeletion
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
@@ -45,6 +46,12 @@ class EditTransactionViewModel @AssistedInject constructor(
 
   override fun processInput(viewEvent: EditTransactionViewEvent) = when (viewEvent) {
     EditTransactionViewEvent.BackClick -> goBack()
+    EditTransactionViewEvent.DeleteClick -> deleteEditedTransaction()
+  }
+
+  private fun deleteEditedTransaction() = sideEffect {
+    transactionInteractor.deleteTransaction(transactionId)
+    viewEffects.emit(BackWithDeletion)
   }
 
   private fun goBack() = viewModelScope.launch { viewEffects.emit(Back) }

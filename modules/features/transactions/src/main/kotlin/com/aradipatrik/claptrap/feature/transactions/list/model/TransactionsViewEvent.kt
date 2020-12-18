@@ -13,6 +13,8 @@ sealed class TransactionsViewEvent {
   object YearIncreased : TransactionsViewEvent()
   object YearDecreased : TransactionsViewEvent()
 
+  data class DeleteTransactionRequested(val transactionId: String) : TransactionsViewEvent()
+
   data class TransactionItemClicked(
     val itemView: ListItemTransactionItemBinding,
     val transactionId: String

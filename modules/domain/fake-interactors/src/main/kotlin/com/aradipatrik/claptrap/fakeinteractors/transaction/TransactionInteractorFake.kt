@@ -5,7 +5,6 @@ import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.o
 import com.aradipatrik.claptrap.fakeinteractors.generators.TransactionMockGenerator.nextTransactionInYearMonth
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -45,6 +44,19 @@ class TransactionInteractorFake @Inject constructor() : TransactionInteractor {
     transactionId: String
   ): Transaction = withContext(Dispatchers.IO) {
     transactions.value.values.flatten().first { transactionId == it.id }
+  }
+
+  override suspend fun deleteTransaction(transactionId: String) {
+    val oldTransaction = getTransaction(transactionId)
+    val transactionYearMonth = YearMonth(oldTransaction.date.year, oldTransaction.date.monthOfYear)
+    val oldTransactionsInYearMonth = transactions.value[transactionYearMonth]
+
+    require(oldTransactionsInYearMonth != null) {
+      "There should be transactions in year month: $transactionYearMonth"
+    }
+
+    transactions.value = transactions.value + (transactionYearMonth to
+      oldTransactionsInYearMonth.filter { it.id != transactionId })
   }
 }
 

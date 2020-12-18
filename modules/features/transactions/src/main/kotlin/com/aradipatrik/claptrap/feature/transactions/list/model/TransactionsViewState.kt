@@ -15,7 +15,9 @@ sealed class TransactionsViewState {
     val refreshing: Boolean,
     val yearMonth: YearMonth = YearMonth.now(),
     val isYearMonthSelectorOpen: Boolean = false
-  ) : TransactionsViewState()
+  ) : TransactionsViewState() {
+    override fun toString() = "transaction size: ${transactions.size}; yearMonth: ${yearMonth.toString("YY / MMM")}"
+  }
 
   data class Adding(
     val transactionType: TransactionType = TransactionType.EXPENSE,

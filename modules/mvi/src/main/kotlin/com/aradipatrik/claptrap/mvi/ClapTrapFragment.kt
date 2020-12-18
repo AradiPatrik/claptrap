@@ -5,9 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import timber.log.Timber
 
@@ -39,17 +41,20 @@ abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
     savedInstanceState: Bundle?
   ): View? {
     _binding = inflaterFunction.invoke(inflater, container, false)
+    Timber.tag("Lifecycle").v("${this::class.java.simpleName} - onCreateView")
     return binding.root
+  }
+
+  override fun onResume() {
+    super.onResume()
+    Timber.tag("Lifecycle").v("${this::class.java.simpleName} - onResume")
   }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
+    Timber.tag("Lifecycle").v("${this::class.java.simpleName} - onViewCreated")
 
     initViews(savedInstanceState)
-
-    if (savedInstanceState != null) {
-      render(viewModel.viewState.value)
-    }
 
     viewModel.viewState
       .onEach { Timber.tag("Render").d("${this::class.java.simpleName}::$it") }

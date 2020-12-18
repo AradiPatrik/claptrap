@@ -2,7 +2,6 @@ package com.aradipatrik.claptrap.feature.transactions.edit.ui
 
 import android.animation.ValueAnimator
 import android.os.Bundle
-import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import androidx.lifecycle.lifecycleScope
@@ -29,9 +28,11 @@ import com.aradipatrik.claptrap.theme.widget.MotionUtil.awaitEnd
 import com.aradipatrik.claptrap.theme.widget.MotionUtil.onTransitionEnd
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
 import org.joda.money.format.MoneyFormatter
 import org.joda.time.format.DateTimeFormatter
+import ru.ldralighieri.corbind.view.clicks
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,7 +64,9 @@ class EditTransactionFragment : ClapTrapFragment<
     EditTransactionViewModel.provideFactory(viewModelFactory, transactionId)
   }
 
-  override val viewEvents: Flow<EditTransactionViewEvent> get() = emptyFlow()
+  override val viewEvents: Flow<EditTransactionViewEvent> get() = merge(
+    binding.deleteButton.clicks().map { EditTransactionViewEvent.DeleteClick }
+  )
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -122,6 +125,7 @@ class EditTransactionFragment : ClapTrapFragment<
 
   override fun react(viewEffect: EditTransactionViewEffect) = when (viewEffect) {
     EditTransactionViewEffect.Back -> goBack()
+    EditTransactionViewEffect.BackWithDeletion -> goBack()
   }
 
   private fun goBack() {
