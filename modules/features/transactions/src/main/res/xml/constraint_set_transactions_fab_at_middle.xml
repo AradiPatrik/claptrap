@@ -11,7 +11,7 @@
       motion:layout_constraintStart_toStartOf="parent"
       motion:layout_constraintTop_toTopOf="parent" />
 
-    <Transform android:elevation="3dp" />
+    <Transform android:elevation="?attr/elevationLevelFour" />
 
     <CustomAttribute
       motion:attributeName="cardBackgroundColor"

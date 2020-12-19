@@ -20,5 +20,5 @@
   <item name="alpha_low" type="dimen" format="float">0.33</item>
   <item name="alpha_separator" type="dimen" format="float">0.1</item>
 
-  <item name="default_animation_speed" type="dimen" format="integer">300</item>
+  <item name="default_animation_speed" type="dimen" format="integer">220</item>
 </resources>

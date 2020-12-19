@@ -16,7 +16,7 @@
     app:layout_constraintTop_toTopOf="parent" />
 
   <TextView
-    android:elevation="1dp"
+    android:elevation="?attr/elevationLevelTwo"
     android:textColor="?attr/colorOnSurface"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

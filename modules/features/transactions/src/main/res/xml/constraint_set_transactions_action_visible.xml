@@ -4,7 +4,7 @@
   xmlns:android="http://schemas.android.com/apk/res/android"
   xmlns:motion="http://schemas.android.com/apk/res-auto">
   <Constraint android:id="@+id/fab_background">
-    <Transform android:elevation="3dp" />
+    <Transform android:elevation="?attr/elevationLevelFour" />
 
     <Layout
       android:layout_width="0dp"
@@ -25,7 +25,7 @@
       motion:customColorValue="?attr/colorOnSurface" />
 
     <Transform
-      android:elevation="3dp" />
+      android:elevation="?attr/elevationLevelThree" />
   </Constraint>
 
   <Constraint android:id="@+id/category_list_background">

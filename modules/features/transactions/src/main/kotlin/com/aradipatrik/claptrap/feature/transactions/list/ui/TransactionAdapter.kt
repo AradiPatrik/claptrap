@@ -1,5 +1,9 @@
 package com.aradipatrik.claptrap.feature.transactions.list.ui
 
+import android.animation.ArgbEvaluator
+import android.animation.PropertyValuesHolder
+import android.animation.ValueAnimator
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,14 +17,22 @@ import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransac
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionItemClicked
+import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionViewHolder.TransactionItemViewHolder
 import com.aradipatrik.claptrap.feature.transactions.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorPrimary
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorSurface
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorWithAlphaMedium
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.suspendCancellableCoroutine
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import kotlin.math.max
+import kotlin.math.min
 
 object TransactionItemItemCallback : DiffUtil.ItemCallback<TransactionListItem>() {
   override fun areItemsTheSame(
@@ -77,6 +89,20 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         transactionAmountIcon.text = item.transactionPresentation.currencySymbol
         categoryIcon.setImageResource(item.transactionPresentation.categoryIcon)
       }
+    }
+
+    fun playAddedAnimationIn(scope: LifecycleCoroutineScope) = scope.launchWhenResumed {
+      val context = binding.root.context
+      val colorFrom = context.colorSurface
+      val colorTo = context.colorWithAlphaMedium(context.colorPrimary)
+
+      val colorAnimator = ValueAnimator.ofArgb(colorFrom, colorTo, colorFrom)
+
+      colorAnimator.addUpdateListener {
+        binding.root.setCardBackgroundColor(it.animatedValue as Int)
+      }
+      colorAnimator.duration = 1000L
+      colorAnimator.start()
     }
   }
 }
@@ -150,9 +176,26 @@ class TransactionAdapter @AssistedInject constructor(
       lifecycleScope.launchWhenResumed {
         // Needed because we want to wait until our recycler view is shown by the animation
         delay(SMOOTH_SCROLL_DELAY)
-        recyclerView.smoothScrollToPosition(scrollTargetPosition)
+        val firstItemPosition = layoutManager.findFirstVisibleItemPosition()
+
+        val offsetPosition = if(firstItemPosition < scrollTargetPosition) {
+          min(currentList.size - 1, scrollTargetPosition + 4)
+        } else {
+          max(0, scrollTargetPosition - 4)
+        }
+
+        recyclerView.smoothScrollToPosition(offsetPosition)
+        recyclerView.getTransactionItemViewHolderAtPosition(scrollTargetPosition)
+          .playAddedAnimationIn(lifecycleScope)
       }
     }
+  }
+
+  private suspend fun RecyclerView.getTransactionItemViewHolderAtPosition(
+    position: Int
+  ): TransactionItemViewHolder {
+    while (findViewHolderForAdapterPosition(position) == null) delay(ITEM_POLL_FREQUENCY)
+    return findViewHolderForAdapterPosition(position) as TransactionItemViewHolder
   }
 
   private fun getFirstVisiblePosition() = layoutManager.findFirstVisibleItemPosition()
@@ -192,13 +235,13 @@ class TransactionAdapter @AssistedInject constructor(
     VIEW_TYPE_HEADER -> TransactionViewHolder.TransactionHeaderViewHolder(
       ListItemTransactionHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
-    VIEW_TYPE_ITEM -> TransactionViewHolder.TransactionItemViewHolder(
+    VIEW_TYPE_ITEM -> TransactionItemViewHolder(
       ListItemTransactionItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     ).also(::listenToItemClicks)
     else -> error("Unexpected view type: $viewType")
   }
 
-  private fun listenToItemClicks(viewHolder: TransactionViewHolder.TransactionItemViewHolder) =
+  private fun listenToItemClicks(viewHolder: TransactionItemViewHolder) =
     viewHolder.clicks.map { id -> TransactionItemClicked(id) }
       .onEach(viewEventFlow::emit)
       .launchInWhenResumed(lifecycleScope)
@@ -210,4 +253,5 @@ class TransactionAdapter @AssistedInject constructor(
 
 private const val VIEW_TYPE_HEADER = 0
 private const val VIEW_TYPE_ITEM = 1
-private const val SMOOTH_SCROLL_DELAY = 600L
+private const val SMOOTH_SCROLL_DELAY = 900L
+private const val ITEM_POLL_FREQUENCY = 500L
