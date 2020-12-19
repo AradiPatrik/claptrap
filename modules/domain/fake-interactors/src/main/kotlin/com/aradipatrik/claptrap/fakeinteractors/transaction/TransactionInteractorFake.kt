@@ -38,7 +38,8 @@ class TransactionInteractorFake @Inject constructor() : TransactionInteractor {
   override suspend fun saveTransaction(transaction: Transaction) = withContext(Dispatchers.IO) {
     val yearMonth = YearMonth.fromDateFields(transaction.date.toDate())
     transactions.value = transactions.value +
-      (yearMonth to ((transactions.value[yearMonth] ?: emptyList()) + transaction))
+      (yearMonth to (transactions.value[yearMonth]?.filter { it.id != transaction.id }
+        ?: emptyList()) + transaction)
   }
 
   override suspend fun getTransaction(

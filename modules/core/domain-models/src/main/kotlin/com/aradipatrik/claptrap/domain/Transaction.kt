@@ -7,6 +7,6 @@ data class Transaction(
   val id: String,
   val money: Money,
   val date: DateTime,
-  val note: String,
+  val memo: String,
   val category: Category,
 )

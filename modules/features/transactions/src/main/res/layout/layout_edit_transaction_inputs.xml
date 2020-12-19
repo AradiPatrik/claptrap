@@ -31,6 +31,8 @@
     android:layout_marginTop="16dp"
     android:elevation="?attr/elevationLevelThree"
     android:hint="@string/amount"
+    app:startIconDrawable="@drawable/ic_money"
+    app:startIconTint="?attr/colorPrimary"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/memo_text_input_layout">
@@ -74,6 +76,7 @@
     android:foreground="?attr/selectableItemBackground"
     android:hint="@string/category"
     app:layout_constraintEnd_toEndOf="parent"
+    app:startIconTint="?attr/colorPrimary"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="@id/date_text_input_layout">
 

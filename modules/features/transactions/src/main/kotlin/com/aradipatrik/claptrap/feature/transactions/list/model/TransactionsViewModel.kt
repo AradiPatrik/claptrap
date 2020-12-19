@@ -211,7 +211,7 @@ private fun createTransactionFromAddingState(state: Adding): Transaction {
   return Transaction(
     id = UUID.randomUUID().toString(),
     money = Money.of(CurrencyUnit.USD, state.calculatorState.value.asBigDecimal),
-    note = state.memo,
+    memo = state.memo,
     date = state.date,
     category = state.selectedCategory
   )

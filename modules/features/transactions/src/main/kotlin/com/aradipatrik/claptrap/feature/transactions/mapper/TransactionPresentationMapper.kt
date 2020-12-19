@@ -15,8 +15,8 @@ class TransactionPresentationMapper @Inject constructor(
     amount = moneyToStringMapper.mapValueOnly(transaction.money),
     date = dateToStringMapper.mapMediumYearMonthDay(transaction.date),
     categoryIcon = transaction.category.icon.drawableRes,
-    note = if (transaction.note.isNotBlank()) {
-      transaction.note
+    note = if (transaction.memo.isNotBlank()) {
+      transaction.memo
     } else {
       transaction.category.name
     },
