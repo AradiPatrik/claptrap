@@ -251,6 +251,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun playReverseAddAnimation() = lifecycleScope.launchWhenResumed {
     playAnimationWithMotionLayout {
+      binding.numberPad.setNumberPadActionEnabled(false)
       backdrop.clearMenu()
       if (!binding.fabIcon.isAtStartState) {
         binding.fabIcon.morph()
@@ -270,14 +271,14 @@ class TransactionsFragment : ClapTrapFragment<
 
   private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
     playAnimationWithMotionLayout {
+      binding.fabBackground.isEnabled = false
+      binding.fabBackground.isClickable = false
       if (isYearMonthSelectorOpen()) {
         binding.yearSelectorButton.isActivated = false
         playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
       }
 
       backdrop.switchMenu(AddTransactionMenuFragment::class.java)
-      binding.fabBackground.isEnabled = false
-      binding.fabBackground.isClickable = false
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
       playTransitionAndWaitForFinish(R.id.fab_at_middle, R.id.action_visible)
       playTransitionAndWaitForFinish(R.id.action_visible, R.id.categories_visible)
@@ -285,6 +286,7 @@ class TransactionsFragment : ClapTrapFragment<
       binding.fabIcon.isAtStartState = true
       binding.fabIcon.startToEndAnimatedVectorDrawable = checkToEquals
       binding.fabIcon.endToStartAnimatedVectorDrawable = equalsToCheck
+      binding.numberPad.setNumberPadActionEnabled(true)
     }
   }.ignore()
 

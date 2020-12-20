@@ -10,6 +10,8 @@ sealed class EditTransactionViewState {
     val memo: String,
     val amount: String,
     val date: DateTime,
-    val category: Category
+    val category: Category,
+    val isCategorySelectorShowing: Boolean,
+    val categories: List<Category> = emptyList()
   ) : EditTransactionViewState()
 }

@@ -68,4 +68,9 @@ class NumberPadView @JvmOverloads constructor(
   fun setCategoryIconRes(iconRes: Int) {
     binding.categoryIconImageView.setImageResource(iconRes)
   }
+
+  fun setNumberPadActionEnabled(enabled: Boolean) {
+    binding.numberPadAction.isClickable = enabled
+    binding.numberPadAction.isEnabled = enabled
+  }
 }

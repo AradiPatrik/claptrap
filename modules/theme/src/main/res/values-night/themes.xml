@@ -22,6 +22,7 @@
     <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
     <item name="android:navigationBarDividerColor" tools:ignore="NewApi">#151515</item>
     <item name="android:statusBarColor" tools:ignore="NewApi">?attr/colorSurface</item>
+    <item name="elevationLevelFive">3dp</item>
     <item name="elevationLevelFour">2dp</item>
     <item name="elevationLevelThree">1.2dp</item>
     <item name="elevationLevelTwo">1.1dp</item>

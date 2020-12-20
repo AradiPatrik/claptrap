@@ -18,7 +18,7 @@ internal object TransactionMockGenerator {
     nextEnum()
   )
 
-  fun Random.nextTransaction() = Transaction(
+  fun Random.nextTransaction(category: Category = nextCategory()) = Transaction(
     nextId(),
     nextMoney(),
     nextDate(2020..2020),
@@ -26,7 +26,10 @@ internal object TransactionMockGenerator {
     nextCategory()
   )
 
-  fun Random.nextTransactionInYearMonth(yearMonth: YearMonth) = Transaction(
+  fun Random.nextTransactionInYearMonth(
+    yearMonth: YearMonth,
+    category: Category = nextCategory()
+  ) = Transaction(
     nextId(),
     nextMoney(),
     nextDate(
@@ -34,6 +37,6 @@ internal object TransactionMockGenerator {
       monthRange = yearMonth.monthOfYear..yearMonth.monthOfYear
     ),
     nextWords(count = 3, capitalize = true),
-    nextCategory()
+    category
   )
 }

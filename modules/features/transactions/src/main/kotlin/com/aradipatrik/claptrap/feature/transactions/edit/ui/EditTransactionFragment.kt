@@ -5,16 +5,20 @@ import android.animation.PropertyValuesHolder
 import android.os.Bundle
 import android.view.View
 import android.view.animation.OvershootInterpolator
+import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
+import androidx.core.view.isInvisible
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.FragmentExt.destinationViewModels
 import com.aradipatrik.claptrap.common.backdrop.ViewDelegates.settingTextInputLayoutContent
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentEditTransactionBinding
-import com.aradipatrik.claptrap.feature.transactions.di.CurrencyValueMoneyFormatter
 import com.aradipatrik.claptrap.feature.transactions.di.LongYearMonthDayFormatter
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
@@ -27,19 +31,21 @@ import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
 import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorPrimary
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.dp
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.elevationLevelThree
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getDimenValue
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.px
+import com.aradipatrik.claptrap.theme.widget.ViewUtils.modify
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
-import org.joda.money.CurrencyUnit
-import org.joda.money.Money
-import org.joda.money.format.MoneyFormatter
 import org.joda.time.format.DateTimeFormatter
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.widget.textChangeEvents
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -71,8 +77,14 @@ class EditTransactionFragment : ClapTrapFragment<
     binding.inputsContainer.dateTextInputLayout
   }
 
+  private var isCategorySelectorOpened = false
+
   @Inject lateinit var viewModelFactory: EditTransactionViewModel.AssistedFactory
-  @Inject lateinit var categoryAdapter: CategoryAdapter.Factory
+  @Inject lateinit var categoryAdapterFactory: CategoryAdapter.Factory
+
+  private val categoryAdapter by lazy {
+    categoryAdapterFactory.create(viewLifecycleOwner.lifecycleScope)
+  }
 
   @Inject
   @LongYearMonthDayFormatter
@@ -91,12 +103,21 @@ class EditTransactionFragment : ClapTrapFragment<
       binding.inputsContainer.amountTextInputLayout.editText!!.textChangeEvents()
         .drop(1)
         .map { AmountChange(it.text.toString()) },
-      binding.editDoneFab.clicks().map { EditDoneClick }
+      binding.editDoneFab.clicks().map { EditDoneClick },
+      binding.inputsContainer.categoryTextInputLayout.editText!!.clicks()
+        .map { CategorySelectorClick },
+      binding.scrim.clicks().map { ScrimClick }
     )
 
   override fun initViews(savedInstanceState: Bundle?) {
     backdrop.switchMenu(EditTransactionMenuFragment::class.java, requireArguments())
     viewsToFloatAndFadeIn.onEach { it.alpha = 0.0f }
+
+    binding.categoriesRecyclerView.adapter = categoryAdapter
+    binding.categoriesRecyclerView.layoutManager = GridLayoutManager(
+      requireContext(), 3
+    )
+
     animateViewsIn()
 
     binding.inputsContainer.dateTextInputLayout.isActivated = true
@@ -129,14 +150,49 @@ class EditTransactionFragment : ClapTrapFragment<
     is Editing -> renderEditingState(viewState)
   }
 
-  private fun renderEditingState(editing: Editing) = with(editing) {
-    amountText = amount
-    memoText = memo
-    categoryText = category.name
-    dateText = date.toString(dateTimeFormatter)
+  private fun renderEditingState(editing: Editing) {
+    amountText = editing.amount
+    memoText = editing.memo
+    categoryText = editing.category.name
+    dateText = editing.date.toString(dateTimeFormatter)
 
     binding.inputsContainer.categoryTextInputLayout.startIconDrawable =
-      ContextCompat.getDrawable(requireContext(), category.icon.drawableRes)
+      ContextCompat.getDrawable(requireContext(), editing.category.icon.drawableRes)
+
+    if (editing.isCategorySelectorShowing && !isCategorySelectorOpened) {
+      isCategorySelectorOpened = true
+      binding.editDoneFab.hide()
+      TransitionManager.beginDelayedTransition(binding.root)
+      binding.root.modify {
+        clear(R.id.categories_background, ConstraintSet.TOP)
+        connect(
+          R.id.categories_background, ConstraintSet.BOTTOM,
+          R.id.card_bottom, ConstraintSet.BOTTOM
+        )
+      }
+      binding.scrim.isInvisible = false
+    }
+
+    if (!editing.isCategorySelectorShowing && isCategorySelectorOpened) {
+      isCategorySelectorOpened = false
+      binding.editDoneFab.show()
+      TransitionManager.beginDelayedTransition(binding.root)
+      binding.root.modify {
+        clear(R.id.categories_background, ConstraintSet.BOTTOM)
+        connect(
+          R.id.categories_background, ConstraintSet.TOP,
+          ConstraintSet.PARENT_ID, ConstraintSet.BOTTOM
+        )
+      }
+      binding.scrim.isInvisible = true
+    }
+
+    categoryAdapter.submitList(editing.categories.map {
+      CategoryListItem(
+        it,
+        it.id == editing.category.id
+      )
+    })
   }
 
   override fun react(viewEffect: EditTransactionViewEffect) = when (viewEffect) {

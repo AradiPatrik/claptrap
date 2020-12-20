@@ -31,6 +31,7 @@
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="colorPrimaryVariantPrimary">?attr/colorPrimaryVariant</item>
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
+    <item name="elevationLevelFive">8dp</item>
     <item name="elevationLevelFour">5dp</item>
     <item name="elevationLevelThree">4dp</item>
     <item name="elevationLevelTwo">2dp</item>

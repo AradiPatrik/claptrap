@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.FrameLayout
 import androidx.annotation.AttrRes
+import androidx.core.view.doOnNextLayout
 import com.aradipatrik.claptrap.feature.transactions.databinding.ViewYearMonthSelectionBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.Months
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.inflateAndAddUsing
@@ -40,8 +41,16 @@ class YearMonthSelectionView @JvmOverloads constructor(
   private val YearMonth.monthString get() = toString("MMMM")
 
   var selectedMonth: Int by Delegates.observable(1) { _, oldValue, newValue ->
-    if (oldValue != newValue && !getButtonForMonthNumber(newValue).isChecked) {
-      getButtonForMonthNumber(newValue).isChecked = true
+    val buttonForNewValue = getButtonForMonthNumber(newValue)
+    if (oldValue != newValue && !buttonForNewValue.isChecked) {
+      buttonForNewValue.isChecked = true
+    }
+
+    if (oldValue != newValue) {
+      binding.root.smoothScrollTo(
+        (buttonForNewValue.left + buttonForNewValue.right - binding.root.width) / 2,
+        0
+      )
     }
   }
 

@@ -2,22 +2,23 @@ package com.aradipatrik.claptrap.feature.transactions.edit.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.Back
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
+import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
-import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.single
+import kotlinx.coroutines.flow.take
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 
 class EditTransactionViewModel @AssistedInject constructor(
   private val transactionInteractor: TransactionInteractor,
+  private val categoryInteractor: CategoryInteractor,
   @Assisted private val transactionId: String
 ) : ClaptrapViewModel<EditTransactionViewState,
   EditTransactionViewEvent,
@@ -25,11 +26,14 @@ class EditTransactionViewModel @AssistedInject constructor(
   init {
     reduceState {
       val transaction = transactionInteractor.getTransaction(transactionId)
+      val categories = categoryInteractor.getAllCategories().take(1).single()
       Editing(
         memo = transaction.memo,
         amount = transaction.money.amount.toPlainString(),
         date = transaction.date,
-        category = transaction.category
+        category = transaction.category,
+        isCategorySelectorShowing = false,
+        categories = categories
       )
     }
   }
@@ -52,11 +56,21 @@ class EditTransactionViewModel @AssistedInject constructor(
   }
 
   override fun processInput(viewEvent: EditTransactionViewEvent) = when (viewEvent) {
-    EditTransactionViewEvent.BackClick -> goBack()
+    EditTransactionViewEvent.BackClick -> closeCategorySelectorOrGoBack()
     EditTransactionViewEvent.DeleteButtonClick -> deleteAndNavigateBack()
     is EditTransactionViewEvent.MemoChange -> changeMemoTo(viewEvent.memo)
     is EditTransactionViewEvent.AmountChange -> changeAmountTo(viewEvent.amount)
     EditTransactionViewEvent.EditDoneClick -> saveCurrentTransactionAndNavigateBack()
+    EditTransactionViewEvent.CategorySelectorClick -> openCategorySelector()
+    EditTransactionViewEvent.ScrimClick -> closeCategorySelector()
+  }
+
+  private fun closeCategorySelector() = reduceSpecificState<Editing> { state ->
+    state.copy(isCategorySelectorShowing = false)
+  }
+
+  private fun openCategorySelector() = reduceSpecificState<Editing> { state ->
+    state.copy(isCategorySelectorShowing = true)
   }
 
   private fun saveCurrentTransactionAndNavigateBack() = withState<Editing> { state ->
@@ -85,6 +99,14 @@ class EditTransactionViewModel @AssistedInject constructor(
     viewEffects.emit(Back)
   }
 
-  private fun goBack() = viewModelScope.launch { viewEffects.emit(Back) }
-    .ignore()
+  private fun closeCategorySelectorOrGoBack() = reduceState { state ->
+    when (state) {
+      is Loading -> state.also { viewEffects.emit(Back) }
+      is Editing -> if (state.isCategorySelectorShowing) {
+        state.copy(isCategorySelectorShowing = false)
+      } else {
+        state.also { viewEffects.emit(Back) }
+      }
+    }
+  }
 }

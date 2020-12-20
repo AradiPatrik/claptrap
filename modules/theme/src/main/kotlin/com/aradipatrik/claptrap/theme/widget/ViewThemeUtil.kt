@@ -1,6 +1,7 @@
 package com.aradipatrik.claptrap.theme.widget
 
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.drawable.AnimatedVectorDrawable
@@ -54,6 +55,12 @@ object ViewThemeUtil {
   val Context.colorPrimarySurface get() = getColorAttribute(R.attr.colorPrimarySurface)
   val Context.colorOnPrimarySurface get() = getColorAttribute(R.attr.colorOnPrimarySurface)
 
+  val Context.elevationLevelOne get() = getDimenAttr(R.attr.elevationLevelOne)
+  val Context.elevationLevelTwo get() = getDimenAttr(R.attr.elevationLevelTwo)
+  val Context.elevationLevelThree get() = getDimenAttr(R.attr.elevationLevelThree)
+  val Context.elevationLevelFour get() = getDimenAttr(R.attr.elevationLevelFour)
+  val Context.elevationLevelFive get() = getDimenAttr(R.attr.elevationLevelFive)
+
   fun Context.colorWithAlphaMedium(@ColorInt color: Int) = Color.argb(
     getDimenValue(R.dimen.alpha_medium).toAlphaInt(),
     Color.red(color),
@@ -61,7 +68,21 @@ object ViewThemeUtil {
     Color.blue(color)
   )
 
+  val Int.dp get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+  val Float.dp get() = (this / Resources.getSystem().displayMetrics.density)
+
+  val Int.px get() = this * Resources.getSystem().displayMetrics.density.toInt()
+
+  val Float.px get() = this * Resources.getSystem().displayMetrics.density.toInt()
+
   private fun Float.toAlphaInt() = (255 * this).toInt()
+
+  fun Context.getDimenAttr(@AttrRes attribute: Int): Float {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(attribute, typedValue, true)
+    return typedValue.getDimension(Resources.getSystem().displayMetrics)
+  }
 
   @ColorInt
   fun Context.getColorAttribute(@AttrRes attribute: Int): Int {

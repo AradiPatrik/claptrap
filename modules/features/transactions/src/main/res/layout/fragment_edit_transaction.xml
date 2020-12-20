@@ -82,27 +82,69 @@
       layout="@layout/layout_edit_transaction_inputs" />
   </ScrollView>
 
-  <com.google.android.material.floatingactionbutton.FloatingActionButton
-    android:id="@+id/edit_done_fab"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_marginEnd="24dp"
-    android:layout_marginBottom="24dp"
-    android:visibility="invisible"
-    android:elevation="?attr/elevationLevelTwo"
-    app:backgroundTint="?attr/colorAccent"
-    app:layout_constraintBottom_toBottomOf="parent"
+  <androidx.cardview.widget.CardView
+    android:id="@+id/scrim"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    app:srcCompat="@drawable/ic_check"
-    app:tint="?attr/colorOnSecondary" />
+    app:layout_constraintBottom_toBottomOf="parent"
+    android:visibility="invisible"
+    app:cardElevation="?attr/elevationLevelThree"
+    android:background="?attr/colorSurface"
+    android:alpha="@dimen/alpha_medium"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardCornerRadius="24dp"/>
 
   <com.google.android.material.card.MaterialCardView
     android:id="@+id/categories_background"
+    app:cardElevation="?attr/elevationLevelFour"
+    app:cardCornerRadius="24dp"
+    android:elevation="?attr/elevationLevelFive"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintTop_toBottomOf="parent"
     android:layout_width="0dp"
     android:layout_height="400dp" />
+
+  <TextView
+    android:id="@+id/categories_header"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="24dp"
+    android:layout_marginTop="16dp"
+    android:elevation="?attr/elevationLevelFive"
+    android:text="@string/categories_title"
+    android:textAppearance="?attr/textAppearanceSubtitle1"
+    app:layout_constraintStart_toStartOf="@id/categories_background"
+    app:layout_constraintTop_toTopOf="@id/categories_background" />
+
+  <View
+    android:id="@+id/category_header_separator"
+    android:layout_width="0dp"
+    android:layout_height="1dp"
+    android:layout_marginStart="16dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:alpha="@dimen/alpha_low"
+    android:background="?attr/colorOnSurface"
+    android:elevation="?attr/elevationLevelFive"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toBottomOf="@id/categories_header" />
+
+  <androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/categories_recycler_view"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:elevation="?attr/elevationLevelFive"
+    app:layout_constraintTop_toTopOf="@id/category_header_separator"
+    app:layout_constraintStart_toStartOf="@id/categories_background"
+    app:layout_constraintEnd_toEndOf="@id/categories_background"
+    app:layout_constraintBottom_toBottomOf="@id/categories_background"
+    android:layout_marginBottom="48dp" />
 
   <View
     android:id="@+id/card_bottom"
@@ -111,5 +153,20 @@
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toBottomOf="parent" />
+
+  <com.google.android.material.floatingactionbutton.FloatingActionButton
+    android:id="@+id/edit_done_fab"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="24dp"
+    android:layout_marginBottom="24dp"
+    android:visibility="invisible"
+    android:elevation="?attr/elevationLevelFive"
+    app:elevation="?attr/elevationLevelFive"
+    app:backgroundTint="?attr/colorAccent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:srcCompat="@drawable/ic_check"
+    app:tint="?attr/colorOnSecondary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
