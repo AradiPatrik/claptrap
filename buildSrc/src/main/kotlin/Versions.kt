@@ -8,7 +8,7 @@ object Versions {
   object AndroidX {
     const val appCompat = "1.2.0"
     const val coreKtx = "1.3.1"
-    const val fragmentKtx = "1.2.5"
+    const val fragmentKtx = "1.3.0-rc01"
     const val constraintLayout = "2.1.0-alpha2"
     const val navigation = "2.3.1"
     const val recyclerView = "1.1.0"
@@ -21,7 +21,7 @@ object Versions {
 
   object Dagger {
     const val hilt = "2.28-alpha"
-    const val hiltAndroidX = "1.0.0-alpha01"
+    const val hiltAndroidX = "1.0.0-alpha02"
     const val assistedInject = "0.6.0"
   }
 

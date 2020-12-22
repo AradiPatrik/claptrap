@@ -2,8 +2,10 @@ package com.aradipatrik.claptrap.feature.transactions.edit.model
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.Back
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.BackWithEdited
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
@@ -15,6 +17,7 @@ import kotlinx.coroutines.flow.single
 import kotlinx.coroutines.flow.take
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
+import org.joda.time.DateTime
 
 class EditTransactionViewModel @AssistedInject constructor(
   private val transactionInteractor: TransactionInteractor,
@@ -58,11 +61,26 @@ class EditTransactionViewModel @AssistedInject constructor(
   override fun processInput(viewEvent: EditTransactionViewEvent) = when (viewEvent) {
     EditTransactionViewEvent.BackClick -> closeCategorySelectorOrGoBack()
     EditTransactionViewEvent.DeleteButtonClick -> deleteAndNavigateBack()
-    is EditTransactionViewEvent.MemoChange -> changeMemoTo(viewEvent.memo)
-    is EditTransactionViewEvent.AmountChange -> changeAmountTo(viewEvent.amount)
     EditTransactionViewEvent.EditDoneClick -> saveCurrentTransactionAndNavigateBack()
     EditTransactionViewEvent.CategorySelectorClick -> openCategorySelector()
     EditTransactionViewEvent.ScrimClick -> closeCategorySelector()
+    EditTransactionViewEvent.DatePickerClick -> showDatePicker()
+    is EditTransactionViewEvent.MemoChange -> changeMemoTo(viewEvent.memo)
+    is EditTransactionViewEvent.AmountChange -> changeAmountTo(viewEvent.amount)
+    is EditTransactionViewEvent.CategoryChange -> selectCategory(viewEvent.category)
+    is EditTransactionViewEvent.DateChange -> selectDate(viewEvent.date)
+  }
+
+  private fun selectDate(date: DateTime) = reduceSpecificState<Editing> { state ->
+    state.copy(date = date)
+  }
+
+  private fun showDatePicker() = withState<Editing> { state ->
+    viewEffects.emit(EditTransactionViewEffect.ShowDatePickerAt(state.date))
+  }
+
+  private fun selectCategory(category: Category) = reduceSpecificState<Editing> { state ->
+    state.copy(category = category)
   }
 
   private fun closeCategorySelector() = reduceSpecificState<Editing> { state ->
@@ -83,7 +101,7 @@ class EditTransactionViewModel @AssistedInject constructor(
         memo = state.memo
       )
     )
-    viewEffects.emit(Back)
+    viewEffects.emit(BackWithEdited)
   }
 
   private fun changeAmountTo(newAmount: String) = reduceSpecificState<Editing> { state ->

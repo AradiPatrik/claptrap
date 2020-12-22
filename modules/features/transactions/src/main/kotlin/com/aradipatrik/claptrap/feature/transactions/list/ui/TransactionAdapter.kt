@@ -1,9 +1,6 @@
 package com.aradipatrik.claptrap.feature.transactions.list.ui
 
-import android.animation.ArgbEvaluator
-import android.animation.PropertyValuesHolder
 import android.animation.ValueAnimator
-import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,12 +22,9 @@ import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorSurface
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorWithAlphaMedium
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.suspendCancellableCoroutine
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 
@@ -131,6 +125,8 @@ class TransactionAdapter @AssistedInject constructor(
 
   var currentScrollTargetId: String? = null
 
+  fun scrollTo(target: String) = findItemAndScrollTo(target, INSTANT_SMOOTH_SCROLL_DELAY)
+
   override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
     _layoutManager = recyclerView.layoutManager as LinearLayoutManager
     _recyclerView = recyclerView
@@ -158,14 +154,17 @@ class TransactionAdapter @AssistedInject constructor(
     }
 
     currentScrollTargetId?.let {
-      findItemAndScrollTo(currentList, it)
+      findItemAndScrollTo(it, POSTPONED_SMOOTH_SCROLL_DELAY)
     }
   }
 
   private fun findItemAndScrollTo(
-    currentList: List<TransactionListItem>,
-    scrollTargetId: String
-  ) {
+    scrollTargetId: String,
+    scrollDelay: Long
+  ) = lifecycleScope.launchWhenResumed {
+    // Needed because we want to wait until our recycler view is shown by the animation
+    delay(scrollDelay)
+
     val scrollTargetPosition = currentList.indexOfFirst {
       it is TransactionListItem.Item && it.transactionPresentation.domain.id == scrollTargetId
     }
@@ -173,21 +172,17 @@ class TransactionAdapter @AssistedInject constructor(
     if (scrollTargetPosition != -1) {
       currentScrollTargetId = null
 
-      lifecycleScope.launchWhenResumed {
-        // Needed because we want to wait until our recycler view is shown by the animation
-        delay(SMOOTH_SCROLL_DELAY)
-        val firstItemPosition = layoutManager.findFirstVisibleItemPosition()
+      val firstItemPosition = layoutManager.findFirstVisibleItemPosition()
 
-        val offsetPosition = if(firstItemPosition < scrollTargetPosition) {
-          min(currentList.size - 1, scrollTargetPosition + 4)
-        } else {
-          max(0, scrollTargetPosition - 4)
-        }
-
-        recyclerView.smoothScrollToPosition(offsetPosition)
-        recyclerView.getTransactionItemViewHolderAtPosition(scrollTargetPosition)
-          .playAddedAnimationIn(lifecycleScope)
+      val offsetPosition = if (firstItemPosition < scrollTargetPosition) {
+        min(currentList.size - 1, scrollTargetPosition + 4)
+      } else {
+        max(0, scrollTargetPosition - 4)
       }
+
+      recyclerView.smoothScrollToPosition(offsetPosition)
+      recyclerView.getTransactionItemViewHolderAtPosition(scrollTargetPosition)
+        .playAddedAnimationIn(lifecycleScope)
     }
   }
 
@@ -253,5 +248,6 @@ class TransactionAdapter @AssistedInject constructor(
 
 private const val VIEW_TYPE_HEADER = 0
 private const val VIEW_TYPE_ITEM = 1
-private const val SMOOTH_SCROLL_DELAY = 900L
+private const val POSTPONED_SMOOTH_SCROLL_DELAY = 900L
+private const val INSTANT_SMOOTH_SCROLL_DELAY = 300L
 private const val ITEM_POLL_FREQUENCY = 500L

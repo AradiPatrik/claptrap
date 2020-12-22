@@ -26,6 +26,7 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import timber.log.Timber
 import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
@@ -64,6 +65,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     is YearIncreased -> increaseYear()
     is YearDecreased -> decreaseYear()
     is TransactionItemClicked -> goToEditTransaction(viewEvent.transactionId)
+    is TransactionUpdated -> notifyUserOfTransactionUpdate(viewEvent.updatedId)
+  }
+
+  private fun notifyUserOfTransactionUpdate(transactionId: String) = sideEffect {
+    viewEffects.emit(ScrollToTransaction(transactionId))
   }
 
   private fun goToEditTransaction(transactionId: String) = viewModelScope.launch {

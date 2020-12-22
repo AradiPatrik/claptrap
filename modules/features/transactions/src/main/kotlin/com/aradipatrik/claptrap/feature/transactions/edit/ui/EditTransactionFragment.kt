@@ -8,6 +8,7 @@ import android.view.animation.OvershootInterpolator
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
+import androidx.fragment.app.setFragmentResult
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
@@ -21,6 +22,7 @@ import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentEditTransactionBinding
 import com.aradipatrik.claptrap.feature.transactions.di.LongYearMonthDayFormatter
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewModel
@@ -28,24 +30,24 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
+import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionsFragment.Companion.UPDATED_TRANSACTION_ID_RESULT
 import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
+import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.dp
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.elevationLevelThree
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getDimenValue
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.px
+import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.showAndWaitWith
 import com.aradipatrik.claptrap.theme.widget.ViewUtils.modify
+import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
+import org.joda.time.DateTime
 import org.joda.time.format.DateTimeFormatter
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.widget.textChangeEvents
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -106,6 +108,9 @@ class EditTransactionFragment : ClapTrapFragment<
       binding.editDoneFab.clicks().map { EditDoneClick },
       binding.inputsContainer.categoryTextInputLayout.editText!!.clicks()
         .map { CategorySelectorClick },
+      binding.inputsContainer.dateTextInputLayout.editText!!.clicks()
+        .map { DatePickerClick },
+      categoryAdapter.categorySelectedEvents.map { CategoryChange(it.category) },
       binding.scrim.clicks().map { ScrimClick }
     )
 
@@ -196,8 +201,31 @@ class EditTransactionFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: EditTransactionViewEffect) = when (viewEffect) {
-    EditTransactionViewEffect.Back -> goBack()
+    Back -> goBack()
+    is ShowDatePickerAt -> showDatePickerAt(viewEffect.date)
+    BackWithEdited -> goBackWithEdited()
   }
+
+  private fun goBackWithEdited() {
+    setFragmentResult(UPDATED_TRANSACTION_ID_RESULT, requireArguments())
+    goBack()
+  }
+
+  private fun showDatePickerAt(date: DateTime) = lifecycleScope.launchWhenResumed {
+    val selectedDateInstant = MaterialDatePicker.Builder
+      .datePicker()
+      .setSelection(date.millis)
+      .build()
+      .showAndWaitWith(childFragmentManager)
+
+    extraViewEventsFlow.emit(
+      DateChange(
+        DateTime(selectedDateInstant)
+          .withHourOfDay(date.hourOfDay)
+          .withMinuteOfHour(date.minuteOfHour)
+      )
+    )
+  }.ignore()
 
   private fun goBack() {
     backdrop.clearMenu()

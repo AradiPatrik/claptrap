@@ -6,6 +6,7 @@ import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
 import androidx.core.view.ViewCompat
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,12 +35,15 @@ import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getAnimatedVectorDraw
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.yield
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -84,7 +88,16 @@ class TransactionsFragment : ClapTrapFragment<
   private val checkToPlus by lazy { getAnimatedVectorDrawable(R.drawable.check_to_plus) }
   private var isAnimationPlaying = false
 
-  @SuppressLint("BinaryOperationInTimber")
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    setFragmentResultListener(UPDATED_TRANSACTION_ID_RESULT) { _, bundle ->
+      lifecycleScope.launchWhenResumed {
+        yield() // Let recycler view receive new state
+        extraViewEventsFlow.emit(TransactionUpdated(bundle.getString("transactionId")!!))
+      }
+    }
+  }
+
   override fun initViews(savedInstanceState: Bundle?) {
     postponeEnterTransition()
     binding.transactionRecyclerView.viewTreeObserver.addOnPreDrawListener {
@@ -150,6 +163,7 @@ class TransactionsFragment : ClapTrapFragment<
     }
 
     if (!isAnimationPlaying && isUiInTransactionsState() || isYearMonthSelectorOpen()) {
+      isAnimationPlaying = true
       playAddAnimation()
     }
   }
@@ -215,13 +229,16 @@ class TransactionsFragment : ClapTrapFragment<
   }.ignore()
 
   private fun scrollTo(transactionId: String) {
-    transactionAdapter.currentScrollTargetId = transactionId
+    if (isUiInTransactionsState()) {
+      transactionAdapter.scrollTo(transactionId)
+    } else {
+      transactionAdapter.currentScrollTargetId = transactionId
+    }
   }
 
   private suspend fun playAnimationWithMotionLayout(
     animationBlock: suspend MotionLayout.() -> Unit
   ) = with(binding.transactionsMotionLayout) {
-    isAnimationPlaying = true
     animationBlock()
     isAnimationPlaying = false
   }
@@ -298,6 +315,8 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   companion object {
+    const val UPDATED_TRANSACTION_ID_RESULT = "UPDATED_TRANSACTION_ID_RESULT"
+
     private const val MOTION_LAYOUT_STATE_KEY = "TRANSACTION_MOTION_LAYOUT_STATE"
     private const val FAB_ICON_STATE_KEY = "FAB_ICON_STATE_KEY"
     private const val IS_ON_CALCULATOR = "IS_ON_CALCULATOR"

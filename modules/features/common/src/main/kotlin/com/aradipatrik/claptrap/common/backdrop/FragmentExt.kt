@@ -1,5 +1,6 @@
 package com.aradipatrik.claptrap.common.backdrop
 
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

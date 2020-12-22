@@ -12,6 +12,7 @@ sealed class TransactionsViewEvent {
   object YearIncreased : TransactionsViewEvent()
   object YearDecreased : TransactionsViewEvent()
 
+  data class TransactionUpdated(val updatedId: String) : TransactionsViewEvent()
   data class TransactionItemClicked(val transactionId: String) : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {
