@@ -22,7 +22,7 @@ internal object CommonMockGenerator {
 
   internal fun Random.nextMoney(
     currencyUnit: CurrencyUnit = CurrencyUnit.USD,
-    from: Int = 50,
+    from: Int = -999,
     until: Int = 1000
   ) = Money.of(
     currencyUnit,

@@ -27,6 +27,7 @@ import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
 import timber.log.Timber
+import java.math.BigDecimal
 import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
@@ -216,9 +217,18 @@ private fun createTransactionFromAddingState(state: Adding): Transaction {
 
   return Transaction(
     id = UUID.randomUUID().toString(),
-    money = Money.of(CurrencyUnit.USD, state.calculatorState.value.asBigDecimal),
+    money = Money.of(CurrencyUnit.USD, state.money),
     memo = state.memo,
     date = state.date,
     category = state.selectedCategory
   )
 }
+
+private val Adding.money
+  get() = calculatorState.value
+    .asBigDecimal
+    .abs()
+    .times(
+      if (transactionType == TransactionType.EXPENSE) BigDecimal.valueOf(-1)
+      else BigDecimal.ONE
+    )
