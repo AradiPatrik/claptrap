@@ -29,5 +29,10 @@
     <item name="elevationLevelOne">0.4dp</item>
     <item name="colorPrimaryVariantPrimary">?attr/colorPrimary</item>
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondary</item>
+
+    <!-- Statistic colors -->
+    <item name="statColorOne">@color/blue_200</item>
+    <item name="statColorTwo">@color/amber_200</item>
+    <item name="statColorThree">@color/purple_200</item>
   </style>
 </resources>

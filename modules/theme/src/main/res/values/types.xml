@@ -15,7 +15,7 @@
   </style>
 
   <style name="TextAppearance.Claptrap.Headline4" parent="TextAppearance.MaterialComponents.Headline4">
-    <item name="fontFamily">@font/robotocondensed_regular</item>
+    <item name="fontFamily">@font/eczar_medium</item>
     <item name="android:textSize">34sp</item>
   </style>
 

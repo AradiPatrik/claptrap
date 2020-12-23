@@ -31,6 +31,12 @@
     <item name="colorOnPrimarySurfaceAlphaLow">@color/white_alpha_low</item>
     <item name="colorPrimaryVariantPrimary">?attr/colorPrimaryVariant</item>
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
+
+    <!-- Statistic colors -->
+    <item name="statColorOne">@color/blue_400</item>
+    <item name="statColorTwo">@color/amber_300</item>
+    <item name="statColorThree">@color/purple_500</item>
+
     <item name="elevationLevelFive">8dp</item>
     <item name="elevationLevelFour">5dp</item>
     <item name="elevationLevelThree">4dp</item>

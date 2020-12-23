@@ -6,6 +6,10 @@
   <attr name="colorPrimaryVariantPrimary" format="color" />
   <attr name="colorSecondaryVariantSecondary" format="color" />
 
+  <attr name="statColorOne" format="color" />
+  <attr name="statColorTwo" format="color" />
+  <attr name="statColorThree" format="color" />
+
   <attr name="elevationLevelFive" format="dimension" />
   <attr name="elevationLevelFour" format="dimension" />
   <attr name="elevationLevelThree" format="dimension" />

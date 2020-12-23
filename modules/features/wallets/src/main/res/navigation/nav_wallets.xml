@@ -6,5 +6,14 @@
   <fragment
     android:id="@+id/fragment_wallets"
     android:name="com.aradipatrik.claptrap.wallets.ui.WalletsFragment"
-    android:label="Wallets" />
+    android:label="Wallets">
+    <action
+      android:id="@+id/action_wallets_to_wallet_details"
+      app:destination="@id/fragment_wallet_details" />
+  </fragment>
+
+  <fragment
+    android:id="@+id/fragment_wallet_details"
+    android:name="com.aradipatrik.claptrap.wallets.ui.WalletDetailsFragment"
+    android:label="Wallet details" />
 </navigation>

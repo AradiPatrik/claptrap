@@ -20,6 +20,8 @@ dependencies {
   implementation(Libraries.AndroidX.Ktx.core)
   implementation(Libraries.AndroidX.Ktx.fragment)
 
+  implementation(Libraries.AndroidX.Navigation.core)
+  implementation(Libraries.AndroidX.Navigation.extensions)
 
   implementation(Libraries.Coroutines.core)
   implementation(Libraries.Coroutines.binding)
