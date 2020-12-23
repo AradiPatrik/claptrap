@@ -1,13 +1,23 @@
 package com.aradipatrik.claptrap.wallets.model
 
 import androidx.hilt.lifecycle.ViewModelInject
+import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 
-class WalletsViewModel @ViewModelInject constructor()
-  : ClaptrapViewModel<WalletsViewState, WalletsViewEvent, WalletsViewEffect>(
-  WalletsViewState.Placeholder
+class WalletsViewModel @ViewModelInject constructor(
+  val walletInteractor: WalletInteractor
+) : ClaptrapViewModel<WalletsViewState, WalletsViewEvent, WalletsViewEffect>(
+  WalletsViewState.Loading
 ) {
-  override fun processInput(viewEvent: WalletsViewEvent) = when(viewEvent) {
+  init {
+    loadInitialWallets()
+  }
+
+  private fun loadInitialWallets() = reduceState {
+    WalletsViewState.WalletsLoaded(walletInteractor.getAllWallets())
+  }
+
+  override fun processInput(viewEvent: WalletsViewEvent) = when (viewEvent) {
     WalletsViewEvent.NavigateToDetailsClick -> navigateToDetails()
   }
 
