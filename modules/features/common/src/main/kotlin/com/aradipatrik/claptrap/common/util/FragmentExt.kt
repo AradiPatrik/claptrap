@@ -1,9 +1,10 @@
-package com.aradipatrik.claptrap.common.backdrop
+package com.aradipatrik.claptrap.common.util
 
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import com.aradipatrik.claptrap.common.backdrop.backdrop
+import com.aradipatrik.claptrap.common.backdrop.menuBackDrop
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 
 object FragmentExt {

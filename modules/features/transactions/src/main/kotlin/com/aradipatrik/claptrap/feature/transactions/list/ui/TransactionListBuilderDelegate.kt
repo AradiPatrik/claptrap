@@ -2,9 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionPresentation
-import com.aradipatrik.claptrap.feature.transactions.mapper.DateToStringMapper
-import com.aradipatrik.claptrap.feature.transactions.mapper.MoneyToStringMapper
+import com.aradipatrik.claptrap.common.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.feature.transactions.mapper.TransactionPresentationMapper
 import javax.inject.Inject
 

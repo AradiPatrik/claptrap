@@ -1,7 +1,9 @@
 package com.aradipatrik.claptrap.feature.transactions.mapper
 
 import com.aradipatrik.claptrap.domain.Transaction
-import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.common.mapper.DateToStringMapper
+import com.aradipatrik.claptrap.common.mapper.MoneyToStringMapper
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionPresentation
 import java.util.*
 import javax.inject.Inject

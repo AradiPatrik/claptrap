@@ -1,6 +1,5 @@
 package com.aradipatrik.claptrap.feature.transactions.list.ui
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.core.os.bundleOf
@@ -23,7 +22,7 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsView
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
-import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
@@ -35,7 +34,6 @@ import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getAnimatedVectorDraw
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.showAndWaitWith
 import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
@@ -43,7 +41,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.yield
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint

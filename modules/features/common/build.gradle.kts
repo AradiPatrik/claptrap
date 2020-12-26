@@ -4,6 +4,8 @@ plugins {
 
 dependencies {
   implementation(project(":mvi"))
+  implementation(project(":theme"))
+  implementation(project(":core:domain-models"))
 
   implementation(Libraries.AndroidX.appCompat)
 
@@ -12,6 +14,9 @@ dependencies {
   implementation(Libraries.Coroutines.materialBinding)
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
+
+  implementation(Libraries.Date.jodaTime)
+  implementation(Libraries.Money.jodaMoney)
 
   implementation(Libraries.Logging.timber)
 

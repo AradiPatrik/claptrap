@@ -1,7 +1,7 @@
-package com.aradipatrik.claptrap.feature.transactions.mapper
+package com.aradipatrik.claptrap.common.mapper
 
-import com.aradipatrik.claptrap.feature.transactions.di.CurrencyValueMoneyFormatter
-import com.aradipatrik.claptrap.feature.transactions.di.ValueMoneyFormatter
+import com.aradipatrik.claptrap.common.di.CurrencyValueMoneyFormatter
+import com.aradipatrik.claptrap.common.di.ValueMoneyFormatter
 import org.joda.money.Money
 import org.joda.money.format.MoneyFormatter
 import javax.inject.Inject

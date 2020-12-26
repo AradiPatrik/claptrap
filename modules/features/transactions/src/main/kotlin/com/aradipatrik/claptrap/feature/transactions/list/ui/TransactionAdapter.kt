@@ -15,7 +15,7 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListI
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionItemClicked
 import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionViewHolder.TransactionItemViewHolder
-import com.aradipatrik.claptrap.feature.transactions.mapper.DateToStringMapper
+import com.aradipatrik.claptrap.common.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorPrimary
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorSurface

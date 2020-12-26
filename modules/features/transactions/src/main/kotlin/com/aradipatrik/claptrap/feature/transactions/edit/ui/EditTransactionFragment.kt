@@ -14,13 +14,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
-import com.aradipatrik.claptrap.common.backdrop.FragmentExt.destinationViewModels
-import com.aradipatrik.claptrap.common.backdrop.ViewDelegates.settingTextInputLayoutContent
+import com.aradipatrik.claptrap.common.util.FragmentExt.destinationViewModels
+import com.aradipatrik.claptrap.common.util.ViewDelegates.settingTextInputLayoutContent
 import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentEditTransactionBinding
-import com.aradipatrik.claptrap.feature.transactions.di.LongYearMonthDayFormatter
+import com.aradipatrik.claptrap.common.di.LongYearMonthDayFormatter
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
@@ -31,7 +31,7 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
 import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionsFragment.Companion.UPDATED_TRANSACTION_ID_RESULT
-import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION

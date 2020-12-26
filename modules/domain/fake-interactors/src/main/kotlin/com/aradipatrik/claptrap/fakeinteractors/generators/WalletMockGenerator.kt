@@ -1,6 +1,7 @@
 package com.aradipatrik.claptrap.fakeinteractors.generators
 
 import com.aradipatrik.claptrap.domain.Wallet
+import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextEnum
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextId
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextMoney
 import com.aradipatrik.claptrap.fakeinteractors.generators.LoremIpsum.nextCapitalWord
@@ -11,6 +12,7 @@ object WalletMockGenerator {
     id = nextId(),
     isPrivate = nextBoolean(),
     moneyInWallet = nextMoney(from = 1000, until = 200000),
-    name = nextCapitalWord()
+    name = nextCapitalWord(),
+    colorId = nextEnum()
   )
 }

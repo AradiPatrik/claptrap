@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.feature.transactions.di
+package com.aradipatrik.claptrap.common.di
 
 import dagger.Module
 import dagger.Provides

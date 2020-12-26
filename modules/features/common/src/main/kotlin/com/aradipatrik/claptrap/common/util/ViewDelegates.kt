@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.common.backdrop
+package com.aradipatrik.claptrap.common.util
 
 import android.widget.EditText
 import com.google.android.material.textfield.TextInputLayout

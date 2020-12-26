@@ -2,9 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.edit.ui
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.aradipatrik.claptrap.common.backdrop.BackEffect
-import com.aradipatrik.claptrap.common.backdrop.BackListener
-import com.aradipatrik.claptrap.common.backdrop.FragmentExt.menuDestinationViewModels
+import com.aradipatrik.claptrap.common.util.FragmentExt.menuDestinationViewModels
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentMenuEditTransactionBinding
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect

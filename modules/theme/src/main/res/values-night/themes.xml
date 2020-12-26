@@ -34,5 +34,12 @@
     <item name="statColorOne">@color/blue_200</item>
     <item name="statColorTwo">@color/amber_200</item>
     <item name="statColorThree">@color/purple_200</item>
+    <item name="statColorFour">@color/lime_200</item>
+    <item name="statColorFive">@color/light_green_200</item>
+    <item name="statColorSix">@color/green_200</item>
+    <item name="statColorSeven">@color/teal_200</item>
+    <item name="statColorEight">@color/cyan_200</item>
+    <item name="statColorNine">@color/pink_200</item>
+    <item name="statColorTen">@color/deep_purple_200</item>
   </style>
 </resources>

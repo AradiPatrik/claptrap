@@ -1,10 +1,8 @@
-package com.aradipatrik.claptrap.feature.transactions.mapper
+package com.aradipatrik.claptrap.common.mapper
 
-import com.aradipatrik.claptrap.feature.transactions.di.LongMonthDayFormatter
-import com.aradipatrik.claptrap.feature.transactions.di.LongYearMonthDayFormatter
-import com.aradipatrik.claptrap.feature.transactions.di.MediumYearMonthDayFormatter
+import com.aradipatrik.claptrap.common.di.LongMonthDayFormatter
+import com.aradipatrik.claptrap.common.di.MediumYearMonthDayFormatter
 import org.joda.time.DateTime
-import org.joda.time.MonthDay
 import org.joda.time.format.DateTimeFormatter
 import javax.inject.Inject
 

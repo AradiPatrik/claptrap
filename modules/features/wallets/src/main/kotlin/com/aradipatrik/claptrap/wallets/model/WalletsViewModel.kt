@@ -5,7 +5,7 @@ import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 
 class WalletsViewModel @ViewModelInject constructor(
-  val walletInteractor: WalletInteractor
+  private val walletInteractor: WalletInteractor
 ) : ClaptrapViewModel<WalletsViewState, WalletsViewEvent, WalletsViewEffect>(
   WalletsViewState.Loading
 ) {

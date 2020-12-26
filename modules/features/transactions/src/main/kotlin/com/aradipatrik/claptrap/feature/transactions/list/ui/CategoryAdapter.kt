@@ -7,15 +7,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemCategoryBinding
-import com.aradipatrik.claptrap.feature.transactions.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.filterNotNull
-import javax.inject.Inject
 
 object CategoryItemCallback : DiffUtil.ItemCallback<CategoryListItem>() {
   override fun areItemsTheSame(

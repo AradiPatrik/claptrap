@@ -2,28 +2,21 @@ package com.aradipatrik.claptrap.wallets.ui
 
 import android.os.Bundle
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.FragmentNavigatorExtras
-import com.aradipatrik.claptrap.common.backdrop.backdrop
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.aradipatrik.claptrap.common.di.CurrencyValueMoneyFormatter
 import com.aradipatrik.claptrap.feature.wallets.R
 import com.aradipatrik.claptrap.feature.wallets.databinding.FragmentWalletsBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
-import com.aradipatrik.claptrap.theme.widget.ViewUtils.modify
+import com.aradipatrik.claptrap.wallets.mapper.WalletPresentationMapper
 import com.aradipatrik.claptrap.wallets.model.WalletsViewEffect
 import com.aradipatrik.claptrap.wallets.model.WalletsViewEvent
 import com.aradipatrik.claptrap.wallets.model.WalletsViewModel
 import com.aradipatrik.claptrap.wallets.model.WalletsViewState
 import com.aradipatrik.claptrap.wallets.model.WalletsViewState.Loading
 import com.aradipatrik.claptrap.wallets.model.WalletsViewState.WalletsLoaded
-import com.google.android.material.transition.MaterialFade
-import com.google.android.material.transition.MaterialFadeThrough
-import com.google.android.material.transition.MaterialSharedAxis
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.emptyFlow
-import kotlinx.coroutines.flow.map
 import org.joda.money.format.MoneyFormatter
-import org.joda.money.format.MoneyFormatterBuilder
-import ru.ldralighieri.corbind.view.clicks
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -35,23 +28,26 @@ class WalletsFragment : ClapTrapFragment<
   override val viewModel by viewModels<WalletsViewModel>()
   override val viewEvents get() = emptyFlow<WalletsViewEvent>()
 
+  @Inject @CurrencyValueMoneyFormatter lateinit var moneyFormatter: MoneyFormatter
+  @Inject lateinit var walletAdapter: WalletAdapter
+  @Inject lateinit var walletPresentationMapper: WalletPresentationMapper
 
+  override fun initViews(savedInstanceState: Bundle?) {
+    binding.walletsRecyclerView.adapter = walletAdapter
+    binding.walletsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+  }
 
-  override fun render(viewState: WalletsViewState) = when(viewState) {
-    Loading -> { }
+  override fun render(viewState: WalletsViewState) = when (viewState) {
+    Loading -> {
+    }
     is WalletsLoaded -> renderLoaded(viewState)
   }
 
   private fun renderLoaded(viewState: WalletsLoaded) {
-    binding.total.text = MoneyFormatterBuilder()
-      .appendCurrencySymbolLocalized()
-      .appendLiteral(" ")
-      .appendCurrencySymbolLocalized()
-      .toFormatter()
-      .print(viewState.total)
+    binding.total.text = moneyFormatter.print(viewState.total)
+    walletAdapter.submitList(viewState.wallets.map(walletPresentationMapper::map))
   }
 
   override fun react(viewEffect: WalletsViewEffect) {
-
   }
 }

@@ -9,6 +9,13 @@
   <attr name="statColorOne" format="color" />
   <attr name="statColorTwo" format="color" />
   <attr name="statColorThree" format="color" />
+  <attr name="statColorFour" format="color" />
+  <attr name="statColorFive" format="color" />
+  <attr name="statColorSix" format="color" />
+  <attr name="statColorSeven" format="color" />
+  <attr name="statColorEight" format="color" />
+  <attr name="statColorNine" format="color" />
+  <attr name="statColorTen" format="color" />
 
   <attr name="elevationLevelFive" format="dimension" />
   <attr name="elevationLevelFour" format="dimension" />

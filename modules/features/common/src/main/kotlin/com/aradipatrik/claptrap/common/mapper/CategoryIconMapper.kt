@@ -1,7 +1,7 @@
-package com.aradipatrik.claptrap.feature.transactions.mapper
+package com.aradipatrik.claptrap.common.mapper
 
 import com.aradipatrik.claptrap.domain.CategoryIcon
-import com.aradipatrik.claptrap.feature.transactions.R
+import com.aradipatrik.claptrap.feature.common.R
 
 object CategoryIconMapper {
   val CategoryIcon.drawableRes get() = when(this) {
