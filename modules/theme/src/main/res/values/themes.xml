@@ -44,11 +44,14 @@
     <item name="extraColorPink">@color/pink_500</item>
     <item name="extraColorDeepPurple">@color/deep_purple_500</item>
 
+    <item name="elevationFab">12dp</item>
+    <item name="elevationBottomAppBar">9dp</item>
     <item name="elevationLevelFive">8dp</item>
     <item name="elevationLevelFour">5dp</item>
     <item name="elevationLevelThree">4dp</item>
     <item name="elevationLevelTwo">2dp</item>
     <item name="elevationLevelOne">1dp</item>
+
     <!--Material type attributes-->
     <item name="textAppearanceHeadline1">@style/TextAppearance.Claptrap.Headline1</item>
     <item name="textAppearanceHeadline2">@style/TextAppearance.Claptrap.Headline2</item>

@@ -14,6 +14,8 @@ sealed class TransactionsViewEvent {
 
   data class TransactionUpdated(val updatedId: String) : TransactionsViewEvent()
   data class TransactionItemClicked(val transactionId: String) : TransactionsViewEvent()
+  data class WalletClick(val walletId: String) : TransactionsViewEvent()
+  object ShowWalletsClick : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {
     data class MemoChange(val memo: String) : AddTransactionViewEvent()

@@ -10,7 +10,8 @@
     android:layout_height="0dp"
     app:cardCornerRadius="24dp"
     app:cardElevation="1dp"
-    app:layout_constraintBottom_toBottomOf="@id/card_bottom"
+    app:shapeAppearance="@style/ShapeAppearance.Claptrap.MediumComponent.OnlyTop"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent" />

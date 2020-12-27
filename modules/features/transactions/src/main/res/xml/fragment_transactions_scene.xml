@@ -35,6 +35,11 @@
     motion:constraintSetEnd="@+id/month_selector_shown"
     motion:duration="300" />
 
+  <Transition
+    motion:constraintSetStart="@+id/fab_at_bottom"
+    motion:constraintSetEnd="@+id/wallet_sheet_shown"
+    motion:duration="300" />
+
   <Include motion:constraintSet="@xml/constraint_set_transactions_fab_at_bottom" />
 
   <Include motion:constraintSet="@xml/constraint_set_transactions_fab_at_middle" />
@@ -52,7 +57,7 @@
         motion:layout_constraintTop_toTopOf="parent"
         motion:layout_constraintStart_toStartOf="parent"
         motion:layout_constraintEnd_toEndOf="parent"
-        motion:layout_constraintBottom_toBottomOf="@id/card_bottom" />
+        motion:layout_constraintBottom_toBottomOf="parent" />
     </Constraint>
 
     <Constraint android:id="@+id/year_selection_layer">
@@ -65,7 +70,26 @@
     </Constraint>
 
     <Constraint android:id="@id/fab_background">
-      <Transform android:elevation="?attr/elevationLevelFour" />
+      <CustomAttribute
+        motion:attributeName="cardElevation"
+        motion:customDimension="?attr/elevationFab" />
+    </Constraint>
+  </ConstraintSet>
+
+  <ConstraintSet android:id="@+id/wallet_sheet_shown">
+    <Constraint android:id="@+id/wallets_menu">
+      <Layout
+        android:layout_width="0dp"
+        android:layout_height="200dp"
+        motion:layout_constraintStart_toStartOf="parent"
+        motion:layout_constraintEnd_toEndOf="parent"
+        motion:layout_constraintBottom_toTopOf="@+id/bottom_app_bar" />
+    </Constraint>
+
+    <Constraint android:id="@id/fab_background">
+      <CustomAttribute
+        motion:attributeName="cardElevation"
+        motion:customDimension="?attr/elevationFab" />
     </Constraint>
   </ConstraintSet>
 

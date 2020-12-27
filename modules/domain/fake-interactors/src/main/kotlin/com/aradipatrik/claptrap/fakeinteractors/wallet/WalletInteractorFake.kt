@@ -12,6 +12,13 @@ import kotlin.random.Random
 
 class WalletInteractorFake @Inject constructor() : WalletInteractor {
   private val wallets = MutableStateFlow(3 of { Random.nextWallet() })
+  var selectedWalletId: String = ""
 
   override suspend fun getAllWallets(): List<Wallet> = wallets.take(1).first()
+
+  override suspend fun getSelectedWalletId() = getAllWallets().first().id
+
+  override suspend fun setSelectedWalletId(id: String) {
+    selectedWalletId = id
+  }
 }

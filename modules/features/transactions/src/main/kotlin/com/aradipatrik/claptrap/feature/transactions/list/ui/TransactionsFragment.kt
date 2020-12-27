@@ -15,14 +15,12 @@ import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
+import com.aradipatrik.claptrap.feature.transactions.list.model.*
+import com.aradipatrik.claptrap.feature.transactions.mapper.WalletPresentationMapper
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
@@ -52,13 +50,16 @@ class TransactionsFragment : ClapTrapFragment<
   >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate), BackListener {
 
   @Inject lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
+  @Inject lateinit var walletPresentationMapper: WalletPresentationMapper
   @Inject lateinit var transactionAdapterFactory: TransactionAdapter.Factory
   @Inject lateinit var categoryAdapterFactory: CategoryAdapter.Factory
+  @Inject lateinit var walletSelectorAdapterFactory: WalletSelectorAdapter.Factory
 
   override val viewModel by activityViewModels<TransactionsViewModel>()
 
   private val transactionAdapter by lazy { transactionAdapterFactory.create(lifecycleScope) }
   private val categoryAdapter by lazy { categoryAdapterFactory.create(lifecycleScope) }
+  private val walletSelectorAdapter by lazy { walletSelectorAdapterFactory.create(lifecycleScope) }
 
   override val viewEvents: Flow<TransactionsViewEvent>
     get() = merge(
@@ -76,7 +77,9 @@ class TransactionsFragment : ClapTrapFragment<
       binding.monthSelectionChipGroup.monthClicks.map { MonthSelected(it) },
       binding.yearDecreaseChevron.clicks().map { YearDecreased },
       binding.yearIncreaseChevron.clicks().map { YearIncreased },
-      transactionAdapter.viewEvents
+      transactionAdapter.viewEvents,
+      walletSelectorAdapter.walletClickEvents.map { WalletClick(it.walletPresentation.domain.id) },
+      binding.bottomAppBarWallets.clicks().map { ShowWalletsClick }
     )
 
   private val checkToEquals by lazy { getAnimatedVectorDrawable(R.drawable.check_to_equals) }
@@ -103,6 +106,9 @@ class TransactionsFragment : ClapTrapFragment<
     }
     binding.transactionRecyclerView.layoutManager = LinearLayoutManager(context)
     binding.transactionRecyclerView.adapter = transactionAdapter
+
+    binding.walletsRecyclerView.layoutManager = LinearLayoutManager(context)
+    binding.walletsRecyclerView.adapter = walletSelectorAdapter
 
     binding.categoryRecyclerView.layoutManager = GridLayoutManager(
       requireContext(), 3
@@ -173,6 +179,15 @@ class TransactionsFragment : ClapTrapFragment<
       transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
     )
 
+    walletSelectorAdapter.submitList(
+      viewState.wallets.map {
+        WalletSelectorListItem(
+          walletPresentation = walletPresentationMapper.map(it),
+          isSelected = it.id == viewState.selectedWallet?.id
+        )
+      }
+    )
+
     binding.yearSelectionDisplay.text = viewState.yearMonth.year.toString()
     binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
 
@@ -182,14 +197,36 @@ class TransactionsFragment : ClapTrapFragment<
           playShowYearMonthSelectorAnimation()
         !viewState.isYearMonthSelectorOpen && isYearMonthSelectorOpen() ->
           playHideYearMonthSelectorAnimation()
+        viewState.isWalletSelectorOpen && isYearMonthSelectorClosed() ->
+          playShowWalletSheetAnimation()
+        !viewState.isWalletSelectorOpen && isWalletSelectorOpen() ->
+          playHideWalletSheetAnimation()
         isUiInAddingState() -> playReverseAddAnimation()
       }
+    }
+  }
+
+  private fun playHideWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
+    playAnimationWithMotionLayout {
+      binding.bottomAppBarWallets.isActivated = false
+      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
+    }
+  }
+
+  private fun playShowWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
+    playAnimationWithMotionLayout {
+      binding.bottomAppBarWallets.isActivated = true
+      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
     }
   }
 
   private fun isYearMonthSelectorOpen() =
     ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
       binding.transactionsMotionLayout.currentState == R.id.month_selector_shown
+
+  private fun isWalletSelectorOpen() =
+    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
+      binding.transactionsMotionLayout.currentState == R.id.wallet_sheet_shown
 
   private fun isYearMonthSelectorClosed() =
     ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&

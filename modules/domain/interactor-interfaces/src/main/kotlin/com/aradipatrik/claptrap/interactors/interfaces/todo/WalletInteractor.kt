@@ -4,4 +4,6 @@ import com.aradipatrik.claptrap.domain.Wallet
 
 interface WalletInteractor {
   suspend fun getAllWallets(): List<Wallet>
+  suspend fun getSelectedWalletId(): String
+  suspend fun setSelectedWalletId(id: String)
 }

@@ -17,6 +17,9 @@
   <attr name="extraColorPink" format="color" />
   <attr name="extraColorDeepPurple" format="color" />
 
+  <attr name="elevationFab" format="dimension" />
+  <attr name="elevationBottomAppBar" format="dimension" />
+
   <attr name="elevationLevelFive" format="dimension" />
   <attr name="elevationLevelFour" format="dimension" />
   <attr name="elevationLevelThree" format="dimension" />

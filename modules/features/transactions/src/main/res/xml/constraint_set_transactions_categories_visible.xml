@@ -1,7 +1,7 @@
-<ConstraintSet android:id="@+id/categories_visible"
-  motion:deriveConstraintsFrom="@id/action_visible"
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:motion="http://schemas.android.com/apk/res-auto">
+<ConstraintSet xmlns:android="http://schemas.android.com/apk/res/android"
+  xmlns:motion="http://schemas.android.com/apk/res-auto"
+  android:id="@+id/categories_visible"
+  motion:deriveConstraintsFrom="@id/action_visible">
   <Constraint android:id="@+id/category_list_background">
     <Layout
       android:layout_width="0dp"
@@ -19,13 +19,11 @@
   </Constraint>
 
   <Constraint android:id="@+id/category_recycler_view">
-    <PropertySet
-      android:visibility="visible" />
+    <PropertySet android:visibility="visible" />
   </Constraint>
 
   <Constraint android:id="@+id/categories_header">
-    <PropertySet
-      android:visibility="visible" />
+    <PropertySet android:visibility="visible" />
   </Constraint>
 
   <Constraint android:id="@+id/category_header_separator">
@@ -34,8 +32,7 @@
       android:visibility="visible" />
   </Constraint>
 
-  <Constraint
-    android:id="@+id/fab_icon">
+  <Constraint android:id="@+id/fab_icon">
 
     <CustomAttribute
       motion:attributeName="colorFilter"
@@ -43,6 +40,8 @@
   </Constraint>
 
   <Constraint android:id="@+id/fab_background">
-    <Transform android:elevation="?attr/elevationLevelFour" />
+    <CustomAttribute
+      motion:attributeName="cardElevation"
+      motion:customDimension="?attr/elevationLevelFour" />
   </Constraint>
 </ConstraintSet>

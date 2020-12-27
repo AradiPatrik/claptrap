@@ -13,7 +13,9 @@
   </Constraint>
 
   <Constraint android:id="@id/fab_background">
-    <Transform android:elevation="?attr/elevationLevelFour" />
+    <CustomAttribute
+      motion:attributeName="cardElevation"
+      motion:customDimension="?attr/elevationFab" />
 
     <CustomAttribute
       motion:attributeName="cardBackgroundColor"

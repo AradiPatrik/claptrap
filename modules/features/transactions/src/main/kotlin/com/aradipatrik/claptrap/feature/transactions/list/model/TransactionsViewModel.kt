@@ -15,6 +15,7 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.Calcu
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorStateReducer
 import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
+import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import kotlinx.coroutines.flow.launchIn
@@ -26,24 +27,50 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
-import timber.log.Timber
 import java.math.BigDecimal
 import java.util.*
 
 class TransactionsViewModel @ViewModelInject constructor(
   private val transactionInteractor: TransactionInteractor,
-  private val categoryInteractor: CategoryInteractor
+  private val categoryInteractor: CategoryInteractor,
+  private val walletInteractor: WalletInteractor
 ) : ClaptrapViewModel<TransactionsViewState, TransactionsViewEvent, TransactionsViewEffect>(
   Loading
 ) {
   private var getTransactionsInCurrentYearMonthJob =
     listenToTransactionsOfYearMonth(YearMonth.now())
 
+  init {
+    loadWalletsAndSelectedWallet()
+  }
+
+  private fun loadWalletsAndSelectedWallet() = reduceState { state ->
+    val wallets = walletInteractor.getAllWallets()
+    val selectedWalletId = walletInteractor.getSelectedWalletId()
+    val selectedWallet = wallets.first { it.id == selectedWalletId }
+
+    when (state) {
+      is TransactionsLoaded -> state.copy(
+        wallets = wallets,
+        selectedWallet = wallets.first { it.id == selectedWalletId }
+      )
+      Loading -> TransactionsLoaded(
+        wallets = wallets,
+        selectedWallet = selectedWallet,
+        refreshing = false,
+        transactions = emptyList()
+      )
+      is Adding -> {
+        TODO()
+      }
+    }
+  }
+
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
     when (state) {
       is Loading -> TransactionsLoaded(transactions = transactions, refreshing = false)
       is TransactionsLoaded -> state.copy(transactions = transactions)
-      else -> state
+      is Adding -> state.copy(oldTransactions = transactions)
     }
   }
 
@@ -67,6 +94,16 @@ class TransactionsViewModel @ViewModelInject constructor(
     is YearDecreased -> decreaseYear()
     is TransactionItemClicked -> goToEditTransaction(viewEvent.transactionId)
     is TransactionUpdated -> notifyUserOfTransactionUpdate(viewEvent.updatedId)
+    is WalletClick -> selectWallet(viewEvent.walletId)
+    is ShowWalletsClick -> showWalletSheet()
+  }
+
+  private fun showWalletSheet() = reduceSpecificState<TransactionsLoaded> { state ->
+    state.copy(isWalletSelectorOpen = !state.isWalletSelectorOpen)
+  }
+
+  private fun selectWallet(walletId: String) = sideEffect {
+    walletInteractor.setSelectedWalletId(walletId)
   }
 
   private fun notifyUserOfTransactionUpdate(transactionId: String) = sideEffect {

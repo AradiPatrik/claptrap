@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
+import com.aradipatrik.claptrap.domain.Wallet
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState
 import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.NumberOnCalculator
 import org.joda.time.DateTime
@@ -14,10 +15,13 @@ sealed class TransactionsViewState {
     val transactions: List<Transaction>,
     val refreshing: Boolean,
     val yearMonth: YearMonth = YearMonth.now(),
-    val isYearMonthSelectorOpen: Boolean = false
+    val isYearMonthSelectorOpen: Boolean = false,
+    val isWalletSelectorOpen: Boolean = false,
+    val wallets: List<Wallet> = emptyList(),
+    val selectedWallet: Wallet? = null,
   ) : TransactionsViewState() {
     override fun toString() =
-      "Loaded(transactions: ${transactions.size}, yearMonth: $yearMonth, isYearMonthSelectorOpen: $isYearMonthSelectorOpen)"
+      "Loaded(transactions: ${transactions.size}, wallets: ${wallets.size}, yearMonth: $yearMonth, isYearMonthSelectorOpen: $isYearMonthSelectorOpen)"
   }
 
   data class Adding(
