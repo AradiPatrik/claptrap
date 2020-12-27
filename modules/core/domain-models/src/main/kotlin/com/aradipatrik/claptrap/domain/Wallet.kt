@@ -7,5 +7,5 @@ data class Wallet(
   val isPrivate: Boolean,
   val moneyInWallet: Money,
   val name: String,
-  val colorId: StatColor
+  val colorId: ExtraColor
 )

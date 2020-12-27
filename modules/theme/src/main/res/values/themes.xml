@@ -33,16 +33,16 @@
     <item name="colorSecondaryVariantSecondary">?attr/colorSecondaryVariant</item>
 
     <!-- Statistic colors -->
-    <item name="statColorOne">@color/blue_400</item>
-    <item name="statColorTwo">@color/amber_300</item>
-    <item name="statColorThree">@color/purple_500</item>
-    <item name="statColorFour">@color/lime_500</item>
-    <item name="statColorFive">@color/light_green_500</item>
-    <item name="statColorSix">@color/green_500</item>
-    <item name="statColorSeven">@color/teal_500</item>
-    <item name="statColorEight">@color/cyan_500</item>
-    <item name="statColorNine">@color/pink_500</item>
-    <item name="statColorTen">@color/deep_purple_500</item>
+    <item name="extraColorBlue">@color/blue_400</item>
+    <item name="extraColorAmber">@color/amber_300</item>
+    <item name="extraColorPurple">@color/purple_500</item>
+    <item name="extraColorLime">@color/lime_500</item>
+    <item name="extraColorLightGreen">@color/light_green_500</item>
+    <item name="extraColorGreen">@color/green_500</item>
+    <item name="extraColorTeal">@color/teal_500</item>
+    <item name="extraColorCyan">@color/cyan_500</item>
+    <item name="extraColorPink">@color/pink_500</item>
+    <item name="extraColorDeepPurple">@color/deep_purple_500</item>
 
     <item name="elevationLevelFive">8dp</item>
     <item name="elevationLevelFour">5dp</item>

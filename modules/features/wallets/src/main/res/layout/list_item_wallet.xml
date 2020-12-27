@@ -21,7 +21,7 @@
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="@id/wallet_name"
       app:layout_constraintBottom_toBottomOf="@id/share_status"
-      android:background="?attr/statColorOne"
+      android:background="?attr/extraColorBlue"
       app:tint="?attr/colorPrimaryVariantPrimary" />
 
     <TextView
