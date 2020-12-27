@@ -77,5 +77,3 @@ class TransactionInteractorFake @Inject constructor(
       oldTransactionsInYearMonth.filter { it.id != transactionId })
   }
 }
-
-internal val initialTransactions = 100 of { Random.nextTransactionInYearMonth(YearMonth.now()) }
