@@ -53,7 +53,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:orientation="vertical"
-      app:layout_constraintGuide_percent="0.6" />
+      app:layout_constraintGuide_percent="0.5" />
 
     <TextView
       android:id="@+id/currency_icon"
@@ -71,13 +71,24 @@
       android:id="@+id/wallet_total"
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
-      android:layout_marginEnd="24dp"
+      android:layout_marginEnd="16dp"
       android:text="850"
       android:textAppearance="?attr/textAppearanceBody1"
       android:textColor="?attr/colorOnSurface"
       app:layout_constraintBottom_toBottomOf="parent"
-      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintEnd_toStartOf="@id/open_chevron"
       app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+      android:id="@+id/open_chevron"
+      app:layout_constraintTop_toTopOf="@id/wallet_total"
+      app:layout_constraintBottom_toBottomOf="@id/wallet_total"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      app:srcCompat="@drawable/ic_chevron_right"
+      app:tint="?attr/colorOnSurface"
+      app:layout_constraintEnd_toEndOf="parent"
+      android:layout_marginEnd="24dp" />
 
   </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>
