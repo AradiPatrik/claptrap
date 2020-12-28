@@ -166,7 +166,7 @@ class TransactionsFragment : ClapTrapFragment<
       binding.numberPad.setCategoryIconRes(category.icon.drawableRes)
     }
 
-    if (!isAnimationPlaying && !isUiInAddingState()) {
+    if (!isAnimationPlaying && !isUiInAddingState() && isMotionLayoutLaidOut) {
       isAnimationPlaying = true
       playAddAnimation()
     }
@@ -193,6 +193,7 @@ class TransactionsFragment : ClapTrapFragment<
     binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
 
     if (!isAnimationPlaying && isMotionLayoutLaidOut) {
+      Timber.tag("APDEBUG").d("animation is not playing and motion layout is layed out")
       when {
         viewState.isYearMonthSelectorOpen && !isYearMonthSelectorOpen() ->
           launchShowYearMonthSelectorAnimation()
