@@ -7,7 +7,7 @@ import org.joda.time.YearMonth
 interface TransactionInteractor {
   fun getAllTransactionsFlow(): Flow<List<Transaction>>
 
-  fun getAllTransactionsInYearMonthFlow(yearMonth: YearMonth): Flow<List<Transaction>>
+  fun getAllTransactionsInYearMonthOfSelectedWalletFlow(yearMonth: YearMonth): Flow<List<Transaction>>
 
   suspend fun saveTransaction(transaction: Transaction)
 

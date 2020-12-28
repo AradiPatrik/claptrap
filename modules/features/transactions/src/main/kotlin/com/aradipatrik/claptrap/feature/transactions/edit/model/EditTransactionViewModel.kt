@@ -10,6 +10,7 @@ import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionV
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
+import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
@@ -22,6 +23,7 @@ import org.joda.time.DateTime
 class EditTransactionViewModel @AssistedInject constructor(
   private val transactionInteractor: TransactionInteractor,
   private val categoryInteractor: CategoryInteractor,
+  private val walletInteractor: WalletInteractor,
   @Assisted private val transactionId: String
 ) : ClaptrapViewModel<EditTransactionViewState,
   EditTransactionViewEvent,
@@ -29,7 +31,7 @@ class EditTransactionViewModel @AssistedInject constructor(
   init {
     reduceState {
       val transaction = transactionInteractor.getTransaction(transactionId)
-      val categories = categoryInteractor.getAllCategories().take(1).single()
+      val categories = categoryInteractor.getAllCategoriesFlow().take(1).single()
       Editing(
         memo = transaction.memo,
         amount = transaction.money.amount.toPlainString(),
@@ -98,7 +100,8 @@ class EditTransactionViewModel @AssistedInject constructor(
         money = Money.of(CurrencyUnit.USD, state.amount.toDouble()),
         date = state.date,
         category = state.category,
-        memo = state.memo
+        memo = state.memo,
+        walletId = walletInteractor.getSelectedWalletId()
       )
     )
     viewEffects.emit(BackWithEdited)

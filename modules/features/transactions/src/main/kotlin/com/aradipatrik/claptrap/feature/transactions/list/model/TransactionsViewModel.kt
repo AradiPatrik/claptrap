@@ -4,6 +4,7 @@ import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.viewModelScope
 import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
+import com.aradipatrik.claptrap.domain.Wallet
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
@@ -18,10 +19,7 @@ import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteracto
 import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.flow.single
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.joda.money.CurrencyUnit
 import org.joda.money.Money
@@ -41,41 +39,47 @@ class TransactionsViewModel @ViewModelInject constructor(
     listenToTransactionsOfYearMonth(YearMonth.now())
 
   init {
-    loadWalletsAndSelectedWallet()
+    listenToWalletsAndSelectedWallet()
   }
 
-  private fun loadWalletsAndSelectedWallet() = reduceState { state ->
-    val wallets = walletInteractor.getAllWallets()
-    val selectedWalletId = walletInteractor.getSelectedWalletId()
-    val selectedWallet = wallets.first { it.id == selectedWalletId }
+  private fun listenToWalletsAndSelectedWallet() = walletInteractor.getSelectedWalletIdFlow()
+    .combine(walletInteractor.getAllWalletsFlow()) { selectedId, wallets ->
+      setLoadedWallets(wallets, wallets.first { it.id == selectedId })
+    }
+    .launchIn(viewModelScope)
 
+  private fun setLoadedWallets(
+    wallets: List<Wallet>,
+    selectedWallet: Wallet
+  ) = reduceState { state ->
     when (state) {
-      is TransactionsLoaded -> state.copy(
+      is Loaded -> state.copy(
         wallets = wallets,
-        selectedWallet = wallets.first { it.id == selectedWalletId }
+        selectedWallet = selectedWallet
       )
-      Loading -> TransactionsLoaded(
+      is Loading -> Loaded(
         wallets = wallets,
         selectedWallet = selectedWallet,
         refreshing = false,
         transactions = emptyList()
       )
-      is Adding -> {
-        TODO()
-      }
+      is Adding -> state.copy(
+        oldWallets = wallets,
+        oldSelectedWallet = selectedWallet
+      )
     }
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
     when (state) {
-      is Loading -> TransactionsLoaded(transactions = transactions, refreshing = false)
-      is TransactionsLoaded -> state.copy(transactions = transactions)
+      is Loading -> Loaded(transactions = transactions, refreshing = false)
+      is Loaded -> state.copy(transactions = transactions)
       is Adding -> state.copy(oldTransactions = transactions)
     }
   }
 
   private fun listenToTransactionsOfYearMonth(yearMonth: YearMonth) = transactionInteractor
-    .getAllTransactionsInYearMonthFlow(yearMonth)
+    .getAllTransactionsInYearMonthOfSelectedWalletFlow(yearMonth)
     .onEach(::setLoadedTransactions)
     .launchIn(viewModelScope)
 
@@ -98,8 +102,8 @@ class TransactionsViewModel @ViewModelInject constructor(
     is ShowWalletsClick -> showWalletSheet()
   }
 
-  private fun showWalletSheet() = reduceSpecificState<TransactionsLoaded> { state ->
-    state.copy(isWalletSelectorOpen = !state.isWalletSelectorOpen)
+  private fun showWalletSheet() = reduceSpecificState<Loaded> { state ->
+    state.copy(isWalletSelectorOpen = !state.isWalletSelectorOpen, isYearMonthSelectorOpen = false)
   }
 
   private fun selectWallet(walletId: String) = sideEffect {
@@ -114,19 +118,19 @@ class TransactionsViewModel @ViewModelInject constructor(
     viewEffects.emit(NavigateToEditTransaction(transactionId))
   }.ignore()
 
-  private fun decreaseYear() = reduceSpecificState<TransactionsLoaded> { state ->
+  private fun decreaseYear() = reduceSpecificState<Loaded> { state ->
     val newYearMonth = state.yearMonth.withYear(state.yearMonth.year - 1)
     startListeningToNewYearMonth(newYearMonth)
     state.copy(yearMonth = newYearMonth)
   }
 
-  private fun increaseYear() = reduceSpecificState<TransactionsLoaded> { state ->
+  private fun increaseYear() = reduceSpecificState<Loaded> { state ->
     val newYearMonth = state.yearMonth.withYear(state.yearMonth.year + 1)
     startListeningToNewYearMonth(newYearMonth)
     state.copy(yearMonth = newYearMonth)
   }
 
-  private fun selectYearMonth(month: Int) = reduceSpecificState<TransactionsLoaded> { state ->
+  private fun selectYearMonth(month: Int) = reduceSpecificState<Loaded> { state ->
     val newYearMonth = state.yearMonth.withMonthOfYear(month)
     startListeningToNewYearMonth(newYearMonth)
     state.copy(yearMonth = newYearMonth)
@@ -137,8 +141,11 @@ class TransactionsViewModel @ViewModelInject constructor(
     getTransactionsInCurrentYearMonthJob = listenToTransactionsOfYearMonth(newYearMonth)
   }
 
-  private fun toggleYearMonthSelector() = reduceSpecificState<TransactionsLoaded> { state ->
-    state.copy(isYearMonthSelectorOpen = !state.isYearMonthSelectorOpen)
+  private fun toggleYearMonthSelector() = reduceSpecificState<Loaded> { state ->
+    state.copy(
+      isYearMonthSelectorOpen = !state.isYearMonthSelectorOpen,
+      isWalletSelectorOpen = false
+    )
   }
 
   private fun setDate(date: DateTime) = reduceSpecificState<Adding> { state ->
@@ -167,11 +174,13 @@ class TransactionsViewModel @ViewModelInject constructor(
     }
   }
 
-  private fun addTransactionOfState(state: Adding): TransactionsLoaded {
-    saveTransaction(createTransactionFromAddingState(state))
-    return TransactionsLoaded(
+  private suspend fun addTransactionOfState(state: Adding): Loaded {
+    saveTransaction(createTransactionFromAddingState(state, walletInteractor.getSelectedWalletId()))
+    return Loaded(
       transactions = state.oldTransactions,
       yearMonth = state.transactionsYearMonth,
+      wallets = state.oldWallets,
+      selectedWallet = state.oldSelectedWallet,
       refreshing = false
     )
   }
@@ -219,21 +228,23 @@ class TransactionsViewModel @ViewModelInject constructor(
 
   private fun goBack() = reduceState { state ->
     if (state is Adding) {
-      TransactionsLoaded(
+      Loaded(
         transactions = state.oldTransactions,
         yearMonth = state.transactionsYearMonth,
+        wallets = state.oldWallets,
+        selectedWallet = state.oldSelectedWallet,
         refreshing = true
       )
-    } else if (state is TransactionsLoaded && state.isYearMonthSelectorOpen) {
-      state.copy(isYearMonthSelectorOpen = false)
+    } else if (state is Loaded && (state.isYearMonthSelectorOpen || state.isWalletSelectorOpen)) {
+      state.copy(isYearMonthSelectorOpen = false, isWalletSelectorOpen = false)
     } else {
       state.also { viewEffects.emit(Back) }
     }
   }
 
-  private fun goToAddTransaction() = reduceSpecificState<TransactionsLoaded> { oldState ->
+  private fun goToAddTransaction() = reduceSpecificState<Loaded> { oldState ->
     reduceSpecificState<Adding> { state ->
-      val categories = categoryInteractor.getAllCategories().take(1).single()
+      val categories = categoryInteractor.getAllCategoriesFlow().take(1).single()
       state.copy(
         categories = categories,
         selectedCategory = categories.first()
@@ -242,12 +253,17 @@ class TransactionsViewModel @ViewModelInject constructor(
     Adding(
       TransactionType.EXPENSE,
       transactionsYearMonth = oldState.yearMonth,
-      oldTransactions = oldState.transactions
+      oldTransactions = oldState.transactions,
+      oldWallets = oldState.wallets,
+      oldSelectedWallet = oldState.selectedWallet
     )
   }
 }
 
-private fun createTransactionFromAddingState(state: Adding): Transaction {
+private fun createTransactionFromAddingState(
+  state: Adding,
+  walletId: String
+): Transaction {
   require(state.selectedCategory != null) {
     "Add should not be called without a selected category"
   }
@@ -257,7 +273,8 @@ private fun createTransactionFromAddingState(state: Adding): Transaction {
     money = Money.of(CurrencyUnit.USD, state.money),
     memo = state.memo,
     date = state.date,
-    category = state.selectedCategory
+    category = state.selectedCategory,
+    walletId = walletId
   )
 }
 

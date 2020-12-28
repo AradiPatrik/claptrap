@@ -39,6 +39,7 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.yield
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -148,7 +149,7 @@ class TransactionsFragment : ClapTrapFragment<
 
   override fun render(viewState: TransactionsViewState) = when (viewState) {
     is TransactionsViewState.Loading -> renderLoading()
-    is TransactionsViewState.TransactionsLoaded -> renderLoaded(viewState)
+    is TransactionsViewState.Loaded -> renderLoaded(viewState)
     is TransactionsViewState.Adding -> renderAdding(viewState)
   }
 
@@ -165,7 +166,7 @@ class TransactionsFragment : ClapTrapFragment<
       binding.numberPad.setCategoryIconRes(category.icon.drawableRes)
     }
 
-    if (!isAnimationPlaying && isUiInTransactionsState() || isYearMonthSelectorOpen()) {
+    if (!isAnimationPlaying && !isUiInAddingState()) {
       isAnimationPlaying = true
       playAddAnimation()
     }
@@ -174,7 +175,7 @@ class TransactionsFragment : ClapTrapFragment<
   private fun renderLoading() {
   }
 
-  private fun renderLoaded(viewState: TransactionsViewState.TransactionsLoaded) {
+  private fun renderLoaded(viewState: TransactionsViewState.Loaded) {
     transactionAdapter.submitList(
       transactionListBuilderDelegate.generateListItemsFrom(viewState.transactions)
     )
@@ -191,46 +192,47 @@ class TransactionsFragment : ClapTrapFragment<
     binding.yearSelectionDisplay.text = viewState.yearMonth.year.toString()
     binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
 
-    if (!isAnimationPlaying) {
+    if (!isAnimationPlaying && isMotionLayoutLaidOut) {
       when {
-        viewState.isYearMonthSelectorOpen && isYearMonthSelectorClosed() ->
-          playShowYearMonthSelectorAnimation()
+        viewState.isYearMonthSelectorOpen && !isYearMonthSelectorOpen() ->
+          launchShowYearMonthSelectorAnimation()
+        viewState.isWalletSelectorOpen && !isWalletSelectorOpen() ->
+          launchShowWalletSheetAnimation()
         !viewState.isYearMonthSelectorOpen && isYearMonthSelectorOpen() ->
-          playHideYearMonthSelectorAnimation()
-        viewState.isWalletSelectorOpen && isYearMonthSelectorClosed() ->
-          playShowWalletSheetAnimation()
+          launchHideYearMonthSelectorAnimation()
         !viewState.isWalletSelectorOpen && isWalletSelectorOpen() ->
-          playHideWalletSheetAnimation()
+          launchHideWalletSheetAnimation()
         isUiInAddingState() -> playReverseAddAnimation()
       }
     }
   }
 
-  private fun playHideWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.bottomAppBarWallets.isActivated = false
-      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
-    }
+  private val isMotionLayoutLaidOut get() = ViewCompat.isLaidOut(binding.transactionsMotionLayout)
+
+  private fun launchHideWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
+    playHideWalletSheetAnimation()
+  }
+    .also { isAnimationPlaying = true }
+
+  private suspend fun playHideWalletSheetAnimation() = playAnimationWithMotionLayout {
+    binding.bottomAppBarWallets.isActivated = false
+    playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
   }
 
-  private fun playShowWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.bottomAppBarWallets.isActivated = true
-      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
-    }
+  private fun launchShowWalletSheetAnimation() = lifecycleScope.launchWhenResumed {
+    hideCurrentSubmenuOnLoadedScreen()
+    playShowWalletSheetAnimation()
+  }
+    .also { isAnimationPlaying = true }
+
+  private suspend fun playShowWalletSheetAnimation() = playAnimationWithMotionLayout {
+    binding.bottomAppBarWallets.isActivated = true
+    playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.wallet_sheet_shown)
   }
 
-  private fun isYearMonthSelectorOpen() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.month_selector_shown
+  private fun isYearMonthSelectorOpen() = binding.yearSelectorButton.isActivated
 
-  private fun isWalletSelectorOpen() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.wallet_sheet_shown
-
-  private fun isYearMonthSelectorClosed() =
-    ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
-      binding.transactionsMotionLayout.currentState == R.id.fab_at_bottom
+  private fun isWalletSelectorOpen() = binding.bottomAppBarWallets.isActivated
 
   private fun isUiInAddingState() =
     ViewCompat.isLaidOut(binding.transactionsMotionLayout) &&
@@ -277,19 +279,26 @@ class TransactionsFragment : ClapTrapFragment<
     isAnimationPlaying = false
   }
 
-  private fun playHideYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.yearSelectorButton.isActivated = false
-      playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-    }
+  private fun launchHideYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
+    playHideYearMonthSelectorAnimation()
   }.ignore()
+    .also { isAnimationPlaying = true }
 
-  private fun playShowYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
-    playAnimationWithMotionLayout {
-      binding.yearSelectorButton.isActivated = true
-      playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-    }
+  private suspend fun playHideYearMonthSelectorAnimation() = playAnimationWithMotionLayout {
+    binding.yearSelectorButton.isActivated = false
+    playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
+  }
+
+  private fun launchShowYearMonthSelectorAnimation() = lifecycleScope.launchWhenResumed {
+    hideCurrentSubmenuOnLoadedScreen()
+    playShowYearMonthSelectorAnimation()
   }.ignore()
+    .also { isAnimationPlaying = true }
+
+  private suspend fun playShowYearMonthSelectorAnimation() = playAnimationWithMotionLayout {
+    binding.yearSelectorButton.isActivated = true
+    playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
+  }
 
   private fun showDatePicker() = lifecycleScope.launchWhenResumed {
     val selectedDateInstant = MaterialDatePicker.Builder
@@ -321,13 +330,11 @@ class TransactionsFragment : ClapTrapFragment<
   }.ignore()
 
   private fun playAddAnimation() = lifecycleScope.launchWhenResumed {
+    hideCurrentSubmenuOnLoadedScreen()
+    isAnimationPlaying = true
     playAnimationWithMotionLayout {
       binding.fabBackground.isEnabled = false
       binding.fabBackground.isClickable = false
-      if (isYearMonthSelectorOpen()) {
-        binding.yearSelectorButton.isActivated = false
-        playReverseTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.month_selector_shown)
-      }
 
       backdrop.switchMenu(AddTransactionMenuFragment::class.java)
       playTransitionAndWaitForFinish(R.id.fab_at_bottom, R.id.fab_at_middle)
@@ -340,6 +347,13 @@ class TransactionsFragment : ClapTrapFragment<
       binding.numberPad.setNumberPadActionEnabled(true)
     }
   }.ignore()
+
+  private suspend fun hideCurrentSubmenuOnLoadedScreen() {
+    when {
+      isWalletSelectorOpen() -> playHideWalletSheetAnimation()
+      isYearMonthSelectorOpen() -> playHideYearMonthSelectorAnimation()
+    }
+  }
 
   override fun onBack(): BackEffect {
     viewLifecycleOwner.lifecycleScope.launchWhenResumed {

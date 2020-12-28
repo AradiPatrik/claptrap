@@ -4,5 +4,5 @@ import com.aradipatrik.claptrap.domain.Category
 import kotlinx.coroutines.flow.Flow
 
 interface CategoryInteractor {
-  fun getAllCategories(): Flow<List<Category>>
+  fun getAllCategoriesFlow(): Flow<List<Category>>
 }

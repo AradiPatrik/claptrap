@@ -11,7 +11,7 @@ import org.joda.time.YearMonth
 sealed class TransactionsViewState {
   object Loading : TransactionsViewState()
 
-  data class TransactionsLoaded(
+  data class Loaded(
     val transactions: List<Transaction>,
     val refreshing: Boolean,
     val yearMonth: YearMonth = YearMonth.now(),
@@ -28,6 +28,8 @@ sealed class TransactionsViewState {
     val transactionType: TransactionType = TransactionType.EXPENSE,
     val categories: List<Category> = emptyList(),
     val oldTransactions: List<Transaction> = emptyList(),
+    val oldWallets: List<Wallet> = emptyList(),
+    val oldSelectedWallet: Wallet? = null,
     val date: DateTime = DateTime.now(),
     val selectedCategory: Category? = null,
     val memo: String = "",

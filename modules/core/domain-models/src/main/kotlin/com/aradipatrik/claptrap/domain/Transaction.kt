@@ -9,4 +9,5 @@ data class Transaction(
   val date: DateTime,
   val memo: String,
   val category: Category,
+  val walletId: String
 )

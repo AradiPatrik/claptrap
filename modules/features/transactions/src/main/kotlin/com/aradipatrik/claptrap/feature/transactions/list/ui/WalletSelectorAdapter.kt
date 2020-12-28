@@ -44,7 +44,7 @@ class WalletSelectorViewHolder(
 
     binding.walletName.alpha = foregroundAlpha
     binding.walletTotal.alpha = foregroundAlpha
-    binding.walletTotal.alpha = foregroundAlpha
+    binding.currencyIcon.alpha = foregroundAlpha
 
     binding.root.setOnClickListener { onClick(walletListItem) }
   }

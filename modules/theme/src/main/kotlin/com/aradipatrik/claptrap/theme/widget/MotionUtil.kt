@@ -44,6 +44,7 @@ object MotionUtil {
     progress = 1f
     transitionToState(beginState)
     awaitStateReached(beginState)
+    Timber.tag("APDEBUG").d("finished")
   }
 
   fun MotionLayout.playReverseTransition(beginState: Int, endState: Int) {

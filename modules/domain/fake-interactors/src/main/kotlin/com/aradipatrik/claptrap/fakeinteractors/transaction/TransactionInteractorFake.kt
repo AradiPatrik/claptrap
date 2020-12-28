@@ -3,13 +3,15 @@ package com.aradipatrik.claptrap.fakeinteractors.transaction
 import com.aradipatrik.claptrap.domain.Category
 import com.aradipatrik.claptrap.domain.Transaction
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.of
-import com.aradipatrik.claptrap.fakeinteractors.generators.TransactionMockGenerator.nextTransactionInYearMonth
+import com.aradipatrik.claptrap.fakeinteractors.generators.TransactionMockGenerator.nextTransaction
 import com.aradipatrik.claptrap.interactors.interfaces.todo.CategoryInteractor
 import com.aradipatrik.claptrap.interactors.interfaces.todo.TransactionInteractor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.withContext
+import com.aradipatrik.claptrap.interactors.interfaces.todo.WalletInteractor
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import org.joda.time.DateTime
 import org.joda.time.YearMonth
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -17,63 +19,69 @@ import kotlin.random.Random
 
 @Singleton
 class TransactionInteractorFake @Inject constructor(
-  private val categoryInteractor: CategoryInteractor
+  private val categoryInteractor: CategoryInteractor,
+  private val walletInteractor: WalletInteractor
 ) : TransactionInteractor {
-  private val transactions = MutableStateFlow<Map<YearMonth, List<Transaction>>>(emptyMap())
+  private val transactionsStateFlow = MutableStateFlow<List<Transaction>>(emptyList())
 
-  override fun getAllTransactionsFlow() = transactions
-    .map { it.values.flatten() }
-    .flowOn(Dispatchers.IO)
+  override fun getAllTransactionsFlow(): Flow<List<Transaction>> = transactionsStateFlow
 
-  override fun getAllTransactionsInYearMonthFlow(yearMonth: YearMonth) = transactions
-    .map {
-      populateTransactionsWithYearMonthIfMissing(
+  override fun getAllTransactionsInYearMonthOfSelectedWalletFlow(yearMonth: YearMonth) = combine(
+    transactionsStateFlow,
+    walletInteractor.getSelectedWalletIdFlow(),
+    categoryInteractor.getAllCategoriesFlow()
+  ) { transactions, selectedWalletId, categories ->
+    val transactionsInYearMonthOfWallet = transactions.filter {
+      it.walletId == selectedWalletId && it.date.asYearMonth == yearMonth
+    }
+
+    if (transactionsInYearMonthOfWallet.isEmpty()) {
+      val generatedTransactions = generateTransactionsInYearMonthOfWallet(
         yearMonth,
-        categoryInteractor.getAllCategories().take(1).single()
+        selectedWalletId,
+        categories
       )
 
-      it[yearMonth] ?: emptyList()
+      transactionsStateFlow.value += generatedTransactions
+      generatedTransactions
+    } else {
+      transactionsInYearMonthOfWallet
     }
-    .flowOn(Dispatchers.IO)
+  }
 
-  private fun populateTransactionsWithYearMonthIfMissing(
+  private fun generateTransactionsInYearMonthOfWallet(
     yearMonth: YearMonth,
+    walletId: String,
     categories: List<Category>
-  ) {
-    if (!transactions.value.containsKey(yearMonth)) {
-      transactions.value = transactions.value +
-        (yearMonth to (100 of {
-          Random.nextTransactionInYearMonth(
-            yearMonth,
-            categories.random()
-          )
-        }))
+  ) = 100 of {
+    Random.nextTransaction(
+      category = categories.random(),
+      walletId = walletId,
+      yearMonth = yearMonth
+    )
+  }
+
+  override suspend fun saveTransaction(transaction: Transaction) {
+    if (transactionsStateFlow.value.firstOrNull { it.id == transaction.id } == null) {
+      transactionsStateFlow.value += transaction
+    } else {
+      transactionsStateFlow.value = transactionsStateFlow.value.map {
+        if (it.id == transaction.id) {
+          transaction
+        } else {
+          it
+        }
+      }
     }
   }
 
-  override suspend fun saveTransaction(transaction: Transaction) = withContext(Dispatchers.IO) {
-    val yearMonth = YearMonth.fromDateFields(transaction.date.toDate())
-    transactions.value = transactions.value +
-      (yearMonth to (transactions.value[yearMonth]?.filter { it.id != transaction.id }
-        ?: emptyList()) + transaction)
-  }
+  override suspend fun getTransaction(transactionId: String) = transactionsStateFlow.value
+    .first { it.id == transactionId }
 
-  override suspend fun getTransaction(
-    transactionId: String
-  ): Transaction = withContext(Dispatchers.IO) {
-    transactions.value.values.flatten().first { transactionId == it.id }
-  }
 
   override suspend fun deleteTransaction(transactionId: String) {
-    val oldTransaction = getTransaction(transactionId)
-    val transactionYearMonth = YearMonth(oldTransaction.date.year, oldTransaction.date.monthOfYear)
-    val oldTransactionsInYearMonth = transactions.value[transactionYearMonth]
-
-    require(oldTransactionsInYearMonth != null) {
-      "There should be transactions in year month: $transactionYearMonth"
-    }
-
-    transactions.value = transactions.value + (transactionYearMonth to
-      oldTransactionsInYearMonth.filter { it.id != transactionId })
+    transactionsStateFlow.value = transactionsStateFlow.value.filter { it.id != transactionId }
   }
+
+  private val DateTime.asYearMonth get() = YearMonth(year, monthOfYear)
 }
