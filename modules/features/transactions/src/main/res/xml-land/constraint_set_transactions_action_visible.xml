@@ -15,6 +15,10 @@
     <CustomAttribute
       motion:attributeName="cardBackgroundColor"
       motion:customColorValue="?attr/colorSurface" />
+
+    <CustomAttribute
+      motion:attributeName="cardElevation"
+      motion:customDimension="?attr/elevationLevelFour" />
   </Constraint>
 
   <Constraint android:id="@+id/fab_icon">

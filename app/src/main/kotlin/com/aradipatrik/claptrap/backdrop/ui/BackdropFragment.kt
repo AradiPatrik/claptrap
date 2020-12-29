@@ -65,7 +65,7 @@ class BackdropFragment : ClapTrapFragment<
 
     savedInstanceState?.let {
       if (!savedInstanceState.getBoolean(CUSTOM_MENU_WAS_SHOWN)) {
-        binding.menuIcon.alpha = 0.0f
+        binding.menuIcon.isInvisible = true
         binding.title.alpha = 0.0f
       }
     }

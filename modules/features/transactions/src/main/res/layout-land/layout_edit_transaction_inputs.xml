@@ -75,6 +75,7 @@
     android:elevation="?attr/elevationLevelThree"
     android:foreground="?attr/selectableItemBackground"
     android:hint="@string/category"
+    app:startIconTint="?attr/colorPrimary"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="@+id/halfway_guideline"
     app:layout_constraintTop_toBottomOf="@id/date_text_input_layout">

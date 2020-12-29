@@ -133,6 +133,8 @@ class TransactionsFragment : ClapTrapFragment<
 
       binding.yearSelectorButton.isActivated =
         savedInstanceState.getBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY)
+      binding.bottomAppBarWallets.isActivated =
+        savedInstanceState.getBoolean(IS_WALLET_SELECTOR_ACTIVE_KEY)
 
       if (!savedInstanceState.getBoolean(FAB_ICON_STATE_KEY)) binding.fabIcon.morph()
     }
@@ -145,6 +147,7 @@ class TransactionsFragment : ClapTrapFragment<
       IS_ON_CALCULATOR, binding.fabIcon.startToEndAnimatedVectorDrawable == checkToEquals
     )
     outState.putBoolean(IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY, binding.yearSelectorButton.isActivated)
+    outState.putBoolean(IS_WALLET_SELECTOR_ACTIVE_KEY, binding.bottomAppBarWallets.isActivated)
   }
 
   override fun render(viewState: TransactionsViewState) = when (viewState) {
@@ -193,7 +196,6 @@ class TransactionsFragment : ClapTrapFragment<
     binding.monthSelectionChipGroup.selectedMonth = viewState.yearMonth.monthOfYear
 
     if (!isAnimationPlaying && isMotionLayoutLaidOut) {
-      Timber.tag("APDEBUG").d("animation is not playing and motion layout is layed out")
       when {
         viewState.isYearMonthSelectorOpen && !isYearMonthSelectorOpen() ->
           launchShowYearMonthSelectorAnimation()
@@ -370,5 +372,6 @@ class TransactionsFragment : ClapTrapFragment<
     private const val FAB_ICON_STATE_KEY = "FAB_ICON_STATE_KEY"
     private const val IS_ON_CALCULATOR = "IS_ON_CALCULATOR"
     private const val IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY = "IS_YEAR_MONTH_SELECTOR_ACTIVE"
+    private const val IS_WALLET_SELECTOR_ACTIVE_KEY = "IS_WALLET_SELECTOR_ACTIVE"
   }
 }
