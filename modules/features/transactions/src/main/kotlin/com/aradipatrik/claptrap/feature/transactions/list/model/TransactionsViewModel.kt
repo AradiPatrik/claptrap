@@ -25,6 +25,7 @@ import org.joda.money.CurrencyUnit
 import org.joda.money.Money
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import timber.log.Timber
 import java.math.BigDecimal
 import java.util.*
 
@@ -71,6 +72,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
+    Timber.tag("APDEBUG").d("New transactions arrived ${transactions.size}")
     when (state) {
       is Loading -> Loaded(transactions = transactions, refreshing = false)
       is Loaded -> state.copy(transactions = transactions)

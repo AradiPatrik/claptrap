@@ -27,7 +27,15 @@ class WalletInteractorFake @Inject constructor() : WalletInteractor {
 
   override suspend fun getAllWallets(): List<Wallet> = wallets.first()
 
-  override suspend fun getSelectedWalletId() = selectedWalletId.first()
+  override suspend fun getSelectedWalletId() = selectedWalletId
+    .map {
+      if (it.isEmpty()) {
+        getAllWallets().first().id
+      } else {
+        it
+      }
+    }
+    .first()
 
   override suspend fun setSelectedWalletId(id: String) {
     selectedWalletId.value = id
