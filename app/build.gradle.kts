@@ -16,6 +16,7 @@ dependencies {
   implementation(project(":domain:interactors"))
   implementation(project(":domain:interactor-interfaces"))
   implementation(project(":domain:fake-interactors"))
+  implementation(project(":core:domain-models"))
   implementation(project(":theme"))
   implementation(project(":mvi"))
 
@@ -41,6 +42,8 @@ dependencies {
   kapt(Libraries.Dagger.assistedInjectKapt)
   kapt(Libraries.Dagger.hiltKapt)
   kapt(Libraries.Dagger.hiltAndroidXKapt)
+
+  implementation(Libraries.Google.playServices)
 }
 
 android {

@@ -72,7 +72,6 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private fun setLoadedTransactions(transactions: List<Transaction>) = reduceState { state ->
-    Timber.tag("APDEBUG").d("New transactions arrived ${transactions.size}")
     when (state) {
       is Loading -> Loaded(transactions = transactions, refreshing = false)
       is Loaded -> state.copy(transactions = transactions)

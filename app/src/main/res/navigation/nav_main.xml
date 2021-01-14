@@ -8,4 +8,8 @@
     android:id="@+id/fragment_main"
     android:name="com.aradipatrik.claptrap.backdrop.ui.BackdropFragment" />
 
+  <fragment
+    android:id="@+id/fragment_login"
+    android:name="com.aradipatrik.claptrap.login.ui.LoginFragment" />
+
 </navigation>

@@ -52,4 +52,8 @@ object Versions {
     const val core = "1.4.0"
     const val logback = "1.2.3"
   }
+
+  object Google {
+    const val playServices = "19.0.0"
+  }
 }

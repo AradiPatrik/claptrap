@@ -12,6 +12,7 @@ import io.ktor.response.respond
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.util.KtorExperimentalAPI
+import io.ktor.utils.io.*
 import kotlinx.html.body
 import kotlinx.html.h1
 import java.util.*
@@ -31,34 +32,8 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    get("/todos") {
-      call.respond(listOf(
-        TodoApiModel(UUID.randomUUID().toString(), "Vidd ki a szemetet", isDone = true),
-        TodoApiModel(UUID.randomUUID().toString(), "Fozz vacsorat", isDone = true),
-        TodoApiModel(UUID.randomUUID().toString(), "Tanulj nemetul", isDone = false),
-        TodoApiModel(UUID.randomUUID().toString(), "Kodoljal", isDone = true),
-      ))
-    }
-
-    get("/test") {
-      call.respondHtml {
-        body {
-          h1 { +"This is working" }
-        }
-      }
-    }
-
-    get("/foos") {
-      call.respondHtml {
-        body {
-          h1 {
-            +"This should work!!!!"
-          }
-        }
-      }
+    get("/oauth2callback") {
+      call.respond("ok")
     }
   }
 }
-
-
-

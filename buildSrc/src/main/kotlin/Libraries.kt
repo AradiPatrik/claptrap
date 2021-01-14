@@ -94,4 +94,9 @@ object Libraries {
     const val networkTls = "io.ktor:ktor-network-tls:${Versions.Ktor.core}"
     const val certificates = "io.ktor:ktor-network-tls-certificates:${Versions.Ktor.core}"
   }
+
+  object Google {
+    const val playServices =
+      "com.google.android.gms:play-services-auth:${Versions.Google.playServices}"
+  }
 }
