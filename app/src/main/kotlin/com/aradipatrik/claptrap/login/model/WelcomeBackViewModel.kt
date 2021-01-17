@@ -15,18 +15,34 @@ class WelcomeBackViewModel @ViewModelInject constructor(
   WelcomeBackViewState,
   WelcomeBackViewEvent,
   WelcomeBackViewEffect
->(WelcomeBackViewState) {
+>(WelcomeBackViewState()) {
   override fun processInput(viewEvent: WelcomeBackViewEvent) = when(viewEvent) {
     is SignInWithGoogle -> startSignInWithGoogleFlow()
-    is SignInSuccessful -> signIn(viewEvent.user)
+    is SignInSuccessful -> signInWithGoogle(viewEvent.user)
+    is WelcomeBackViewEvent.EmailTextChange -> changeEmail(viewEvent.email)
+    is WelcomeBackViewEvent.PasswordTextChange -> changePassword(viewEvent.password)
+    is WelcomeBackViewEvent.SignInWithEmailAndPassword -> signInWithEmailAndPassword()
+  }
+
+  private fun changeEmail(email: String) = reduceState { state ->
+    state.copy(email = email)
+  }
+
+  private fun changePassword(password: String) = reduceState { state ->
+    state.copy(password = password)
   }
 
   private fun startSignInWithGoogleFlow() = sideEffect {
     viewEffects.emit(ShowSignInWithGoogleOAuthFlow)
   }
 
-  private fun signIn(user: User) = sideEffect {
-    userInteractor.setSignedInUser(user)
+  private fun signInWithGoogle(user: User) = sideEffect {
+    userInteractor.signInWithGoogleCredentials(user)
+    viewEffects.emit(NavigateToMainScreen)
+  }
+
+  private fun signInWithEmailAndPassword() = sideEffect { state ->
+    userInteractor.signInWithEmailAndPassword(state.email, state.password)
     viewEffects.emit(NavigateToMainScreen)
   }
 }

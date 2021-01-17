@@ -9,7 +9,13 @@ sealed class WelcomeBackViewEffect {
 
 sealed class WelcomeBackViewEvent {
   object SignInWithGoogle : WelcomeBackViewEvent()
+  object SignInWithEmailAndPassword : WelcomeBackViewEvent()
+  data class EmailTextChange(val email: String) : WelcomeBackViewEvent()
+  data class PasswordTextChange(val password: String) : WelcomeBackViewEvent()
   data class SignInSuccessful(val user: User) : WelcomeBackViewEvent()
 }
 
-object WelcomeBackViewState
+data class WelcomeBackViewState(
+  val email: String = "",
+  val password: String = ""
+)
