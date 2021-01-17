@@ -56,4 +56,8 @@ object Versions {
   object Google {
     const val playServices = "19.0.0"
   }
+
+  object Firebase {
+    const val bom = "26.3.0"
+  }
 }

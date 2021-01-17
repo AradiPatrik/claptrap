@@ -6,10 +6,24 @@
 
   <fragment
     android:id="@+id/fragment_main"
-    android:name="com.aradipatrik.claptrap.backdrop.ui.BackdropFragment" />
+    android:name="com.aradipatrik.claptrap.backdrop.ui.BackdropFragment">
+    <action
+      android:id="@+id/to_login"
+      app:popUpTo="@id/fragment_main"
+      app:popUpToInclusive="true"
+      app:destination="@id/fragment_login" />
+  </fragment>
 
   <fragment
     android:id="@+id/fragment_login"
-    android:name="com.aradipatrik.claptrap.login.ui.LoginFragment" />
+    android:name="com.aradipatrik.claptrap.login.ui.WelcomeBackFragment">
+    <action
+      android:id="@+id/to_main"
+      app:popUpTo="@id/fragment_login"
+      app:popUpToInclusive="true"
+      app:destination="@id/fragment_main" />
+  </fragment>
+
+
 
 </navigation>

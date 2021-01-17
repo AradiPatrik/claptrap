@@ -9,4 +9,9 @@ object Flows {
     this@launchInWhenResumed
       .collect()
   }
+
+  fun Flow<*>.launchInWhenStarted(lifecycle: LifecycleCoroutineScope) = lifecycle.launchWhenStarted {
+    this@launchInWhenStarted
+      .collect()
+  }
 }

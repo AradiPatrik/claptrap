@@ -29,6 +29,8 @@ dependencies {
   implementation(Libraries.AndroidX.Navigation.extensions)
   implementation(Libraries.Coroutines.binding)
   implementation(Libraries.Coroutines.materialBinding)
+  implementation(Libraries.AndroidX.Lifecycle.lifecycle)
+  implementation(Libraries.AndroidX.Lifecycle.lifecycleJava8)
 
   implementation(Libraries.Logging.timber)
 
@@ -44,6 +46,10 @@ dependencies {
   kapt(Libraries.Dagger.hiltAndroidXKapt)
 
   implementation(Libraries.Google.playServices)
+
+  implementation(platform(Libraries.Firebase.bom))
+  implementation(Libraries.Firebase.analytics)
+  implementation(Libraries.Firebase.auth)
 }
 
 android {
@@ -59,7 +65,6 @@ android {
     flavorDimensions("environment")
     register("mock") {
       dimension = "environment"
-      applicationIdSuffix = ".mock"
 
       buildConfigField("String", "API_BASE_URL", "\" \"")
     }
@@ -94,3 +99,5 @@ android {
     }
   }
 }
+
+apply(mapOf("plugin" to "com.google.gms.google-services"))

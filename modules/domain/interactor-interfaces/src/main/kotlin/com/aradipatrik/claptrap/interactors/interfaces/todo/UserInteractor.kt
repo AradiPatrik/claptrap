@@ -5,5 +5,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserInteractor {
   fun getSignedInUserFlow(): Flow<User?>
-  suspend fun signInWithGoogle(idToken: String)
+  suspend fun setSignedInUser(user: User)
 }

@@ -32,6 +32,8 @@ object Libraries {
         "androidx.lifecycle:lifecycle-runtime-ktx:${Versions.AndroidX.lifecycle}"
       const val liveData =
         "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.AndroidX.lifecycle}"
+      const val lifecycleJava8 =
+        "androidx.lifecycle:lifecycle-common-java8:${Versions.AndroidX.lifecycle}"
     }
 
     object Room {
@@ -98,5 +100,11 @@ object Libraries {
   object Google {
     const val playServices =
       "com.google.android.gms:play-services-auth:${Versions.Google.playServices}"
+  }
+
+  object Firebase {
+    const val bom = "com.google.firebase:firebase-bom:${Versions.Firebase.bom}"
+    const val analytics = "com.google.firebase:firebase-analytics-ktx"
+    const val auth = "com.google.firebase:firebase-auth-ktx"
   }
 }
