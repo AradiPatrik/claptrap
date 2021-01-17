@@ -20,6 +20,7 @@ dependencies {
   implementation(Libraries.Ktor.serverSession)
   implementation(Libraries.Ktor.networkTls)
   implementation(Libraries.Ktor.certificates)
+  implementation(Libraries.Ktor.googleApiClient)
 }
 
 tasks.withType<Jar> {

@@ -1,7 +1,9 @@
 package com.aradipatrik.claptrap.network.module
 
 import com.aradipatrik.claptrap.domain.datasources.network.TodoNetworkDataSource
+import com.aradipatrik.claptrap.domain.datasources.network.UserNetworkDataSource
 import com.aradipatrik.claptrap.network.todo.datasource.TodoNetworkDataSourceImpl
+import com.aradipatrik.claptrap.network.todo.datasource.UserNetworkDataSourceImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -16,4 +18,10 @@ abstract class DataSourceModule {
   abstract fun bindTodoNetworkDataSource(
     todoNetworkDataSource: TodoNetworkDataSourceImpl
   ): TodoNetworkDataSource
+
+  @Binds
+  @Singleton
+  abstract fun bindUserNetworkDataSource(
+    dataSource: UserNetworkDataSourceImpl
+  ): UserNetworkDataSource
 }

@@ -55,6 +55,7 @@ object Versions {
 
   object Google {
     const val playServices = "19.0.0"
+    const val apiClient = "1.30.10"
   }
 
   object Firebase {
