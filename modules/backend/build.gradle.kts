@@ -20,6 +20,8 @@ dependencies {
   implementation(Libraries.Ktor.serverSession)
   implementation(Libraries.Ktor.networkTls)
   implementation(Libraries.Ktor.certificates)
+  implementation(Libraries.Ktor.auth)
+  implementation(Libraries.Ktor.authJwt)
   implementation(Libraries.Ktor.googleApiClient)
 }
 

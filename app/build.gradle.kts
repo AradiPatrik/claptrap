@@ -71,7 +71,6 @@ android {
 
     register("dev") {
       dimension = "environment"
-      applicationIdSuffix = ".dev"
 
       buildConfigField("String", "API_BASE_URL", "\"https://hidden-savannah-29279.herokuapp.com/\"")
     }

@@ -49,7 +49,7 @@ object Versions {
   }
 
   object Ktor {
-    const val core = "1.4.0"
+    const val core = "1.5.0"
     const val logback = "1.2.3"
   }
 

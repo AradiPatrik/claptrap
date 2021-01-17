@@ -95,6 +95,9 @@ object Libraries {
     const val logback = "ch.qos.logback:logback-classic:${Versions.Ktor.logback}"
     const val networkTls = "io.ktor:ktor-network-tls:${Versions.Ktor.core}"
     const val certificates = "io.ktor:ktor-network-tls-certificates:${Versions.Ktor.core}"
+    const val auth = "io.ktor:ktor-auth:${Versions.Ktor.core}"
+    const val authJwt = "io.ktor:ktor-auth-jwt:${Versions.Ktor.core}"
+    const val jwk = "io.ktor:ktor-auth-jwt:${Versions.Ktor.core}"
     const val googleApiClient =
       "com.google.api-client:google-api-client:${Versions.Google.apiClient}"
 
