@@ -9,6 +9,7 @@ import io.ktor.gson.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
+import java.net.URL
 import java.util.concurrent.TimeUnit
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -29,7 +30,7 @@ fun Application.module(testing: Boolean = false) {
   val jwtAudience = environment.config.property("jwt.audience").getString()
   val jwtRealm = environment.config.property("jwt.realm").getString()
 
-  val jwkProvider = JwkProviderBuilder("https://www.googleapis.com/oauth2/v3/certs")
+  val jwkProvider = JwkProviderBuilder(URL("https://www.googleapis.com/oauth2/v3/certs"))
     .cached(10, 24, TimeUnit.HOURS)
     .rateLimited(10, 1, TimeUnit.MINUTES)
     .build()
