@@ -2,17 +2,22 @@ package com.aradipatrik.claptrap.network.module
 
 import com.aradipatrik.claptrap.config.AppConfig
 import com.aradipatrik.claptrap.network.BuildConfig
+import com.aradipatrik.claptrap.network.todo.interceptor.BearerTokenAuthenticationInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
+import java.util.concurrent.TimeUnit
+import javax.inject.Qualifier
 import javax.inject.Singleton
 
 @Module
@@ -22,9 +27,12 @@ class NetworkModule {
   @Provides
   @Singleton
   internal fun provideOkHttpClient(
-    httpLoggingInterceptor: HttpLoggingInterceptor
+    httpLoggingInterceptor: HttpLoggingInterceptor,
+    authInterceptor: BearerTokenAuthenticationInterceptor
   ) = OkHttpClient.Builder()
     .addInterceptor(httpLoggingInterceptor)
+    .addInterceptor(authInterceptor)
+    .callTimeout(45, TimeUnit.SECONDS)
     .build()
 
   @Provides

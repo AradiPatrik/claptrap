@@ -1,14 +1,12 @@
 package com.aradipatrik.claptrap.backend
 
-import com.aradipatrik.claptrap.apimodels.TokenApiModel
 import com.auth0.jwk.JwkProviderBuilder
-import com.auth0.jwt.JWT
 import io.ktor.application.*
 import io.ktor.auth.*
 import io.ktor.auth.jwt.*
 import io.ktor.features.*
 import io.ktor.gson.*
-import io.ktor.request.*
+import io.ktor.response.*
 import io.ktor.routing.*
 import io.ktor.util.*
 import java.util.concurrent.TimeUnit
@@ -50,11 +48,22 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    post("token-sign-in") {
-      val token = call.receive<TokenApiModel>().token
-      val decodedJwt = JWT.decode(token)
+    authenticate {
+      get("/is-it-authenticated") {
+        call.principal<JWTPrincipal>() ?: error("Fooo")
+        call.respond("ok")
+      }
 
-      print("${decodedJwt.getClaim("family_name")}")
+      post("/token-sign-in") {
+        val principal = call.principal<JWTPrincipal>() ?: error("Fooo")
+
+        val claimsAsString = principal.payload.claims.entries.joinToString {
+          "${it.key}: ${it.value.asString()}"
+        }
+
+        println("id: ${principal.payload.id}")
+        println("claims: $claimsAsString")
+      }
     }
   }
 }
