@@ -36,7 +36,10 @@ fun Application.module(testing: Boolean = false) {
 
   install(Authentication) {
     jwt {
-      verifier(jwkProvider, jwtIssuer)
+      verifier(jwkProvider) {
+        withIssuer(jwtIssuer)
+        withAudience(jwtAudience)
+      }
       realm = jwtRealm
       validate { credentials ->
         if (credentials.payload.audience.contains(jwtAudience))
