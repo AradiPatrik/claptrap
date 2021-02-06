@@ -1,12 +1,11 @@
 package com.aradipatrik.claptrap.login.ui
 
 import android.os.Bundle
+import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.aradipatrik.claptrap.R
-import com.aradipatrik.claptrap.common.util.ViewDelegates
-import com.aradipatrik.claptrap.common.util.ViewDelegates.settingEditTextContent
 import com.aradipatrik.claptrap.common.util.ViewDelegates.settingTextInputLayoutContent
 import com.aradipatrik.claptrap.databinding.FragmentWelcomeBackBinding
 import com.aradipatrik.claptrap.domain.User
@@ -17,6 +16,8 @@ import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWith
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.*
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks

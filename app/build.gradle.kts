@@ -22,6 +22,9 @@ dependencies {
 
   implementation(Libraries.AndroidX.appCompat)
   implementation(Libraries.AndroidX.Ktx.core)
+  implementation(Libraries.AndroidX.Ktx.fragment)
+  implementation(Libraries.AndroidX.Ktx.activity)
+  implementation(Libraries.AndroidX.Ktx.playServices)
   implementation(Libraries.AndroidX.Ui.constraintLayout)
   implementation(Libraries.AndroidX.Ui.cardView)
   implementation(Libraries.AndroidX.Ui.vectorDrawable)

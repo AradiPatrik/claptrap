@@ -16,13 +16,8 @@ class UserInteractorImpl @Inject constructor(
 
   override fun getSignedInUserFlow(): Flow<User?> = signedInUser
 
-  override suspend fun signInWithGoogleCredentials(user: User) {
-    bearerTokenHolder.setToken(user.idToken)
-    val user = userNetworkDataSource.signInWithGoogleToken(user.idToken)
-    println("APDEBUG: User signed in $user")
-  }
-
-  override suspend fun signInWithEmailAndPassword(email: String, password: String) {
-    TODO("Not yet implemented")
+  override suspend fun signInWithGoogleJwt(jwt: String) {
+    bearerTokenHolder.setToken(jwt)
+    userNetworkDataSource.signInWithGoogleToken(jwt)
   }
 }

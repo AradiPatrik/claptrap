@@ -8,6 +8,7 @@ object Mappers {
     idToken = signInCredential.googleIdToken!!,
     id = signInCredential.id,
     name = signInCredential.displayName,
-    profilePictureUri = signInCredential.profilePictureUri?.toString()
+    profilePictureUri = signInCredential.profilePictureUri?.toString(),
+    email = null
   )
 }

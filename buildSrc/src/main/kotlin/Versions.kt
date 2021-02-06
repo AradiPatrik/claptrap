@@ -8,7 +8,9 @@ object Versions {
   object AndroidX {
     const val appCompat = "1.2.0"
     const val coreKtx = "1.3.1"
-    const val fragmentKtx = "1.3.0-rc01"
+    const val fragmentKtx = "1.3.0-rc02"
+    const val activityKtx = "1.2.0-rc01"
+    const val playServicesKtx = "1.3.9"
     const val constraintLayout = "2.1.0-alpha2"
     const val navigation = "2.3.1"
     const val recyclerView = "1.1.0"

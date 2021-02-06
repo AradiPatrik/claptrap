@@ -8,6 +8,9 @@ import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWith
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.SignInSuccessful
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.SignInWithGoogle
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.tasks.await
 
 class WelcomeBackViewModel @ViewModelInject constructor(
   private val userInteractor: UserInteractor
@@ -37,12 +40,13 @@ class WelcomeBackViewModel @ViewModelInject constructor(
   }
 
   private fun signInWithGoogle(user: User) = sideEffect {
-    userInteractor.signInWithGoogleCredentials(user)
+    userInteractor.signInWithGoogleJwt(user.idToken)
     viewEffects.emit(NavigateToMainScreen)
   }
 
   private fun signInWithEmailAndPassword() = sideEffect { state ->
-    userInteractor.signInWithEmailAndPassword(state.email, state.password)
+    val authResult = Firebase.auth.signInWithEmailAndPassword(state.email, state.password).await()
+    authResult.user!!.getIdToken(true).await()
     viewEffects.emit(NavigateToMainScreen)
   }
 }

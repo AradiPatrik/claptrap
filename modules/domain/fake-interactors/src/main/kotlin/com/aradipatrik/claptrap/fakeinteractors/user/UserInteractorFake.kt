@@ -17,7 +17,7 @@ class UserInteractorFake @Inject constructor() : UserInteractor {
   }
 
   override suspend fun signInWithEmailAndPassword(email: String, password: String) {
-    signedInUserStateFlow.value = User(UUID.randomUUID().toString(), email, null, null)
+    signedInUserStateFlow.value = User(UUID.randomUUID().toString(), email, null, null, null)
   }
 
   override fun getSignedInUserFlow(): Flow<User?> = signedInUserStateFlow

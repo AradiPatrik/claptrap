@@ -5,6 +5,9 @@ object Libraries {
     object Ktx {
       const val core = "androidx.core:core-ktx:${Versions.AndroidX.coreKtx}"
       const val fragment = "androidx.fragment:fragment-ktx:${Versions.AndroidX.fragmentKtx}"
+      const val activity = "androidx.activity:activity-ktx:${Versions.AndroidX.activityKtx}"
+      const val playServices =
+        "org.jetbrains.kotlinx:kotlinx-coroutines-play-services:${Versions.AndroidX.playServicesKtx}"
     }
 
     object Ui {
