@@ -1,5 +1,6 @@
 package com.aradipatrik.claptrap.backend
 
+import com.aradipatrik.claptrap.apimodels.UserWire
 import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.application.*
 import io.ktor.auth.*
@@ -53,20 +54,24 @@ fun Application.module(testing: Boolean = false) {
 
   routing {
     authenticate {
-      get("/is-it-authenticated") {
-        call.principal<JWTPrincipal>() ?: error("Fooo")
-        call.respond("ok")
-      }
-
       post("/token-sign-in") {
-        val principal = call.principal<JWTPrincipal>() ?: error("Fooo")
+        val payload = call.principal<JWTPrincipal>()?.payload ?: error("JWTPrincipal not found")
 
-        val claimsAsString = principal.payload.claims.entries.joinToString {
-          "${it.key}: ${it.value.asString()}"
-        }
+        call.application.environment.log.info(payload.claims.entries.joinToString(
+          prefix = "{\n",
+          postfix = "}\n",
+        ) {
+          "\"${it.key}\": \"${it.value.asString()}\"\n"
+        })
 
-        println("id: ${principal.payload.id}")
-        println("claims: $claimsAsString")
+        call.respond(
+          UserWire(
+            id = payload.subject,
+            email = payload.getClaim("email").asString(),
+            name = payload.getClaim("name").asString(),
+            profilePictureUrl = payload.getClaim("picture").asString()
+          )
+        )
       }
     }
   }

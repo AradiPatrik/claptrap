@@ -15,8 +15,9 @@ class UserNetworkDataSourceImpl @Inject constructor(
     User(
       idToken = token,
       id = it.id,
-      name = it.email,
-      profilePictureUri = null
+      email = it.email,
+      name = it.name,
+      profilePictureUri = it.email
     )
   }
 }
