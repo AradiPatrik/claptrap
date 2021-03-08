@@ -27,24 +27,48 @@ fun Application.module(testing: Boolean = false) {
     }
   }
 
-  val jwtIssuer = environment.config.property("jwt.domain").getString()
-  val jwtAudience = environment.config.property("jwt.audience").getString()
-  val jwtRealm = environment.config.property("jwt.realm").getString()
+  val googleJwtIssuer = environment.config.property("jwt.google.domain").getString()
+  val googleJwtAudience = environment.config.property("jwt.google.audience").getString()
 
-  val jwkProvider = JwkProviderBuilder(URL("https://www.googleapis.com/oauth2/v3/certs"))
+  val firebaseJwtIssuer = environment.config.property("jwt.firebase.domain").getString()
+  val firebaseJwtAudience = environment.config.property("jwt.firebase.audience").getString()
+
+  val jwtRealm = environment.config.property("jwt.google.realm").getString()
+
+  val googleJwkProvider = JwkProviderBuilder(URL("https://www.googleapis.com/oauth2/v3/certs"))
     .cached(10, 24, TimeUnit.HOURS)
     .rateLimited(10, 1, TimeUnit.MINUTES)
     .build()
 
+  val firebaseJwkProvider = JwkProviderBuilder(URL(
+    "https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com"
+  )).cached(10, 24, TimeUnit.HOURS)
+    .rateLimited(10, 1, TimeUnit.MINUTES)
+    .build()
+
   install(Authentication) {
-    jwt {
-      verifier(jwkProvider) {
-        withIssuer(jwtIssuer)
-        withAudience(jwtAudience)
+    jwt("google") {
+      verifier(googleJwkProvider) {
+        withIssuer(googleJwtIssuer)
+        withAudience(googleJwtAudience)
       }
       realm = jwtRealm
       validate { credentials ->
-        if (credentials.payload.audience.contains(jwtAudience))
+        if (credentials.payload.audience.contains(googleJwtAudience))
+          JWTPrincipal(credentials.payload)
+        else
+          null
+      }
+    }
+
+    jwt("firebase") {
+      verifier(firebaseJwkProvider) {
+        withIssuer(firebaseJwtIssuer)
+        withAudience(firebaseJwtAudience)
+      }
+      realm = jwtRealm
+      validate { credentials ->
+        if (credentials.payload.audience.contains(firebaseJwtAudience))
           JWTPrincipal(credentials.payload)
         else
           null
@@ -53,16 +77,9 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    authenticate {
+    authenticate("google", "firebase") {
       post("/token-sign-in") {
         val payload = call.principal<JWTPrincipal>()?.payload ?: error("JWTPrincipal not found")
-
-        call.application.environment.log.info(payload.claims.entries.joinToString(
-          prefix = "{\n",
-          postfix = "}\n",
-        ) {
-          "\"${it.key}\": \"${it.value.asString()}\"\n"
-        })
 
         call.respond(
           UserWire(
