@@ -24,7 +24,12 @@ class WelcomeBackViewModel @ViewModelInject constructor(
     is SignInSuccessful -> signInWithGoogle(viewEvent.user)
     is WelcomeBackViewEvent.EmailTextChange -> changeEmail(viewEvent.email)
     is WelcomeBackViewEvent.PasswordTextChange -> changePassword(viewEvent.password)
-    is WelcomeBackViewEvent.SignInWithEmailAndPassword -> signInWithEmailAndPassword()
+    is WelcomeBackViewEvent.SignInWithEmailAndPassword -> signInOrSignUpWithEmailAndPassword()
+    is WelcomeBackViewEvent.SignInSignUpStateChange -> changeOnSignInTabState(viewEvent.isSignIn)
+  }
+
+  private fun changeOnSignInTabState(isOnSignInTab: Boolean) = reduceState { state ->
+    state.copy(isOnSignInTab = isOnSignInTab)
   }
 
   private fun changeEmail(email: String) = reduceState { state ->
@@ -44,9 +49,18 @@ class WelcomeBackViewModel @ViewModelInject constructor(
     viewEffects.emit(NavigateToMainScreen)
   }
 
-  private fun signInWithEmailAndPassword() = sideEffect { state ->
-    val authResult = Firebase.auth.signInWithEmailAndPassword(state.email, state.password).await()
-    authResult.user!!.getIdToken(true).await()
+  private fun signInOrSignUpWithEmailAndPassword() = sideEffect { state ->
+    val authResult = if (state.isOnSignInTab) {
+       Firebase.auth.signInWithEmailAndPassword(state.email, state.password).await()
+    } else {
+      Firebase.auth.createUserWithEmailAndPassword(state.email, state.password).await()
+    }
+
+    userInteractor.signInWithGoogleJwt(
+      authResult.user!!.getIdToken(true).await()
+        .token!!
+    )
+
     viewEffects.emit(NavigateToMainScreen)
   }
 }

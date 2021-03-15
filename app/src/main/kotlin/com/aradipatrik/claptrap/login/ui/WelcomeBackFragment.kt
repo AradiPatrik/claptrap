@@ -1,10 +1,13 @@
 package com.aradipatrik.claptrap.login.ui
 
 import android.os.Bundle
+import android.view.View
 import androidx.activity.result.ActivityResultRegistryOwner
+import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.common.util.ViewDelegates.settingTextInputLayoutContent
 import com.aradipatrik.claptrap.databinding.FragmentWelcomeBackBinding
@@ -16,12 +19,15 @@ import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWith
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.*
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.*
 import ru.ldralighieri.corbind.view.clicks
+import ru.ldralighieri.corbind.viewpager2.pageSelections
 import ru.ldralighieri.corbind.widget.textChangeEvents
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class WelcomeBackFragment : ClapTrapFragment<
@@ -36,24 +42,37 @@ class WelcomeBackFragment : ClapTrapFragment<
   override val viewEvents: Flow<WelcomeBackViewEvent>
     get() = merge(
       binding.signInWithGoogleButton.clicks().map { SignInWithGoogle },
-      binding.signInFab.clicks().map { SignInWithEmailAndPassword },
-      binding.emailTextInputLayout.editText!!.textChangeEvents()
-        .drop(1)
-        .map { EmailTextChange(it.text.toString()) },
-      binding.passwordTextInputLayout.editText!!.textChangeEvents()
-        .drop(1)
-        .map { PasswordTextChange(it.text.toString()) }
+      signInSignUpAdapter.events,
+      binding.signInSignUpViewpager.pageSelections()
+        .map { SignInSignUpStateChange(it == SIGN_IN_PAGE_NUMBER) }
     )
 
-  var emailText by settingTextInputLayoutContent { binding.emailTextInputLayout }
-  var passwordText by settingTextInputLayoutContent { binding.passwordTextInputLayout }
-
   private lateinit var googleSignInComponent: GoogleSignInComponent
+
+  @Inject
+  lateinit var signInSignUpAdapterFactory: SignInSignUpAdapter.Factory
+  private val signInSignUpAdapter by lazy { signInSignUpAdapterFactory.create(lifecycleScope) }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     createGoogleSignInComponent()
     lifecycle.addObserver(googleSignInComponent)
+  }
+
+  override fun initViews(savedInstanceState: Bundle?) {
+    super.initViews(savedInstanceState)
+
+    binding.signInSignUpViewpager.adapter = signInSignUpAdapter
+
+    TabLayoutMediator(binding.tabLayout, binding.signInSignUpViewpager) { tab, position ->
+      tab.setText(
+        when (position) {
+          SIGN_IN_PAGE_NUMBER -> R.string.sign_in_text
+          SIGN_UP_PAGE_NUMBER -> R.string.sign_up_text
+          else -> error("Invalid page number: $position")
+        }
+      )
+    }.attach()
   }
 
   private fun createGoogleSignInComponent() {
@@ -69,8 +88,21 @@ class WelcomeBackFragment : ClapTrapFragment<
   }
 
   override fun render(viewState: WelcomeBackViewState) {
-    emailText = viewState.email
-    passwordText = viewState.password
+    val pageNumber = binding.signInSignUpViewpager.currentItem
+    val page = (binding.signInSignUpViewpager[0] as? RecyclerView)?.findViewHolderForAdapterPosition(
+      pageNumber
+    ) as? SignInSignUpAdapter.SignInSignUpViewHolder ?: return
+
+    when(pageNumber) {
+      SIGN_IN_PAGE_NUMBER -> if (!viewState.isOnSignInTab)
+        binding.signInSignUpViewpager.currentItem = SIGN_UP_PAGE_NUMBER
+      SIGN_UP_PAGE_NUMBER -> if (viewState.isOnSignInTab)
+        binding.signInSignUpViewpager.currentItem = SIGN_UP_PAGE_NUMBER
+      else -> error("Invalid page number $pageNumber")
+    }
+
+    page.emailText = viewState.email
+    page.passwordText = viewState.password
   }
 
   override fun react(viewEffect: WelcomeBackViewEffect) = when (viewEffect) {
@@ -82,5 +114,10 @@ class WelcomeBackFragment : ClapTrapFragment<
 
   private fun showGoogleSignIn() {
     googleSignInComponent.showSignInDialog()
+  }
+
+  companion object {
+    private const val SIGN_IN_PAGE_NUMBER = 0
+    private const val SIGN_UP_PAGE_NUMBER = 1
   }
 }

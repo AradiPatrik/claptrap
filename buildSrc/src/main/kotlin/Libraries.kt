@@ -63,6 +63,8 @@ object Libraries {
   object Coroutines {
     const val core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.Coroutines.core}"
     const val binding = "ru.ldralighieri.corbind:corbind:${Versions.Coroutines.corbind}"
+    const val bindingViewPager =
+      "ru.ldralighieri.corbind:corbind-viewpager2:${Versions.Coroutines.corbind}"
     const val materialBinding =
       "ru.ldralighieri.corbind:corbind-material:${Versions.Coroutines.corbind}"
   }

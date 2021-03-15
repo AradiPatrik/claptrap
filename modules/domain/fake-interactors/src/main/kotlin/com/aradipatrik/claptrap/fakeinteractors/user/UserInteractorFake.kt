@@ -12,13 +12,9 @@ import javax.inject.Singleton
 class UserInteractorFake @Inject constructor() : UserInteractor {
   private val signedInUserStateFlow = MutableStateFlow<User?>(null)
 
-  override suspend fun signInWithGoogleCredentials(user: User) {
-    signedInUserStateFlow.value = user
-  }
-
-  override suspend fun signInWithEmailAndPassword(email: String, password: String) {
-    signedInUserStateFlow.value = User(UUID.randomUUID().toString(), email, null, null, null)
-  }
-
   override fun getSignedInUserFlow(): Flow<User?> = signedInUserStateFlow
+
+  override suspend fun signInWithGoogleJwt(jwt: String) {
+    TODO("Not yet implemented")
+  }
 }

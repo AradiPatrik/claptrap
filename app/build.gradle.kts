@@ -31,6 +31,7 @@ dependencies {
   implementation(Libraries.AndroidX.Navigation.core)
   implementation(Libraries.AndroidX.Navigation.extensions)
   implementation(Libraries.Coroutines.binding)
+  implementation(Libraries.Coroutines.bindingViewPager)
   implementation(Libraries.Coroutines.materialBinding)
   implementation(Libraries.AndroidX.Lifecycle.lifecycle)
   implementation(Libraries.AndroidX.Lifecycle.lifecycleJava8)

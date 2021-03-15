@@ -13,9 +13,11 @@ sealed class WelcomeBackViewEvent {
   data class EmailTextChange(val email: String) : WelcomeBackViewEvent()
   data class PasswordTextChange(val password: String) : WelcomeBackViewEvent()
   data class SignInSuccessful(val user: User) : WelcomeBackViewEvent()
+  data class SignInSignUpStateChange(val isSignIn: Boolean) : WelcomeBackViewEvent()
 }
 
 data class WelcomeBackViewState(
   val email: String = "",
-  val password: String = ""
+  val password: String = "",
+  val isOnSignInTab: Boolean = true,
 )

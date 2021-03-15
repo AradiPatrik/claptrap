@@ -47,7 +47,7 @@ object Versions {
 
   object Coroutines {
     const val core = "1.4.2"
-    const val corbind = "1.4.0"
+    const val corbind = "1.5.0"
   }
 
   object Ktor {
