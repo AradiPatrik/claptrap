@@ -47,19 +47,19 @@ fun Application.module(testing: Boolean = false) {
     .build()
 
   install(Authentication) {
-//    jwt("google") {
-//      verifier(googleJwkProvider) {
-//        withIssuer(googleJwtIssuer)
-//        withAudience(googleJwtAudience)
-//      }
-//      realm = jwtRealm
-//      validate { credentials ->
-//        if (credentials.payload.audience.contains(googleJwtAudience))
-//          JWTPrincipal(credentials.payload)
-//        else
-//          null
-//      }
-//    }
+    jwt("google") {
+      verifier(googleJwkProvider) {
+        withIssuer(googleJwtIssuer)
+        withAudience(googleJwtAudience)
+      }
+      realm = jwtRealm
+      validate { credentials ->
+        if (credentials.payload.audience.contains(googleJwtAudience))
+          JWTPrincipal(credentials.payload)
+        else
+          null
+      }
+    }
 
     jwt("firebase") {
       verifier(firebaseJwkProvider) {
@@ -77,7 +77,7 @@ fun Application.module(testing: Boolean = false) {
   }
 
   routing {
-    authenticate("firebase") {
+    authenticate("google", "firebase") {
       post("/token-sign-in") {
         val payload = call.principal<JWTPrincipal>()?.payload ?: error("JWTPrincipal not found")
 

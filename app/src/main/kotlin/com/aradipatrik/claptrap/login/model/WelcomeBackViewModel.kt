@@ -21,7 +21,7 @@ class WelcomeBackViewModel @ViewModelInject constructor(
 >(WelcomeBackViewState()) {
   override fun processInput(viewEvent: WelcomeBackViewEvent) = when(viewEvent) {
     is SignInWithGoogle -> startSignInWithGoogleFlow()
-    is SignInSuccessful -> signInWithGoogle(viewEvent.user)
+    is SignInSuccessful -> signInWithGoogle(viewEvent.idToken)
     is WelcomeBackViewEvent.EmailTextChange -> changeEmail(viewEvent.email)
     is WelcomeBackViewEvent.PasswordTextChange -> changePassword(viewEvent.password)
     is WelcomeBackViewEvent.SignInWithEmailAndPassword -> signInOrSignUpWithEmailAndPassword()
@@ -44,14 +44,19 @@ class WelcomeBackViewModel @ViewModelInject constructor(
     viewEffects.emit(ShowSignInWithGoogleOAuthFlow)
   }
 
-  private fun signInWithGoogle(user: User) = sideEffect {
-    userInteractor.signInWithGoogleJwt(user.idToken)
+  private fun signInWithGoogle(idToken: String) = sideEffect {
+    userInteractor.signInWithGoogleJwt(idToken)
     viewEffects.emit(NavigateToMainScreen)
   }
 
-  private fun signInOrSignUpWithEmailAndPassword() = sideEffect { state ->
+  private fun signInOrSignUpWithEmailAndPassword() = reduceState { state ->
+    doSignInOrSignUp()
+    state.copy(isSignInOngoing = true)
+  }
+
+  private fun doSignInOrSignUp() = sideEffect { state ->
     val authResult = if (state.isOnSignInTab) {
-       Firebase.auth.signInWithEmailAndPassword(state.email, state.password).await()
+      Firebase.auth.signInWithEmailAndPassword(state.email, state.password).await()
     } else {
       Firebase.auth.createUserWithEmailAndPassword(state.email, state.password).await()
     }

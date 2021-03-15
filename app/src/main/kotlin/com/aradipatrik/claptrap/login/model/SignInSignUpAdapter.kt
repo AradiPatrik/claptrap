@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.login.model
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.R
@@ -17,7 +18,7 @@ import kotlin.properties.Delegates
 
 class SignInSignUpAdapter @AssistedInject constructor(
   @Assisted private val lifecycleScope: LifecycleCoroutineScope
-): RecyclerView.Adapter<SignInSignUpAdapter.SignInSignUpViewHolder>() {
+) : RecyclerView.Adapter<SignInSignUpAdapter.SignInSignUpViewHolder>() {
 
   @AssistedInject.Factory
   interface Factory {
@@ -41,7 +42,16 @@ class SignInSignUpAdapter @AssistedInject constructor(
     )
 
     var emailText by ViewDelegates.settingTextInputLayoutContent { binding.emailTextInputLayout }
-    var passwordText by ViewDelegates.settingTextInputLayoutContent { binding.passwordTextInputLayout }
+
+    var passwordText
+      by ViewDelegates.settingTextInputLayoutContent { binding.passwordTextInputLayout }
+
+    fun setEnabled(isEnabled: Boolean) {
+      binding.signInFab.isVisible = isEnabled
+      binding.emailTextInputLayout.isEnabled = isEnabled
+      binding.passwordTextInputLayout.isEnabled = isEnabled
+      binding.progressIndicator.isVisible = !isEnabled
+    }
 
     fun bind(position: Int) {
       when (position) {

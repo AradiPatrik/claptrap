@@ -1,18 +1,17 @@
-package com.aradipatrik.claptrap.network.todo.interceptor
+package com.aradipatrik.claptrap.network.interceptor
 
-import com.aradipatrik.claptrap.domain.datasources.network.BearerTokenHolder
+import com.aradipatrik.claptrap.domain.datasources.disk.UserDiskDataSource
 import okhttp3.Interceptor
 import okhttp3.Request
-import okhttp3.Response
 import javax.inject.Inject
 
 class BearerTokenAuthenticationInterceptor @Inject constructor(
-  private val bearerTokenHolder: BearerTokenHolder
+  private val userDiskDataSource: UserDiskDataSource
 ) : Interceptor {
   override fun intercept(chain: Interceptor.Chain) = chain
     .proceed(chain.request().addBearerTokenHeaderIfExists())
 
-  private fun Request.addBearerTokenHeaderIfExists() = bearerTokenHolder.getToken()
+  private fun Request.addBearerTokenHeaderIfExists() = userDiskDataSource.peakToken()
     ?.let { addBearerToken(it) } ?: this
 
   private fun Request.addBearerToken(token: String) = newBuilder()

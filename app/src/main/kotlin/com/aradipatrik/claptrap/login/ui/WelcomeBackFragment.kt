@@ -1,32 +1,27 @@
 package com.aradipatrik.claptrap.login.ui
 
 import android.os.Bundle
-import android.view.View
-import androidx.activity.result.ActivityResultRegistryOwner
 import androidx.core.view.get
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.R
-import com.aradipatrik.claptrap.common.util.ViewDelegates.settingTextInputLayoutContent
 import com.aradipatrik.claptrap.databinding.FragmentWelcomeBackBinding
-import com.aradipatrik.claptrap.domain.User
 import com.aradipatrik.claptrap.login.model.*
-import com.aradipatrik.claptrap.login.model.Mappers.fromGoogleCredentials
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.NavigateToMainScreen
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWithGoogleOAuthFlow
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.*
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.viewpager2.pageSelections
-import ru.ldralighieri.corbind.widget.textChangeEvents
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -81,7 +76,7 @@ class WelcomeBackFragment : ClapTrapFragment<
       requireActivity().activityResultRegistry
     ).apply {
       signInSuccessFlow
-        .map { SignInSuccessful(User.fromGoogleCredentials(it)) }
+        .map { SignInSuccessful(it.googleIdToken!!) }
         .onEach(extraViewEventsFlow::emit)
         .launchInWhenResumed(lifecycleScope)
     }
@@ -103,6 +98,9 @@ class WelcomeBackFragment : ClapTrapFragment<
 
     page.emailText = viewState.email
     page.passwordText = viewState.password
+    page.setEnabled(!viewState.isSignInOngoing)
+    binding.signInSignUpViewpager.isUserInputEnabled = !viewState.isSignInOngoing
+    binding.tabLayout.isEnabled = !viewState.isSignInOngoing
   }
 
   override fun react(viewEffect: WelcomeBackViewEffect) = when (viewEffect) {

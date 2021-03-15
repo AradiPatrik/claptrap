@@ -1,7 +1,6 @@
 package com.aradipatrik.claptrap.network.module
 
-import com.aradipatrik.claptrap.network.todo.api.TodoApi
-import com.aradipatrik.claptrap.network.todo.api.UserApi
+import com.aradipatrik.claptrap.network.user.api.UserApi
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,9 +11,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(ApplicationComponent::class)
 class ApiModule {
-  @Provides
-  @Singleton
-  fun provideTodoApi(retrofit: Retrofit): TodoApi = retrofit.create(TodoApi::class.java)
 
   @Provides
   @Singleton

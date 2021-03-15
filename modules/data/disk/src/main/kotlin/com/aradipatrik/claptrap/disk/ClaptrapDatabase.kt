@@ -2,10 +2,10 @@ package com.aradipatrik.claptrap.disk
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.aradipatrik.claptrap.disk.todo.dao.TodoDao
-import com.aradipatrik.claptrap.disk.todo.entity.TodoEntity
+import com.aradipatrik.claptrap.disk.user.dao.UserDao
+import com.aradipatrik.claptrap.disk.user.entity.UserEntity
 
-@Database(entities = [TodoEntity::class], version = 1)
+@Database(entities = [UserEntity::class], version = 1)
 abstract class ClaptrapDatabase : RoomDatabase() {
-  abstract fun todoDao(): TodoDao
+  abstract fun userDao(): UserDao
 }

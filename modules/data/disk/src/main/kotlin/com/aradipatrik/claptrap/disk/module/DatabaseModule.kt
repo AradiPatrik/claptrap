@@ -25,5 +25,5 @@ class DatabaseModule {
 
   @Provides
   @Singleton
-  fun provideTodoDao(claptrapDatabase: ClaptrapDatabase) = claptrapDatabase.todoDao()
+  fun provideUserDao(claptrapDatabase: ClaptrapDatabase) = claptrapDatabase.userDao()
 }
