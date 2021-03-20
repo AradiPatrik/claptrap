@@ -36,7 +36,6 @@ class WelcomeBackFragment : ClapTrapFragment<
   WelcomeBackViewEvent,
   WelcomeBackViewEffect,
   FragmentWelcomeBackBinding>(
-  R.layout.fragment_welcome_back,
   FragmentWelcomeBackBinding::inflate
 ) {
   override val viewModel by activityViewModels<WelcomeBackViewModel>()

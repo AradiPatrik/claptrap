@@ -29,8 +29,8 @@ subprojects {
     toolVersion = "1.16.0"
     buildUponDefaultConfig = true // preconfigure defaults
     allRules = false // activate all available (even unstable) rules.
-    config = files("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
-    baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+    config = files("${rootProject.rootDir}/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+    baseline = file("${rootProject.rootDir}/config/baseline.xml") // a way of suppressing issues before introducing detekt
 
     reports {
       html.enabled = true // observe findings in your browser with structure and code snippets

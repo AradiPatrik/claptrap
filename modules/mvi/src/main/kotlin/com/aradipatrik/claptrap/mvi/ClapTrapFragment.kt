@@ -8,13 +8,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.viewbinding.ViewBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import timber.log.Timber
 
 typealias InflaterFunction<B> = (LayoutInflater, ViewGroup?, Boolean) -> B
 
 abstract class ClapTrapFragment<VS, EV, EF, B: ViewBinding>(
-  private val layout: Int,
   private val inflaterFunction: InflaterFunction<B>
 ) : Fragment() {
   private var _binding: B? = null

@@ -7,6 +7,7 @@ import java.util.*
 import kotlin.random.Random
 import kotlin.random.nextInt
 
+@Suppress("MagicNumber")
 internal object CommonMockGenerator {
 
   internal fun Random.nextDate(

@@ -18,6 +18,7 @@ import javax.inject.Singleton
 import kotlin.random.Random
 
 @Singleton
+@Suppress("MagicNumber")
 class TransactionInteractorFake @Inject constructor(
   private val categoryInteractor: CategoryInteractor,
   private val walletInteractor: WalletInteractor

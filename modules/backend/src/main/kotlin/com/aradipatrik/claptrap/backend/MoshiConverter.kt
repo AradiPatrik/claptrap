@@ -1,14 +1,18 @@
 package com.aradipatrik.claptrap.backend
 
 import com.squareup.moshi.Moshi
-import io.ktor.application.*
-import io.ktor.features.*
-import io.ktor.http.*
-import io.ktor.http.content.*
-import io.ktor.request.*
-import io.ktor.util.pipeline.*
-import io.ktor.utils.io.*
-import io.ktor.utils.io.jvm.javaio.*
+import io.ktor.application.ApplicationCall
+import io.ktor.application.call
+import io.ktor.features.ContentConverter
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.suitableCharset
+import io.ktor.http.ContentType
+import io.ktor.http.content.TextContent
+import io.ktor.http.withCharset
+import io.ktor.request.ApplicationReceiveRequest
+import io.ktor.util.pipeline.PipelineContext
+import io.ktor.utils.io.ByteReadChannel
+import io.ktor.utils.io.jvm.javaio.toInputStream
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okio.Okio

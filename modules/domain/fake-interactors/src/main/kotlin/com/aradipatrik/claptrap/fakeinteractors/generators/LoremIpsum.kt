@@ -3,7 +3,7 @@ package com.aradipatrik.claptrap.fakeinteractors.generators
 import kotlin.random.Random
 
 internal object LoremIpsum {
-  private val loremIpsum = """
+  private val loremIpsumText = """
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean viverra eleifend pellentesque. 
     Sed faucibus lobortis mi, ac suscipit nibh feugiat non. Donec vel aliquam velit. Aenean in 
     tortor eu justo pretium consequat. Proin malesuada tempus nibh a sodales. Aliquam ornare, nisl 
@@ -15,7 +15,7 @@ internal object LoremIpsum {
     Nulla sodales urna id imperdiet facilisis. 
   """.trimIndent()
 
-  internal fun Random.nextWords(count: Int = 5, capitalize: Boolean = false) = loremIpsum
+  internal fun Random.nextWords(count: Int = 5, capitalize: Boolean = false) = loremIpsumText
     .replace(",", "")
     .replace(".", "")
     .lines()

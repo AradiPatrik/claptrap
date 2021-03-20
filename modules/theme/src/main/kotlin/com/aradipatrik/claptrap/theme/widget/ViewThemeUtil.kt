@@ -76,7 +76,7 @@ object ViewThemeUtil {
 
   val Float.px get() = this * Resources.getSystem().displayMetrics.density.toInt()
 
-  private fun Float.toAlphaInt() = (255 * this).toInt()
+  private fun Float.toAlphaInt() = (BYTE_MAX * this).toInt()
 
   fun Context.getDimenAttr(@AttrRes attribute: Int): Float {
     val typedValue = TypedValue()
@@ -112,4 +112,6 @@ object ViewThemeUtil {
     addOnNegativeButtonClickListener { continuation.cancel() }
     show(fragmentManager, "MATERIAL_DATE_PICKER")
   }
+
+  private const val BYTE_MAX = 255
 }

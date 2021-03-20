@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.aradipatrik.claptrap.common.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionHeaderBinding
 import com.aradipatrik.claptrap.feature.transactions.databinding.ListItemTransactionItemBinding
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionListItem
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionItemClicked
 import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionViewHolder.TransactionItemViewHolder
-import com.aradipatrik.claptrap.common.mapper.DateToStringMapper
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorPrimary
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorSurface
@@ -23,7 +23,13 @@ import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorWithAlphaMedium
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import ru.ldralighieri.corbind.view.clicks
 import kotlin.math.max
 import kotlin.math.min
@@ -95,9 +101,13 @@ sealed class TransactionViewHolder(view: View) : RecyclerView.ViewHolder(view) {
       colorAnimator.addUpdateListener {
         binding.root.setCardBackgroundColor(it.animatedValue as Int)
       }
-      colorAnimator.duration = 1000L
+      colorAnimator.duration = COLOR_ANIMATION_DURATION
       colorAnimator.start()
     }
+  }
+
+  private companion object {
+    const val COLOR_ANIMATION_DURATION = 1000L
   }
 }
 
@@ -175,9 +185,9 @@ class TransactionAdapter @AssistedInject constructor(
       val firstItemPosition = layoutManager.findFirstVisibleItemPosition()
 
       val offsetPosition = if (firstItemPosition < scrollTargetPosition) {
-        min(currentList.size - 1, scrollTargetPosition + 4)
+        min(currentList.size - 1, scrollTargetPosition + UPDATE_HIGHLIGHT_OVER_SCROLL_COUNT)
       } else {
-        max(0, scrollTargetPosition - 4)
+        max(0, scrollTargetPosition - UPDATE_HIGHLIGHT_OVER_SCROLL_COUNT)
       }
 
       recyclerView.smoothScrollToPosition(offsetPosition)
@@ -251,3 +261,4 @@ private const val VIEW_TYPE_ITEM = 1
 private const val POSTPONED_SMOOTH_SCROLL_DELAY = 900L
 private const val INSTANT_SMOOTH_SCROLL_DELAY = 300L
 private const val ITEM_POLL_FREQUENCY = 500L
+private const val UPDATE_HIGHLIGHT_OVER_SCROLL_COUNT = 4

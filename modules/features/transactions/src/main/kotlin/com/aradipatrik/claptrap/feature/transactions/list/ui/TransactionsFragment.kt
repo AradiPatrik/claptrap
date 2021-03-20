@@ -12,14 +12,34 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.backdrop
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentTransactionsBinding
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
-import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
-import com.aradipatrik.claptrap.feature.transactions.list.model.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.DeleteOneClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.MinusClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberPadActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.PlusClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.PointClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalendarClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CategorySelected
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.DateSelected
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.MemoChange
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.MonthSelected
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.ShowWalletsClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionUpdated
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.WalletClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.YearDecreased
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.YearIncreased
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.YearMonthSelectorClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
+import com.aradipatrik.claptrap.feature.transactions.list.model.WalletSelectorListItem
 import com.aradipatrik.claptrap.feature.transactions.mapper.WalletPresentationMapper
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
@@ -39,7 +59,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.yield
 import org.joda.time.DateTime
 import ru.ldralighieri.corbind.view.clicks
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -48,7 +67,7 @@ class TransactionsFragment : ClapTrapFragment<
   TransactionsViewEvent,
   TransactionsViewEffect,
   FragmentTransactionsBinding
-  >(R.layout.fragment_transactions, FragmentTransactionsBinding::inflate), BackListener {
+  >(FragmentTransactionsBinding::inflate), BackListener {
 
   @Inject lateinit var transactionListBuilderDelegate: TransactionListBuilderDelegate
   @Inject lateinit var walletPresentationMapper: WalletPresentationMapper
@@ -112,7 +131,7 @@ class TransactionsFragment : ClapTrapFragment<
     binding.walletsRecyclerView.adapter = walletSelectorAdapter
 
     binding.categoryRecyclerView.layoutManager = GridLayoutManager(
-      requireContext(), 3
+      requireContext(), CATEGORY_COLUMN_COUNT
     )
     binding.categoryRecyclerView.adapter = categoryAdapter
 
@@ -176,6 +195,7 @@ class TransactionsFragment : ClapTrapFragment<
   }
 
   private fun renderLoading() {
+    // no-op
   }
 
   private fun renderLoaded(viewState: TransactionsViewState.Loaded) {
@@ -373,5 +393,7 @@ class TransactionsFragment : ClapTrapFragment<
     private const val IS_ON_CALCULATOR = "IS_ON_CALCULATOR"
     private const val IS_YEAR_MONTH_SELECTOR_ACTIVE_KEY = "IS_YEAR_MONTH_SELECTOR_ACTIVE"
     private const val IS_WALLET_SELECTOR_ACTIVE_KEY = "IS_WALLET_SELECTOR_ACTIVE"
+
+    private const val CATEGORY_COLUMN_COUNT = 3
   }
 }

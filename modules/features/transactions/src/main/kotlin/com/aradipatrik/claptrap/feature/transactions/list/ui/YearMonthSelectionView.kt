@@ -10,7 +10,20 @@ import com.aradipatrik.claptrap.feature.transactions.list.model.Months
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.inflateAndAddUsing
 import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
+import org.joda.time.DateTimeConstants.APRIL
+import org.joda.time.DateTimeConstants.AUGUST
+import org.joda.time.DateTimeConstants.DECEMBER
+import org.joda.time.DateTimeConstants.FEBRUARY
+import org.joda.time.DateTimeConstants.JANUARY
+import org.joda.time.DateTimeConstants.JULY
+import org.joda.time.DateTimeConstants.JUNE
+import org.joda.time.DateTimeConstants.MARCH
+import org.joda.time.DateTimeConstants.MAY
+import org.joda.time.DateTimeConstants.NOVEMBER
+import org.joda.time.DateTimeConstants.OCTOBER
+import org.joda.time.DateTimeConstants.SEPTEMBER
 import org.joda.time.YearMonth
+import org.joda.time.Years
 import ru.ldralighieri.corbind.material.checkedChanges
 import kotlin.properties.Delegates
 
@@ -54,28 +67,26 @@ class YearMonthSelectionView @JvmOverloads constructor(
     }
   }
 
-  private fun getButtonForMonthNumber(monthNumber: Int) = with(binding) {
-    when (monthNumber) {
-      1 -> monthButtonJanuary
-      2 -> monthButtonFebruary
-      3 -> monthButtonMarch
-      4 -> monthButtonApril
-      5 -> monthButtonMay
-      6 -> monthButtonJune
-      7 -> monthButtonJuly
-      8 -> monthButtonAugust
-      9 -> monthButtonSeptember
-      10 -> monthButtonOctober
-      11 -> monthButtonNovember
-      12 -> monthButtonDecember
-      else -> error("Invalid month number $monthNumber")
-    }
+  private fun getButtonForMonthNumber(monthNumber: Int) = when (monthNumber) {
+    JANUARY -> binding.monthButtonJanuary
+    FEBRUARY -> binding.monthButtonFebruary
+    MARCH -> binding.monthButtonMarch
+    APRIL -> binding.monthButtonApril
+    MAY -> binding.monthButtonMay
+    JUNE -> binding.monthButtonJune
+    JULY -> binding.monthButtonJuly
+    AUGUST -> binding.monthButtonAugust
+    SEPTEMBER -> binding.monthButtonSeptember
+    OCTOBER -> binding.monthButtonOctober
+    NOVEMBER -> binding.monthButtonNovember
+    DECEMBER -> binding.monthButtonDecember
+    else -> error("Invalid month number $monthNumber")
   }
 
   val monthClicks
     get() = binding.monthChipGroup.checkedChanges()
       .map { id ->
-        1.rangeTo(12)
+        JANUARY.rangeTo(DECEMBER)
           .first { getButtonForMonthNumber(it).id == id }
       }
       .drop(1)

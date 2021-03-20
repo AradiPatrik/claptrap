@@ -14,6 +14,11 @@ sealed class EditTransactionViewState {
     val isCategorySelectorShowing: Boolean,
     val categories: List<Category> = emptyList()
   ) : EditTransactionViewState() {
-    override fun toString(): String = "Editing(memo: $memo, amount: $amount, date: $date, category: $category, isCategorySelectorShowing: $isCategorySelectorShowing)"
+    override fun toString(): String =
+      "Editing(memo: $memo, " +
+        "amount: $amount, " +
+        "date: $date, " +
+        "category: $category, " +
+        "isCategorySelectorShowing: $isCategorySelectorShowing)"
   }
 }

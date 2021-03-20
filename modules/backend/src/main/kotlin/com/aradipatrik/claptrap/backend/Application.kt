@@ -2,15 +2,19 @@ package com.aradipatrik.claptrap.backend
 
 import com.aradipatrik.claptrap.apimodels.UserWire
 import com.aradipatrik.claptrap.backend.Auth.installAuthentication
-import io.ktor.application.*
-import io.ktor.auth.*
-import io.ktor.auth.jwt.*
-import io.ktor.features.*
-import io.ktor.gson.*
-import io.ktor.response.*
-import io.ktor.routing.*
-import io.ktor.util.*
-import java.util.*
+import io.ktor.application.Application
+import io.ktor.application.call
+import io.ktor.application.install
+import io.ktor.auth.authenticate
+import io.ktor.auth.jwt.JWTPrincipal
+import io.ktor.auth.principal
+import io.ktor.features.CallLogging
+import io.ktor.features.ContentNegotiation
+import io.ktor.features.DefaultHeaders
+import io.ktor.response.respond
+import io.ktor.routing.post
+import io.ktor.routing.routing
+import io.ktor.util.KtorExperimentalAPI
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 

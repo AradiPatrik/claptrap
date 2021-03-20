@@ -31,6 +31,7 @@ class NumberPadView @JvmOverloads constructor(
     binding.numberPadCalendar.text = newValue?.toString("MM / dd")
   }
 
+  @Suppress("MagicNumber")
   val digitClicks = merge(
     binding.numberPadNumber0.clicks().map { 0 },
     binding.numberPadNumber1.clicks().map { 1 },

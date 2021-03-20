@@ -1,3 +1,5 @@
 complexity:
   TooManyFunctions:
     ignorePrivate: true
+  ComplexMethod:
+    ignoreSingleWhenExpression: true

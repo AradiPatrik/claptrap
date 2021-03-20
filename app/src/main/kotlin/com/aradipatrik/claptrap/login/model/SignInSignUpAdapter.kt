@@ -11,10 +11,14 @@ import com.aradipatrik.claptrap.databinding.ViewpagerItemSignInSignUpBinding
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.squareup.inject.assisted.Assisted
 import com.squareup.inject.assisted.AssistedInject
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.onEach
 import ru.ldralighieri.corbind.view.clicks
 import ru.ldralighieri.corbind.widget.textChangeEvents
-import kotlin.properties.Delegates
 
 class SignInSignUpAdapter @AssistedInject constructor(
   @Assisted private val lifecycleScope: LifecycleCoroutineScope

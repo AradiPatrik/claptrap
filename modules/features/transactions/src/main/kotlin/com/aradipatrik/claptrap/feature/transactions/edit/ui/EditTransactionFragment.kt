@@ -14,24 +14,35 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
+import com.aradipatrik.claptrap.common.backdrop.backdrop
+import com.aradipatrik.claptrap.common.di.LongYearMonthDayFormatter
+import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.common.util.FragmentExt.destinationViewModels
 import com.aradipatrik.claptrap.common.util.ViewDelegates.settingTextInputLayoutContent
-import com.aradipatrik.claptrap.common.backdrop.backdrop
 import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.common.CategoryListItem
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentEditTransactionBinding
-import com.aradipatrik.claptrap.common.di.LongYearMonthDayFormatter
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
-import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.*
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.Back
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.BackWithEdited
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect.ShowDatePickerAt
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
-import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.*
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.AmountChange
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.BackClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.CategoryChange
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.CategorySelectorClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.DateChange
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.DatePickerClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.DeleteButtonClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.EditDoneClick
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.MemoChange
+import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent.ScrimClick
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewModel
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Editing
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewState.Loading
 import com.aradipatrik.claptrap.feature.transactions.list.ui.CategoryAdapter
 import com.aradipatrik.claptrap.feature.transactions.list.ui.TransactionsFragment.Companion.UPDATED_TRANSACTION_ID_RESULT
-import com.aradipatrik.claptrap.common.mapper.CategoryIconMapper.drawableRes
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
@@ -41,7 +52,6 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.drop
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.merge
 import org.joda.time.DateTime
@@ -57,7 +67,7 @@ class EditTransactionFragment : ClapTrapFragment<
   EditTransactionViewEffect,
   FragmentEditTransactionBinding
   >(
-  R.layout.fragment_edit_transaction, FragmentEditTransactionBinding::inflate
+  FragmentEditTransactionBinding::inflate
 ), BackListener {
   private val transactionId by lazy {
     requireArguments().getString("transactionId") ?: error("transactionId is required")
@@ -100,10 +110,10 @@ class EditTransactionFragment : ClapTrapFragment<
     get() = merge(
       binding.deleteButton.clicks().map { DeleteButtonClick },
       binding.inputsContainer.memoTextInputLayout.editText!!.textChangeEvents()
-        .drop(1)
+        .dropInitialValue()
         .map { MemoChange(it.text.toString()) },
       binding.inputsContainer.amountTextInputLayout.editText!!.textChangeEvents()
-        .drop(1)
+        .dropInitialValue()
         .map { AmountChange(it.text.toString()) },
       binding.editDoneFab.clicks().map { EditDoneClick },
       binding.inputsContainer.categoryTextInputLayout.editText!!.clicks()
@@ -120,7 +130,7 @@ class EditTransactionFragment : ClapTrapFragment<
 
     binding.categoriesRecyclerView.adapter = categoryAdapter
     binding.categoriesRecyclerView.layoutManager = GridLayoutManager(
-      requireContext(), 3
+      requireContext(), CATEGORY_COLUMN_COUNT
     )
 
     animateViewsIn()
@@ -131,7 +141,7 @@ class EditTransactionFragment : ClapTrapFragment<
   private fun animateViewsIn() = lifecycleScope.launchWhenResumed {
     val overshootInterpolator = OvershootInterpolator()
     val alpha = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-    val translationY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 200.0f, 0.0f)
+    val translationY = PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, INITIAL_ITEM_OFFSET_Y, 0.0f)
 
     listOf(binding.editTransactionHeader, binding.deleteButton).map {
       ObjectAnimator.ofPropertyValuesHolder(it, alpha).start()
@@ -247,3 +257,5 @@ class EditTransactionFragment : ClapTrapFragment<
 }
 
 private const val QUICK_STAGGER_DURATION = 100L
+private const val CATEGORY_COLUMN_COUNT = 3
+private const val INITIAL_ITEM_OFFSET_Y = 200.0f

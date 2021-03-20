@@ -1,8 +1,15 @@
 package com.aradipatrik.claptrap.feature.transactions.list.model.calculator
 
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent
-import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.*
-import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.DeleteOneClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.MinusClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.NumberPadActionClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.PlusClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.AddTransactionViewEvent.CalculatorEvent.PointClick
+import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState.AddOperation
+import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState.SingleValue
+import com.aradipatrik.claptrap.feature.transactions.list.model.calculator.CalculatorState.SubtractOperation
 
 object CalculatorStateReducer {
   fun reduceState(

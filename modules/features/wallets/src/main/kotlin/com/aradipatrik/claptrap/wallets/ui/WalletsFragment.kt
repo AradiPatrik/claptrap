@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.aradipatrik.claptrap.common.di.CurrencyValueMoneyFormatter
-import com.aradipatrik.claptrap.feature.wallets.R
 import com.aradipatrik.claptrap.feature.wallets.databinding.FragmentWalletsBinding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.wallets.mapper.WalletPresentationMapper
@@ -24,7 +23,7 @@ class WalletsFragment : ClapTrapFragment<
   WalletsViewState,
   WalletsViewEvent,
   WalletsViewEffect,
-  FragmentWalletsBinding>(R.layout.fragment_wallets, FragmentWalletsBinding::inflate) {
+  FragmentWalletsBinding>(FragmentWalletsBinding::inflate) {
   override val viewModel by viewModels<WalletsViewModel>()
   override val viewEvents get() = emptyFlow<WalletsViewEvent>()
 
@@ -49,5 +48,6 @@ class WalletsFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: WalletsViewEffect) {
+    // no-op
   }
 }

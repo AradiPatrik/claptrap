@@ -8,20 +8,18 @@ import android.util.TypedValue
 import androidx.annotation.AttrRes
 import androidx.recyclerview.widget.RecyclerView
 
-
 class CornerCutRecyclerView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,
-  @AttrRes defStyleAttr: Int = 0
+  @AttrRes defStyleAttr: Int = 0,
 ) : RecyclerView(context, attrs, defStyleAttr) {
   private val clipPath = Path()
 
   override fun onDraw(c: Canvas?) {
     super.onDraw(c?.also {
-      val dip = 84.0f
       val px = TypedValue.applyDimension(
         TypedValue.COMPLEX_UNIT_DIP,
-        dip,
+        CORNER_DIP,
         resources.displayMetrics
       )
 
@@ -36,5 +34,9 @@ class CornerCutRecyclerView @JvmOverloads constructor(
         close()
       })
     })
+  }
+
+  companion object {
+    private const val CORNER_DIP = 84.0f
   }
 }

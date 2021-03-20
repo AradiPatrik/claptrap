@@ -15,4 +15,5 @@ class CategoryInteractorFake @Inject constructor() : CategoryInteractor {
   override fun getAllCategoriesFlow() = categories
 }
 
+@Suppress("MagicNumber")
 internal val initialCategories = 50 of { Random.nextCategory() }

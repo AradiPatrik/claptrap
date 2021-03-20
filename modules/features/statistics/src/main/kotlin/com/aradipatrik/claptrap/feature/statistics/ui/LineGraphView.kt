@@ -1,13 +1,17 @@
 package com.aradipatrik.claptrap.feature.statistics.ui
 
 import android.content.Context
-import android.graphics.*
+import android.graphics.Canvas
+import android.graphics.LinearGradient
+import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.Point
+import android.graphics.Shader
 import android.util.AttributeSet
 import android.view.View
 import androidx.annotation.AttrRes
 import com.aradipatrik.claptrap.feature.statistics.R
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.colorOnSurface
-import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.dp
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.getColorAttribute
 import com.aradipatrik.claptrap.theme.widget.ViewThemeUtil.px
 import org.joda.money.CurrencyUnit
@@ -15,6 +19,7 @@ import org.joda.money.Money
 import java.math.RoundingMode
 import kotlin.random.Random
 
+@Suppress("MagicNumber")
 class LineGraphView @JvmOverloads constructor(
   context: Context,
   attrs: AttributeSet? = null,

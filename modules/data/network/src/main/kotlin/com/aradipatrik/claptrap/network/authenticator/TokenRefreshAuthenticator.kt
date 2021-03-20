@@ -25,6 +25,7 @@ class TokenRefreshAuthenticator @Inject constructor(
     if (response.retryCount > 2) null
     else response.createSignedRequest()
 
+  @Suppress("TooGenericExceptionCaught")
   private fun Response.createSignedRequest(): Request? = try {
     val token = when (userDiskDataSource.peakIdentityProvider()) {
       IdentityProvider.FIREBASE -> runBlocking {

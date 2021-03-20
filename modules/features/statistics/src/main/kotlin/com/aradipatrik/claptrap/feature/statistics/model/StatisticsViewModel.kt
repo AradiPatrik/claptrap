@@ -8,5 +8,6 @@ class StatisticsViewModel @ViewModelInject constructor() : ClaptrapViewModel<
   StatisticsViewState.Placeholder
 ) {
   override fun processInput(viewEvent: StatisticsViewEvent) {
+    // no-op
   }
 }

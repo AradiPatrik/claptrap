@@ -3,11 +3,14 @@ package com.aradipatrik.claptrap.feature.transactions.list.ui
 import android.os.Bundle
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
-import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentMenuAddTransctionBinding
-import com.aradipatrik.claptrap.feature.transactions.list.model.*
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionType
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEffect
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.BackClick
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewEvent.TransactionTypeSwitch
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewModel
+import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState
 import com.aradipatrik.claptrap.feature.transactions.list.model.TransactionsViewState.Adding
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
@@ -22,7 +25,7 @@ class AddTransactionMenuFragment : ClapTrapFragment<
   TransactionsViewEvent,
   TransactionsViewEffect,
   FragmentMenuAddTransctionBinding
-  >(R.layout.fragment_menu_add_transction, FragmentMenuAddTransctionBinding::inflate) {
+  >(FragmentMenuAddTransctionBinding::inflate) {
   override val viewModel by activityViewModels<TransactionsViewModel>()
 
   override val viewEvents: Flow<TransactionsViewEvent>
@@ -63,7 +66,6 @@ class AddTransactionMenuFragment : ClapTrapFragment<
   }
 
   override fun react(viewEffect: TransactionsViewEffect) {
+    // no-op
   }
-
-
 }

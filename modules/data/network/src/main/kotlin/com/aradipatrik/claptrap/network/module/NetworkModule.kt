@@ -32,10 +32,10 @@ class NetworkModule {
     .addInterceptor(httpLoggingInterceptor)
     .addInterceptor(authInterceptor)
     .authenticator(tokenRefreshAuthenticator)
-    .connectTimeout(45, TimeUnit.SECONDS)
-    .readTimeout(45, TimeUnit.SECONDS)
-    .writeTimeout(45, TimeUnit.SECONDS)
-    .callTimeout(45, TimeUnit.SECONDS)
+    .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+    .callTimeout(TIMEOUT, TimeUnit.SECONDS)
     .build()
 
   @Provides
@@ -70,4 +70,8 @@ class NetworkModule {
     .client(okHttpClient)
     .addConverterFactory(MoshiConverterFactory.create(moshi))
     .build()
+
+  companion object {
+    private const val TIMEOUT = 45L
+  }
 }

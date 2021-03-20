@@ -1,7 +1,16 @@
 package com.aradipatrik.claptrap.common.mapper
 
 import com.aradipatrik.claptrap.domain.ExtraColor
-import com.aradipatrik.claptrap.domain.ExtraColor.*
+import com.aradipatrik.claptrap.domain.ExtraColor.AMBER
+import com.aradipatrik.claptrap.domain.ExtraColor.BLUE
+import com.aradipatrik.claptrap.domain.ExtraColor.CYAN
+import com.aradipatrik.claptrap.domain.ExtraColor.DEEP_PURPLE
+import com.aradipatrik.claptrap.domain.ExtraColor.GREEN
+import com.aradipatrik.claptrap.domain.ExtraColor.LIGHT_GREEN
+import com.aradipatrik.claptrap.domain.ExtraColor.LIME
+import com.aradipatrik.claptrap.domain.ExtraColor.PINK
+import com.aradipatrik.claptrap.domain.ExtraColor.PURPLE
+import com.aradipatrik.claptrap.domain.ExtraColor.TEAL
 import com.aradipatrik.claptrap.theme.R
 
 object ExtraColorMapper {

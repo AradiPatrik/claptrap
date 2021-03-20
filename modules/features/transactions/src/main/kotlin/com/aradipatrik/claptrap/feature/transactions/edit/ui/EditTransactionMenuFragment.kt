@@ -3,7 +3,6 @@ package com.aradipatrik.claptrap.feature.transactions.edit.ui
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import com.aradipatrik.claptrap.common.util.FragmentExt.menuDestinationViewModels
-import com.aradipatrik.claptrap.feature.transactions.R
 import com.aradipatrik.claptrap.feature.transactions.databinding.FragmentMenuEditTransactionBinding
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEffect
 import com.aradipatrik.claptrap.feature.transactions.edit.model.EditTransactionViewEvent
@@ -23,7 +22,7 @@ class EditTransactionMenuFragment : ClapTrapFragment<
   EditTransactionViewEvent,
   EditTransactionViewEffect,
   FragmentMenuEditTransactionBinding>(
-  R.layout.fragment_menu_edit_transaction, FragmentMenuEditTransactionBinding::inflate
+  FragmentMenuEditTransactionBinding::inflate
 ) {
   override val viewModel by menuDestinationViewModels<EditTransactionViewModel>()
 
@@ -44,8 +43,10 @@ class EditTransactionMenuFragment : ClapTrapFragment<
   }
 
   override fun render(viewState: EditTransactionViewState) {
+    // no-op
   }
 
   override fun react(viewEffect: EditTransactionViewEffect) {
+    // no-op
   }
 }

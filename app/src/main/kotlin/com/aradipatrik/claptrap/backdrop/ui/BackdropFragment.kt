@@ -4,7 +4,6 @@ import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
 import android.view.View
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.core.view.isInvisible
@@ -46,7 +45,7 @@ class BackdropFragment : ClapTrapFragment<
   BackdropViewEvent,
   BackdropViewEffect,
   FragmentMainBinding
-  >(R.layout.fragment_main, FragmentMainBinding::inflate), Backdrop {
+  >(FragmentMainBinding::inflate), Backdrop {
   private var isBackLayerConcealed = true
 
   private val revealConcealTransition by lazy {
