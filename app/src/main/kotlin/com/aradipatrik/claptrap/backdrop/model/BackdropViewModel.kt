@@ -1,7 +1,12 @@
 package com.aradipatrik.claptrap.backdrop.model
 
-import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.*
-import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.*
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.MorphFromBackToMenu
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.NavigateToDestination
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.ShowCustomMenu
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.BackdropConcealToggle
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.RemoveCustomMenu
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SwitchToCustomMenu
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewState.OnTopLevelScreen
 import com.aradipatrik.claptrap.backdrop.model.TopLevelScreen.TRANSACTION_HISTORY
 import com.aradipatrik.claptrap.mvi.ClaptrapViewModel

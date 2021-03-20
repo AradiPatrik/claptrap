@@ -13,6 +13,7 @@ class MainApplication : Application() {
     } else {
       Timber.plant(object : Timber.Tree() {
         override fun log(priority: Int, tag: String?, message: String, t: Throwable?) {
+          // no-op
         }
       })
     }

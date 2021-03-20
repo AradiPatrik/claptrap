@@ -1,10 +1,10 @@
 package com.aradipatrik.claptrap.fakeinteractors.user
 
+import com.aradipatrik.claptrap.domain.IdentityProvider
 import com.aradipatrik.claptrap.domain.User
 import com.aradipatrik.claptrap.interactors.interfaces.todo.UserInteractor
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -14,7 +14,7 @@ class UserInteractorFake @Inject constructor() : UserInteractor {
 
   override fun getSignedInUserFlow(): Flow<User?> = signedInUserStateFlow
 
-  override suspend fun signInWithGoogleJwt(jwt: String) {
+  override suspend fun signInWithGoogleJwt(jwt: String, identityProvider: IdentityProvider) {
     TODO("Not yet implemented")
   }
 }

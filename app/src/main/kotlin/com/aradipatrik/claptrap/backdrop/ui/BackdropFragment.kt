@@ -2,9 +2,7 @@ package com.aradipatrik.claptrap.backdrop.ui
 
 import android.graphics.drawable.AnimatedVectorDrawable
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.motion.widget.MotionLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -20,13 +18,18 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.transition.TransitionInflater
 import androidx.transition.TransitionManager
 import com.aradipatrik.claptrap.R
-import com.aradipatrik.claptrap.backdrop.model.*
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEffect.NavigateToDestination
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent
 import com.aradipatrik.claptrap.backdrop.model.BackdropViewEvent.SelectTopLevelScreen
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewModel
+import com.aradipatrik.claptrap.backdrop.model.BackdropViewState
+import com.aradipatrik.claptrap.backdrop.model.TopLevelScreen
 import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.Backdrop
 import com.aradipatrik.claptrap.databinding.FragmentMainBinding
+import com.aradipatrik.claptrap.login.ui.GoogleSignInComponent
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
@@ -60,6 +63,14 @@ class BackdropFragment : ClapTrapFragment<
       binding.statisticsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) },
       binding.menuIcon.clicks().map { BackdropViewEvent.BackdropConcealToggle }
     )
+
+  override fun onCreate(savedInstanceState: Bundle?) {
+    super.onCreate(savedInstanceState)
+    lifecycle.addObserver(GoogleSignInComponent(
+      requireActivity(),
+      requireActivity().activityResultRegistry
+    ))
+  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)
@@ -277,11 +288,8 @@ class BackdropFragment : ClapTrapFragment<
   }
 
   companion object {
-    private const val MOTION_LAYOUT_STATE_KEY = "MOTION_LAYOUT_STATE_KEY"
     private const val CUSTOM_MENU_WAS_SHOWN = "MENU_STATE_KEY"
     private const val MENU_FRAGMENT_TAG = "MENU_FRAGMENT_TAG"
   }
-
-  private val MotionLayout.isOpen get() = currentState == R.id.menu_shown
 }
 

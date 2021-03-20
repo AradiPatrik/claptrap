@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.network.module
 
 import com.aradipatrik.claptrap.config.AppConfig
 import com.aradipatrik.claptrap.network.BuildConfig
+import com.aradipatrik.claptrap.network.authenticator.TokenRefreshAuthenticator
 import com.aradipatrik.claptrap.network.interceptor.BearerTokenAuthenticationInterceptor
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -25,10 +26,12 @@ class NetworkModule {
   @Singleton
   internal fun provideOkHttpClient(
     httpLoggingInterceptor: HttpLoggingInterceptor,
-    authInterceptor: BearerTokenAuthenticationInterceptor
+    authInterceptor: BearerTokenAuthenticationInterceptor,
+    tokenRefreshAuthenticator: TokenRefreshAuthenticator,
   ) = OkHttpClient.Builder()
     .addInterceptor(httpLoggingInterceptor)
     .addInterceptor(authInterceptor)
+    .authenticator(tokenRefreshAuthenticator)
     .connectTimeout(45, TimeUnit.SECONDS)
     .readTimeout(45, TimeUnit.SECONDS)
     .writeTimeout(45, TimeUnit.SECONDS)

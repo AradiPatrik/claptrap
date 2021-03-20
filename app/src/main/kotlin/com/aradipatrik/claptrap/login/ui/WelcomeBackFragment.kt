@@ -8,10 +8,16 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.aradipatrik.claptrap.R
 import com.aradipatrik.claptrap.databinding.FragmentWelcomeBackBinding
-import com.aradipatrik.claptrap.login.model.*
+import com.aradipatrik.claptrap.login.model.SignInSignUpAdapter
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.NavigateToMainScreen
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWithGoogleOAuthFlow
-import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.*
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.SignInSignUpStateChange
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.SignInSuccessful
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewEvent.SignInWithGoogle
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewModel
+import com.aradipatrik.claptrap.login.model.WelcomeBackViewState
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.Flows.launchInWhenResumed
 import com.google.android.material.tabs.TabLayoutMediator
@@ -76,7 +82,7 @@ class WelcomeBackFragment : ClapTrapFragment<
       requireActivity().activityResultRegistry
     ).apply {
       signInSuccessFlow
-        .map { SignInSuccessful(it.googleIdToken!!) }
+        .map { SignInSuccessful(it) }
         .onEach(extraViewEventsFlow::emit)
         .launchInWhenResumed(lifecycleScope)
     }

@@ -1,7 +1,7 @@
 package com.aradipatrik.claptrap.login.model
 
 import androidx.hilt.lifecycle.ViewModelInject
-import com.aradipatrik.claptrap.domain.User
+import com.aradipatrik.claptrap.domain.IdentityProvider
 import com.aradipatrik.claptrap.interactors.interfaces.todo.UserInteractor
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.NavigateToMainScreen
 import com.aradipatrik.claptrap.login.model.WelcomeBackViewEffect.ShowSignInWithGoogleOAuthFlow
@@ -45,7 +45,7 @@ class WelcomeBackViewModel @ViewModelInject constructor(
   }
 
   private fun signInWithGoogle(idToken: String) = sideEffect {
-    userInteractor.signInWithGoogleJwt(idToken)
+    userInteractor.signInWithGoogleJwt(idToken, IdentityProvider.GOOGLE)
     viewEffects.emit(NavigateToMainScreen)
   }
 
@@ -63,7 +63,8 @@ class WelcomeBackViewModel @ViewModelInject constructor(
 
     userInteractor.signInWithGoogleJwt(
       authResult.user!!.getIdToken(true).await()
-        .token!!
+        .token!!,
+      IdentityProvider.FIREBASE
     )
 
     viewEffects.emit(NavigateToMainScreen)

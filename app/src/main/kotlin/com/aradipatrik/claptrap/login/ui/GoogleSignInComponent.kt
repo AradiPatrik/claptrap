@@ -1,5 +1,6 @@
 package com.aradipatrik.claptrap.login.ui
 
+import android.R
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -13,17 +14,22 @@ import com.aradipatrik.claptrap.login.model.GOOGLE_SERVER_CLIENT_ID
 import com.aradipatrik.claptrap.login.model.GOOGLE_SIGN_IN_REQUEST_KEY
 import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.identity.SignInCredential
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.tasks.await
+import timber.log.Timber
+
 
 class GoogleSignInComponent(
   private val context: Context,
-  private val registry: ActivityResultRegistry
+  private val registry: ActivityResultRegistry,
 ) : DefaultLifecycleObserver {
-  private val _signInSuccessFlow = MutableSharedFlow<SignInCredential>()
-  val signInSuccessFlow: Flow<SignInCredential> = _signInSuccessFlow
+  private val _signInSuccessFlow = MutableSharedFlow<String>()
+  val signInSuccessFlow: Flow<String> = _signInSuccessFlow
 
   private val _signInFailedFlow = MutableSharedFlow<Any>()
   val signInFailedFlow: Flow<Any> = _signInFailedFlow
@@ -43,9 +49,9 @@ class GoogleSignInComponent(
         ).getSignInCredentialFromIntent(result.data)
 
         owner.lifecycleScope.launchWhenResumed {
-          _signInSuccessFlow.emit(credential)
+          _signInSuccessFlow.emit(credential.googleIdToken!!)
         }
-      } catch(exception: ApiException) {
+      } catch (exception: ApiException) {
         owner.lifecycleScope.launchWhenResumed {
           _signInFailedFlow.emit(exception)
         }

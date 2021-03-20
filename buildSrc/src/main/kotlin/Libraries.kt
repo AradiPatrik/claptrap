@@ -73,6 +73,7 @@ object Libraries {
     const val okHttp = "com.squareup.okhttp3:okhttp"
     const val retrofit = "com.squareup.retrofit2:retrofit:${Versions.Network.retrofit}"
     const val moshi = "com.squareup.moshi:moshi-kotlin:${Versions.Network.moshi}"
+    const val moshiAdapter = "com.squareup.moshi:moshi-adapters:${Versions.Network.moshi}"
     const val moshiCodegen = "com.squareup.moshi:moshi-kotlin-codegen:${Versions.Network.moshi}"
     const val loggingInterceptor =
       "com.squareup.okhttp3:logging-interceptor:${Versions.Network.okhttp}"

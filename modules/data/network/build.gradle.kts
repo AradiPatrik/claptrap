@@ -7,6 +7,11 @@ dependencies {
   implementation(project(":core:domain-models"))
   implementation(project(":core:api-models"))
   implementation(project(":config"))
+  implementation(Libraries.Google.playServices)
+  implementation(platform(Libraries.Firebase.bom))
+  implementation(Libraries.Firebase.analytics)
+  implementation(Libraries.Firebase.auth)
+  implementation(Libraries.AndroidX.Ktx.playServices)
 
   implementation(Libraries.Dagger.hilt)
   kapt(Libraries.Dagger.hiltKapt)
