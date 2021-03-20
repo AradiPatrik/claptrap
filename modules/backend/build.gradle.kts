@@ -24,6 +24,7 @@ dependencies {
   implementation(Libraries.Ktor.authJwt)
   implementation(Libraries.Ktor.googleApiClient)
   implementation(Libraries.Network.moshi)
+  implementation(Libraries.Network.moshiAdapter)
 }
 
 tasks.withType<Jar> {

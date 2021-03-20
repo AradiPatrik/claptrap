@@ -2,6 +2,8 @@ package com.aradipatrik.claptrap.backend
 
 import com.aradipatrik.claptrap.apimodels.UserWire
 import com.aradipatrik.claptrap.backend.Auth.installAuthentication
+import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
+import com.squareup.moshi.addAdapter
 import io.ktor.application.Application
 import io.ktor.application.call
 import io.ktor.application.install
@@ -27,6 +29,7 @@ fun Application.module(testing: Boolean = false) {
 
   install(ContentNegotiation) {
     moshi {
+      addAdapter(Rfc3339DateJsonAdapter())
     }
   }
 
