@@ -53,6 +53,9 @@ object Versions {
   object Ktor {
     const val core = "1.5.0"
     const val logback = "1.2.3"
+    const val exposed = "0.29.1"
+    const val hikariCP = "2.7.8"
+    const val postgre = "42.2.2"
   }
 
   object Google {

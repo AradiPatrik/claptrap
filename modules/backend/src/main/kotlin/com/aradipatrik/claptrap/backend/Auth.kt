@@ -4,6 +4,7 @@ import com.auth0.jwk.JwkProviderBuilder
 import io.ktor.application.Application
 import io.ktor.application.install
 import io.ktor.auth.Authentication
+import io.ktor.auth.basic
 import io.ktor.auth.jwt.JWTPrincipal
 import io.ktor.auth.jwt.jwt
 import java.net.URL

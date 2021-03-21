@@ -1,6 +1,5 @@
 package com.aradipatrik.claptrap.login.ui
 
-import android.R
 import android.content.Context
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.ActivityResultLauncher
@@ -14,14 +13,9 @@ import com.aradipatrik.claptrap.login.model.GOOGLE_SERVER_CLIENT_ID
 import com.aradipatrik.claptrap.login.model.GOOGLE_SIGN_IN_REQUEST_KEY
 import com.google.android.gms.auth.api.identity.GetSignInIntentRequest
 import com.google.android.gms.auth.api.identity.Identity
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 
 
 class GoogleSignInComponent(

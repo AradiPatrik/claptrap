@@ -28,7 +28,6 @@ import com.aradipatrik.claptrap.common.backdrop.BackEffect
 import com.aradipatrik.claptrap.common.backdrop.BackListener
 import com.aradipatrik.claptrap.common.backdrop.Backdrop
 import com.aradipatrik.claptrap.databinding.FragmentMainBinding
-import com.aradipatrik.claptrap.login.ui.GoogleSignInComponent
 import com.aradipatrik.claptrap.mvi.ClapTrapFragment
 import com.aradipatrik.claptrap.mvi.MviUtil.ignore
 import com.aradipatrik.claptrap.theme.widget.AnimationConstants.QUICK_ANIMATION_DURATION
@@ -62,14 +61,6 @@ class BackdropFragment : ClapTrapFragment<
       binding.statisticsMenuItem.clicks.map { SelectTopLevelScreen(TopLevelScreen.STATISTICS) },
       binding.menuIcon.clicks().map { BackdropViewEvent.BackdropConcealToggle }
     )
-
-  override fun onCreate(savedInstanceState: Bundle?) {
-    super.onCreate(savedInstanceState)
-    lifecycle.addObserver(GoogleSignInComponent(
-      requireActivity(),
-      requireActivity().activityResultRegistry
-    ))
-  }
 
   override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
     super.onViewCreated(view, savedInstanceState)

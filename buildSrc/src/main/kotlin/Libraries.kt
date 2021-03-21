@@ -103,10 +103,11 @@ object Libraries {
     const val certificates = "io.ktor:ktor-network-tls-certificates:${Versions.Ktor.core}"
     const val auth = "io.ktor:ktor-auth:${Versions.Ktor.core}"
     const val authJwt = "io.ktor:ktor-auth-jwt:${Versions.Ktor.core}"
-    const val jwk = "io.ktor:ktor-auth-jwt:${Versions.Ktor.core}"
-    const val googleApiClient =
-      "com.google.api-client:google-api-client:${Versions.Google.apiClient}"
-
+    const val exposedCore = "org.jetbrains.exposed:exposed-core:${Versions.Ktor.exposed}"
+    const val exposedDao = "org.jetbrains.exposed:exposed-dao:${Versions.Ktor.exposed}"
+    const val exposedJdbc = "org.jetbrains.exposed:exposed-jdbc:${Versions.Ktor.exposed}"
+    const val hikariCP = "com.zaxxer:HikariCP:${Versions.Ktor.hikariCP}"
+    const val postgre = "org.postgresql:postgresql:${Versions.Ktor.postgre}"
   }
 
   object Google {

@@ -71,23 +71,34 @@ android {
       dimension = "environment"
 
       buildConfigField("String", "API_BASE_URL", "\" \"")
+      resValue("bool", "USES_CLEARTEXT_TRAFFIC", "false")
     }
 
-    register("dev") {
+    register("local") {
+      dimension = "environment"
+
+      buildConfigField("String", "API_BASE_URL", "\"${project.property("localServerAddress")}\"")
+      resValue("bool", "USES_CLEARTEXT_TRAFFIC", "true")
+    }
+
+    register("staging") {
       dimension = "environment"
 
       buildConfigField("String", "API_BASE_URL", "\"https://hidden-savannah-29279.herokuapp.com/\"")
+      resValue("bool", "USES_CLEARTEXT_TRAFFIC", "false")
     }
 
     register("prod") {
       dimension = "environment"
 
       buildConfigField("String", "API_BASE_URL", "\" \"")
+      resValue("bool", "USES_CLEARTEXT_TRAFFIC", "false")
     }
 
     sourceSets {
       getByName("mock").java.srcDir("src/mock/kotlin")
-      getByName("dev").java.srcDir("src/live/kotlin")
+      getByName("local").java.srcDir("src/live/kotlin")
+      getByName("staging").java.srcDir("src/live/kotlin")
       getByName("prod").java.srcDir("src/live/kotlin")
     }
   }

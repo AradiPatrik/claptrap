@@ -22,7 +22,11 @@ dependencies {
   implementation(Libraries.Ktor.certificates)
   implementation(Libraries.Ktor.auth)
   implementation(Libraries.Ktor.authJwt)
-  implementation(Libraries.Ktor.googleApiClient)
+  implementation(Libraries.Ktor.exposedCore)
+  implementation(Libraries.Ktor.exposedDao)
+  implementation(Libraries.Ktor.exposedJdbc)
+  implementation(Libraries.Ktor.hikariCP)
+  implementation(Libraries.Ktor.postgre)
   implementation(Libraries.Network.moshi)
   implementation(Libraries.Network.moshiAdapter)
 }

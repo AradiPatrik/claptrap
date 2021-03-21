@@ -1,0 +1,18 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="ApplicationKt" type="JetRunConfigurationType" nameIsGenerated="true">
+    <module name="claptrap.backend" />
+    <option name="VM_PARAMETERS" value="" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+    <option name="ALTERNATIVE_JRE_PATH" />
+    <option name="PASS_PARENT_ENVS" value="true" />
+    <option name="MAIN_CLASS_NAME" value="com.aradipatrik.claptrap.backend.ApplicationKt" />
+    <option name="WORKING_DIRECTORY" value="" />
+    <envs>
+      <env name="JDBC_DATABASE_URL" value="jdbc:postgresql://localhost:5432/claptrap" />
+    </envs>
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
