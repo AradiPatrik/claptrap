@@ -6,10 +6,12 @@ import com.aradipatrik.claptrap.backend.web.Config.installCallLogging
 import com.aradipatrik.claptrap.backend.web.Config.installContentNegotiation
 import com.aradipatrik.claptrap.backend.web.Config.installDefaultHeaders
 import com.aradipatrik.claptrap.backend.web.Routes.installRouting
-import io.ktor.application.Application
+import io.ktor.application.*
 import io.ktor.auth.authenticate
-import io.ktor.routing.get
-import io.ktor.routing.routing
+import io.ktor.html.*
+import io.ktor.routing.*
+import kotlinx.html.body
+import kotlinx.html.h1
 
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
@@ -27,5 +29,17 @@ fun Application.main(isTesting: Boolean = false) {
     installRouting(authConfigs = arrayOf("test"))
   } else {
     installRouting(authConfigs = arrayOf("google", "firebase"))
+  }
+
+  routing {
+    get("/") {
+      call.respondHtml {
+        body {
+          h1 {
+            +"Hello Penis"
+          }
+        }
+      }
+    }
   }
 }
