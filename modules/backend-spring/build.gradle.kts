@@ -1,7 +1,6 @@
 plugins {
-    id("org.springframework.boot").version("2.3.1.RELEASE")
-    kotlin("plugin.spring") version "1.3.21"
-    id("io.spring.dependency-management") version "1.0.7.RELEASE"
+    id("org.springframework.boot").version("2.3.3.RELEASE")
+    id("io.spring.dependency-management") version "1.0.10.RELEASE"
 }
 
 tasks.withType<Jar> {
@@ -16,16 +15,17 @@ repositories {
 }
 
 dependencies {
-    //implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+    implementation(project(":core:api-models"))
+    implementation(project(":core:domain-models"))
+    implementation(project(":core:domain-network-mappers"))
+    implementation(project(":core:json-adapters"))
+
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("io.springfox:springfox-boot-starter:3.0.0")
-    implementation("io.springfox:springfox-spring-webflux:3.0.0-SNAPSHOT")
-    implementation("io.springfox:springfox-swagger-ui:3.0.0-SNAPSHOT")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testImplementation("org.springframework.boot:spring-boot-starter-test") {
-        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
-    }
-    testImplementation("io.projectreactor:reactor-test")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.security:spring-security-oauth2-resource-server")
+    implementation("org.springframework.security:spring-security-oauth2-jose")
+
+    implementation("javax.servlet:javax.servlet-api")
 }
 
 tasks.withType<Test> {

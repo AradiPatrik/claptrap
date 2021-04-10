@@ -1,4 +1,4 @@
-package emilfekete.reactivedemo;
+package emilfekete;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -15,10 +15,3 @@ public class ReactiveDemoApplication {
 
 }
 
-@RestController
-class Controller {
-    @GetMapping("/token-sign-in")
-    public String getTokenSignIn() {
-        return "kaga";
-    }
-}
