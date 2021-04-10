@@ -47,6 +47,22 @@ tasks.register("clean", Delete::class) {
   delete(rootProject.buildDir)
 }
 
+
+tasks.register("build-backend") {
+  dependsOn(":backend-spring:build")
+}
+
+tasks.register("clean-backend") {
+  dependsOn(":backend-spring:clean")
+}
+
+tasks.getByName("build-backend")
+  .mustRunAfter("clean-backend")
+
+tasks.register("stage") {
+  dependsOn("build-backend", "clean-backend")
+}
+
 // Kotlin DSL
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
   // Target version of the generated JVM bytecode. It is used for type resolution.

@@ -7,6 +7,7 @@ import com.aradipatrik.claptrap.backend.web.Routes.tokenSignIn
 import com.aradipatrik.claptrap.backend.web.Routes.wallets
 import com.aradipatrik.claptrap.domain.WalletWithUsers
 import com.aradipatrik.claptrap.domainnetworkmappers.CategoryMapper
+import com.aradipatrik.claptrap.domainnetworkmappers.CategoryMapper.toWire
 import com.aradipatrik.claptrap.domainnetworkmappers.UserMapper.toWire
 import com.aradipatrik.claptrap.domainnetworkmappers.WalletWithUsersMapper
 import io.ktor.application.Application
