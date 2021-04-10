@@ -1,4 +1,4 @@
-package com.aradipatrik.claptrap.backend
+package com.aradipatrik.claptrap.backend.util.contentnegotiation
 
 import com.squareup.moshi.Moshi
 import io.ktor.application.ApplicationCall
@@ -21,6 +21,7 @@ import kotlin.reflect.jvm.jvmErasure
 /**
  * Moshi converter for [ContentNegotiation] feature
  */
+@Suppress("BlockingMethodInNonBlockingContext")
 class MoshiConverter(private val moshi: Moshi = Moshi.Builder().build()) : ContentConverter {
   override suspend fun convertForSend(
     context: PipelineContext<Any, ApplicationCall>,

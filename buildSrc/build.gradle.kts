@@ -21,8 +21,8 @@ dependencies {
   implementation(gradleApi())
 
   // Android plugin dependencies
-  implementation("com.android.tools.build:gradle:4.1.1") // can't use constants here
+  implementation("com.android.tools.build:gradle:4.1.3") // can't use constants here
 
   // Kotlin plugin dependencies
-  implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.10")
+  implementation("org.jetbrains.kotlin:kotlin-gradle-plugin:1.4.30")
 }

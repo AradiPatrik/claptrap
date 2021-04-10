@@ -66,6 +66,12 @@ project(":core:api-models").projectDir = file("./modules/core/api-models")
 include(":core:domain-models")
 project(":core:domain-models").projectDir = file("./modules/core/domain-models")
 
+include(":core:domain-network-mappers")
+project(":core:domain-network-mappers").projectDir = file("./modules/core/domain-network-mappers")
+
+include(":core:json-adapters")
+project(":core:json-adapters").projectDir = file("./modules/core/json-adapters")
+
 if (includeKtor == "true") {
   include(":backend")
   project(":backend").projectDir = file("./modules/backend")

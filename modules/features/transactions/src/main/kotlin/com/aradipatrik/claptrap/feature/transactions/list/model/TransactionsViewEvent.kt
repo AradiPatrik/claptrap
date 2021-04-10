@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.feature.transactions.list.model
 
 import com.aradipatrik.claptrap.domain.Category
 import org.joda.time.DateTime
+import java.util.UUID
 
 sealed class TransactionsViewEvent {
   object ActionClick : TransactionsViewEvent()
@@ -14,7 +15,7 @@ sealed class TransactionsViewEvent {
 
   data class TransactionUpdated(val updatedId: String) : TransactionsViewEvent()
   data class TransactionItemClicked(val transactionId: String) : TransactionsViewEvent()
-  data class WalletClick(val walletId: String) : TransactionsViewEvent()
+  data class WalletClick(val walletId: UUID) : TransactionsViewEvent()
   object ShowWalletsClick : TransactionsViewEvent()
 
   sealed class AddTransactionViewEvent : TransactionsViewEvent() {

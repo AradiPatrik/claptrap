@@ -2,7 +2,7 @@ package com.aradipatrik.claptrap.domain
 
 enum class CategoryIcon {
   CAR,
-  CART,
+  GROCERIES,
   HEALTH,
   HOME,
   FOOD,

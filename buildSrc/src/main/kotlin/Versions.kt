@@ -56,6 +56,9 @@ object Versions {
     const val exposed = "0.29.1"
     const val hikariCP = "2.7.8"
     const val postgre = "42.2.2"
+    const val strikt = "0.30.0"
+    const val restAssured = "4.3.3"
+    const val junit = "5.7.1"
   }
 
   object Google {

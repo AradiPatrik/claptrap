@@ -32,6 +32,8 @@ internal object CommonMockGenerator {
 
   internal fun Random.nextId() = UUID.randomUUID().toString()
 
+  internal fun Random.nextUuid() = UUID.randomUUID()
+
   internal inline fun <reified T: Enum<*>> Random.nextEnum() = enumValues<T>()
     .toList()
     .shuffled()

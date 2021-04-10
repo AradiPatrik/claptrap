@@ -130,7 +130,7 @@ class TransactionsViewModel @ViewModelInject constructor(
     state.copy(isWalletSelectorOpen = !state.isWalletSelectorOpen, isYearMonthSelectorOpen = false)
   }
 
-  private fun selectWallet(walletId: String) = sideEffect {
+  private fun selectWallet(walletId: UUID) = sideEffect {
     walletInteractor.setSelectedWalletId(walletId)
   }
 
@@ -199,7 +199,10 @@ class TransactionsViewModel @ViewModelInject constructor(
   }
 
   private suspend fun addTransactionOfState(state: Adding): Loaded {
-    saveTransaction(createTransactionFromAddingState(state, walletInteractor.getSelectedWalletId()))
+    saveTransaction(createTransactionFromAddingState(
+      state,
+      walletInteractor.getSelectedWalletId().toString()
+    ))
     return Loaded(
       transactions = state.oldTransactions,
       yearMonth = state.transactionsYearMonth,

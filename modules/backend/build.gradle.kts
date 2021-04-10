@@ -11,6 +11,9 @@ application {
 
 dependencies {
   implementation(project(":core:api-models"))
+  implementation(project(":core:domain-models"))
+  implementation(project(":core:domain-network-mappers"))
+  implementation(project(":core:json-adapters"))
 
   implementation(Libraries.Ktor.netty)
   implementation(Libraries.Ktor.logback)
@@ -25,10 +28,18 @@ dependencies {
   implementation(Libraries.Ktor.exposedCore)
   implementation(Libraries.Ktor.exposedDao)
   implementation(Libraries.Ktor.exposedJdbc)
+  implementation(Libraries.Ktor.exposedJoda)
   implementation(Libraries.Ktor.hikariCP)
   implementation(Libraries.Ktor.postgre)
   implementation(Libraries.Network.moshi)
   implementation(Libraries.Network.moshiAdapter)
+
+  testImplementation(Libraries.Ktor.strikt)
+  testImplementation(Libraries.Ktor.restAssured)
+  testImplementation(Libraries.Ktor.junitJupiter)
+  testRuntimeOnly(Libraries.Ktor.junitJupiterEngine)
+  testImplementation(Libraries.Ktor.clientCio)
+  testImplementation(Libraries.Ktor.ktorServerTestHost)
 }
 
 tasks.withType<Jar> {
@@ -39,4 +50,8 @@ tasks.withType<Jar> {
       )
     )
   }
+}
+
+tasks.withType<Test> {
+  useJUnitPlatform()
 }
