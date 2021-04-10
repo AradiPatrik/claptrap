@@ -6,21 +6,23 @@ import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.n
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextEnum
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextId
 import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextMoney
+import com.aradipatrik.claptrap.fakeinteractors.generators.CommonMockGenerator.nextUuid
 import com.aradipatrik.claptrap.fakeinteractors.generators.LoremIpsum.nextCapitalWord
 import com.aradipatrik.claptrap.fakeinteractors.generators.LoremIpsum.nextWords
 import org.joda.time.YearMonth
+import java.util.*
 import kotlin.random.Random
 
 internal object TransactionMockGenerator {
   fun Random.nextCategory() = Category(
-    nextId(),
+    nextUuid(),
     nextCapitalWord(),
     nextEnum()
   )
 
   fun Random.nextTransaction(
     category: Category = nextCategory(),
-    walletId: String = nextId(),
+    walletId: UUID = nextUuid(),
     yearMonth: YearMonth
   ) = Transaction(
     nextId(),

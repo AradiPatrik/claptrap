@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
 import org.joda.time.DateTime
 import org.joda.time.YearMonth
+import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
@@ -52,7 +53,7 @@ class TransactionInteractorFake @Inject constructor(
 
   private fun generateTransactionsInYearMonthOfWallet(
     yearMonth: YearMonth,
-    walletId: String,
+    walletId: UUID,
     categories: List<Category>
   ) = 100 of {
     Random.nextTransaction(

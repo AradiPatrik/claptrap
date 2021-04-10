@@ -32,14 +32,9 @@ fun Application.main(isTesting: Boolean = false) {
   }
 
   routing {
-    get("/") {
-      call.respondHtml {
-        body {
-          h1 {
-            +"Hello Penis"
-          }
-        }
-      }
-    }
+    // POST("token-sign-in")
+    // public void getRoutHandler() {
+    //   MyUser user = (MyUser) AuthContext.getPrincipal("user")
+    // }
   }
 }

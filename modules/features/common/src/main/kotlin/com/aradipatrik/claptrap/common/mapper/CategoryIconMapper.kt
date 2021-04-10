@@ -6,7 +6,7 @@ import com.aradipatrik.claptrap.feature.common.R
 object CategoryIconMapper {
   val CategoryIcon.drawableRes get() = when(this) {
     CategoryIcon.CAR -> R.drawable.category_icon_car
-    CategoryIcon.CART -> R.drawable.category_icon_cart
+    CategoryIcon.GROCERIES -> R.drawable.category_icon_cart
     CategoryIcon.HEALTH -> R.drawable.category_icon_health
     CategoryIcon.HOME -> R.drawable.category_icon_home
     CategoryIcon.FOOD -> R.drawable.category_icon_pizza_slice

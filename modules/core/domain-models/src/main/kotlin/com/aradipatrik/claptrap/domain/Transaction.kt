@@ -2,6 +2,7 @@ package com.aradipatrik.claptrap.domain
 
 import org.joda.money.Money
 import org.joda.time.DateTime
+import java.util.*
 
 data class Transaction(
   val id: String,
@@ -9,5 +10,5 @@ data class Transaction(
   val date: DateTime,
   val memo: String,
   val category: Category,
-  val walletId: String
+  val walletId: UUID
 )

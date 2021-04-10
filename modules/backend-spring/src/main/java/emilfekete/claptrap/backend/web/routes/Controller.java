@@ -24,9 +24,7 @@ class Controller {
   }
 
   @NotNull
-  private int getUserDetailsStringFunction(Object userDetails) {
-    return Integer.valueOf(userDetails);
+  private String getUserDetailsStringFunction(Object userDetails) {
+    return userDetails.toString();
   }
-
-
 }

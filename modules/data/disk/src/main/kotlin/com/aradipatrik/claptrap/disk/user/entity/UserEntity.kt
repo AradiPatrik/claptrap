@@ -13,7 +13,7 @@ data class UserEntity(
   val isMe: Boolean,
 
   @ColumnInfo(name = "email")
-  val email: String?,
+  val email: String,
 
   @ColumnInfo(name = "name")
   val name: String?,

@@ -201,7 +201,7 @@ class TransactionsViewModel @ViewModelInject constructor(
   private suspend fun addTransactionOfState(state: Adding): Loaded {
     saveTransaction(createTransactionFromAddingState(
       state,
-      walletInteractor.getSelectedWalletId().toString()
+      walletInteractor.getSelectedWalletId()
     ))
     return Loaded(
       transactions = state.oldTransactions,
@@ -289,7 +289,7 @@ class TransactionsViewModel @ViewModelInject constructor(
 
 private fun createTransactionFromAddingState(
   state: Adding,
-  walletId: String
+  walletId: UUID
 ): Transaction {
   require(state.selectedCategory != null) {
     "Add should not be called without a selected category"
