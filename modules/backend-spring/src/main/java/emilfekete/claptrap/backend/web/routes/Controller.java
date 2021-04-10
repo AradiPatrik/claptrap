@@ -1,30 +1,22 @@
 package emilfekete.claptrap.backend.web.routes;
 
 import org.jetbrains.annotations.NotNull;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.ReactiveSecurityContextHolder;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
-import reactor.core.publisher.Mono;
 
-import java.security.Principal;
-import java.util.function.Function;
+import reactor.core.publisher.Mono;
 
 @RestController
 class Controller {
   @GetMapping("/token-sign-in")
-  public Mono<String> getTokenSignIn() {
-    return ReactiveSecurityContextHolder.getContext()
-      .map(SecurityContext::getAuthentication)
-      .map(Authentication::getPrincipal)
-      .map(this::getUserDetailsStringFunction);
+  public Mono<String> getTokenSignIn(@AuthenticationPrincipal Mono<Jwt> jwt) {
+    return jwt.map(this::getUserDetailsStringFunction);
   }
 
   @NotNull
-  private String getUserDetailsStringFunction(Object userDetails) {
-    return userDetails.toString();
+  private String getUserDetailsStringFunction(Jwt jwt) {
+    jwt.getSubject();
   }
 }
