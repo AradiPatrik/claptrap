@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 class Controller {
-    @GetMapping("/token-sign-in")
-    public String getTokenSignIn() {
-        return "kaga";
-    }
+  @GetMapping("/token-sign-in")
+  public String getTokenSignIn() {
+    return "kaga";
+  }
 }

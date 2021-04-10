@@ -13,35 +13,35 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 @Configuration
 @EnableWebFluxSecurity
 public class SecurityConfig {
-    @Value("${googleJwkProvider}")
-    private String googleJwkProvider;
+  @Value("${googleJwkProvider}")
+  private String googleJwkProvider;
 
-    @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
-    private String issuerUri;
+  @Value("${spring.security.oauth2.resourceserver.jwt.issuer-uri}")
+  private String issuerUri;
 
-    @Value("${audience}")
-    private String audience;
+  @Value("${audience}")
+  private String audience;
 
-    @Bean
-    SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
-        http
-                .authorizeExchange()
-                .anyExchange().authenticated()
-                .and()
-                .oauth2ResourceServer()
-                .jwt()
-                .jwtDecoder(jwtDecoder());
-        return http.build();
-    }
+  @Bean
+  SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http) {
+    http
+      .authorizeExchange()
+      .anyExchange().authenticated()
+      .and()
+      .oauth2ResourceServer()
+      .jwt()
+      .jwtDecoder(jwtDecoder());
+    return http.build();
+  }
 
 
-    ReactiveJwtDecoder jwtDecoder() {
-        OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
-        OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
-        OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
+  ReactiveJwtDecoder jwtDecoder() {
+    OAuth2TokenValidator<Jwt> audienceValidator = new AudienceValidator(audience);
+    OAuth2TokenValidator<Jwt> withIssuer = JwtValidators.createDefaultWithIssuer(issuerUri);
+    OAuth2TokenValidator<Jwt> withAudience = new DelegatingOAuth2TokenValidator<>(withIssuer, audienceValidator);
 
-        NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(googleJwkProvider).build();
-        jwtDecoder.setJwtValidator(withAudience);
-        return jwtDecoder;
-    }
+    NimbusReactiveJwtDecoder jwtDecoder = NimbusReactiveJwtDecoder.withJwkSetUri(googleJwkProvider).build();
+    jwtDecoder.setJwtValidator(withAudience);
+    return jwtDecoder;
+  }
 }
