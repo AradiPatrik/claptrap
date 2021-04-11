@@ -2,6 +2,7 @@ package emilfekete.claptrap.backend.db;
 
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
+import io.r2dbc.postgresql.client.SSLMode;
 import io.r2dbc.spi.ConnectionFactory;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
@@ -30,6 +31,7 @@ class DatabaseConfiguration extends AbstractR2dbcConfiguration {
         .database(dbUri.getPath().substring(1))
         .username(username)
         .password(password)
+        .sslMode( SSLMode.REQUIRE )
         .enableSsl()
         .build()
     );
