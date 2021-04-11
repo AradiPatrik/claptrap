@@ -7,3 +7,9 @@ spring:
         jwt:
           issuer-uri: https://accounts.google.com
 logging.level.web: DEBUG
+logging:
+  level:
+    org:
+      springframework:
+        data:
+          r2dbc: DEBUG
