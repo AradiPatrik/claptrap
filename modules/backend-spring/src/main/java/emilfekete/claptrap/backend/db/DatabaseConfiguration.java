@@ -30,6 +30,7 @@ class DatabaseConfiguration extends AbstractR2dbcConfiguration {
         .database(dbUri.getPath().substring(1))
         .username(username)
         .password(password)
+        .enableSsl()
         .build()
     );
   }
