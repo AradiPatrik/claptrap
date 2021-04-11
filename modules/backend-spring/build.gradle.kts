@@ -4,7 +4,7 @@ plugins {
 }
 
 tasks.withType<Jar> {
-    archiveBaseName.set("bug-free-octo-spoon")
+    archiveBaseName.set("claptrapBackend")
 }
 
 repositories {
