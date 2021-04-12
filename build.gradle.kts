@@ -1,3 +1,5 @@
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 buildscript {
   repositories {
     google()
@@ -20,6 +22,7 @@ allprojects {
 plugins {
   id("com.aradipatrik.claptrap.config")
   id("io.gitlab.arturbosch.detekt").version("1.16.0")
+  id("org.openapi.generator").version("5.1.0")
 }
 
 subprojects {
@@ -61,6 +64,34 @@ tasks.getByName("build-backend")
 
 tasks.register("stage") {
   dependsOn("build-backend", "clean-backend")
+}
+
+tasks.register("generate-client-android", GenerateTask::class){
+  generatorName.set("kotlin")
+  inputSpec.set("$rootDir/openapi.yaml")
+  outputDir.set("$buildDir/generated")
+  apiPackage.set("org.openapi.example.api")
+  invokerPackage.set("org.openapi.example.invoker")
+  modelPackage.set("com.aradipatrik.claptrap.apimodels")
+  library.set("jvm-retrofit2")
+  configOptions.put("useCoroutines", "true")
+  configOptions.put("serializationLibrary" ,"jackson")
+}
+
+tasks.register("generate-server-spring", GenerateTask::class){
+  generatorName.set("spring")
+  inputSpec.set("$rootDir/openapi.yaml")
+  outputDir.set("$buildDir/generated")
+  apiPackage.set("org.openapi.example.api")
+  invokerPackage.set("org.openapi.example.invoker")
+  modelPackage.set("com.aradipatrik.claptrap.apimodels")
+  configOptions.put("reactive" ,"true")
+  configOptions.put("dateLibrary" ,"threetenbp")
+  configOptions.put("interfaceOnly" ,"true")
+  configOptions.put("serializationLibrary" ,"jackson")
+  configOptions.put("library" ,"spring-boot")
+  configOptions.put("skipDefaultInterface" ,"true")
+  configOptions.put("useRuntimeException" ,"true")
 }
 
 // Kotlin DSL
