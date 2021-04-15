@@ -58,26 +58,26 @@ if (includeAndroid == "true") {
 }
 
 include(":core")
-project(":core").projectDir = file("./modules/core")
+project(":core").projectDir = file("./core")
 
 include(":core:api-models")
-project(":core:api-models").projectDir = file("./modules/core/api-models")
+project(":core:api-models").projectDir = file("./core/api-models")
 
 include(":core:domain-models")
-project(":core:domain-models").projectDir = file("./modules/core/domain-models")
+project(":core:domain-models").projectDir = file("./core/domain-models")
 
 include(":core:domain-network-mappers")
-project(":core:domain-network-mappers").projectDir = file("./modules/core/domain-network-mappers")
+project(":core:domain-network-mappers").projectDir = file("./core/domain-network-mappers")
 
 include(":core:json-adapters")
-project(":core:json-adapters").projectDir = file("./modules/core/json-adapters")
+project(":core:json-adapters").projectDir = file("./core/json-adapters")
 
 if (includeKtor == "true") {
-  include(":backend")
-  project(":backend").projectDir = file("./modules/backend")
+  include(":backend-ktor")
+  project(":backend-ktor").projectDir = file("./backend-ktor")
 }
 
 if (includeSpring == "true") {
   include(":backend-spring")
-  project(":backend-spring").projectDir = file("./modules/backend-spring")
+  project(":backend-spring").projectDir = file("./backend-spring")
 }
