@@ -41,7 +41,7 @@ object Categories : Table(name = "Categories") {
 }
 
 object Users : Table(name = "Users") {
-  val id = varchar(name = "id", length = 20)
+  val id = varchar(name = "id", length = 32)
 
   // 64 character "local part" (username)
   // 1 character for the @ symbol
@@ -55,7 +55,7 @@ object Users : Table(name = "Users") {
 }
 
 object WalletsUsers : Table(name = "WalletsUsers") {
-  val userId = varchar("userId", length = 20) references Users.id
+  val userId = varchar("userId", length = 32) references Users.id
   val walletId = uuid("walletId") references Wallets.id
 
   override val primaryKey = PrimaryKey(userId, walletId)

@@ -136,6 +136,7 @@ class EditTransactionFragment : ClapTrapFragment<
     animateViewsIn()
 
     binding.inputsContainer.dateTextInputLayout.isActivated = true
+    binding.inputsContainer.categoryTextInputLayout.isActivated = true
   }
 
   private fun animateViewsIn() = lifecycleScope.launchWhenResumed {
