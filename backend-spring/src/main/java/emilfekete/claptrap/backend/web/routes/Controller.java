@@ -15,7 +15,7 @@ import reactor.core.publisher.Mono;
 class Controller {
 
   @Autowired
-  CustomerRepository customerRepository;
+  private CustomerRepository customerRepository;
 
   @GetMapping("/token-sign-in")
   public Mono<String> getTokenSignIn(@AuthenticationPrincipal Mono<Jwt> jwt) {
@@ -26,7 +26,6 @@ class Controller {
   public Flux<Customer> getUsers(@AuthenticationPrincipal Mono<Jwt> jwt) {
     return customerRepository.findAll();
   }
-
 
   @NotNull
   private String getUserDetailsStringFunction(Jwt jwt) {

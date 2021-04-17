@@ -3,14 +3,12 @@ package emilfekete;
 import emilfekete.claptrap.backend.db.entity.Customer;
 import emilfekete.claptrap.backend.db.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(classes = InfrastructureConfiguration.class)
+@DataR2dbcTest
 public class DatabaseTest {
 
   @Autowired
