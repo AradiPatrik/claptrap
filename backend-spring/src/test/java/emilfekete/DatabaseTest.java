@@ -1,4 +1,4 @@
-package claptrap.backend.test;
+package emilfekete;
 
 import emilfekete.claptrap.backend.db.entity.Customer;
 import emilfekete.claptrap.backend.db.repository.CustomerRepository;
@@ -10,7 +10,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = InfrastructureConfiguration.class)
 public class DatabaseTest {
 
@@ -19,7 +18,7 @@ public class DatabaseTest {
 
   @Test
   public void getCustomerById() {
-    Customer testCustomer = new Customer("Patrik", "Aradi");
+    Customer testCustomer = new Customer(0L, "Patrik", "Aradi");
     Customer customer = customerRepo
       .findByLastName("Aradi").take(1).blockFirst();
 

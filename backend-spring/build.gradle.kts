@@ -31,6 +31,7 @@ dependencies {
   implementation("io.r2dbc:r2dbc-h2")
   implementation("org.postgresql:postgresql")
 
+
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")
   implementation("org.springframework.security:spring-security-oauth2-resource-server")
