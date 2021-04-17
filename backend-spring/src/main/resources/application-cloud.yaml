@@ -13,8 +13,3 @@ logging:
       springframework:
         data:
           r2dbc: DEBUG
-
-username: sa
-  url: r2dbc:h2:mem:test_mem;DB_CLOSE_DELAY=-1;LOG=0;CACHE_SIZE=65536;LOCK_MODE=0;UNDO_LOG=0;MODE=PostgreSql;
-  sqlScriptEncoding: UTF-8
-  driverClassName: org.h2.Driver
