@@ -57,6 +57,9 @@ if (includeAndroid == "true") {
   project(":mvi").projectDir = file("./modules/mvi")
 }
 
+include(":api")
+project(":api").projectDir = file("./api")
+
 include(":core")
 project(":core").projectDir = file("./core")
 
