@@ -1,52 +1,75 @@
 import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
 
 plugins {
-    id("org.openapi.generator").version("5.1.0")
-    id("maven-publish")
+  id("org.openapi.generator").version("5.1.0")
+  id("maven-publish")
 }
 
-tasks.register("generate-api-model", GenerateTask::class){
-    groupId.set(group.toString())
-    version.set(version)
+tasks.register("generate-api-models", GenerateTask::class) {
+  group = "openapi-generator"
 
-    inputSpec.set("$projectDir/openapi.yaml")
-    outputDir.set("$buildDir/api-model")
-    globalProperties.put("models", "")
-    modelPackage.set("model")
-    generatorName.set("java")
+  inputSpec.set("$projectDir/openapi.yaml")
+  outputDir.set("$projectDir/generated-api-models")
+  globalProperties.put("models", "")
+  configOptions.put("serializationLibrary", "jackson")
+  modelPackage.set("com.claptrap.model")
+
+  generateAliasAsModel.set(true)
+
+  generatorName.set("kotlin")
 }
 
-tasks.register("generate-client-android", GenerateTask::class){
-//    dependsOn("generate-api-model")
-//    groupId.set(group)
-//    version.set(version)
+tasks.register("generate-retrofit-apis", GenerateTask::class) {
+  group = "openapi-generator"
 
-    generatorName.set("kotlin")
-    inputSpec.set("$projectDir/openapi.yaml")
-    outputDir.set("$buildDir/client-android")
-    apiPackage.set("org.openapi.example.api")
-    invokerPackage.set("org.openapi.example.invoker")
-    library.set("jvm-retrofit2")
-    configOptions.put("useCoroutines", "true")
-    configOptions.put("serializationLibrary" ,"jackson")
+  generatorName.set("kotlin")
+  inputSpec.set("$projectDir/openapi.yaml")
+  outputDir.set("$projectDir/generated-retrofit-apis")
+  apiPackage.set("com.claptrap.retrofit.api")
+  library.set("jvm-retrofit2")
+  configOptions.put("useCoroutines", "true")
+  configOptions.put("serializationLibrary", "jackson")
+  modelPackage.set("com.claptrap.model")
 }
 
-tasks.register("generate-server-spring", GenerateTask::class){
-//    dependsOn("generate-api-model")
-//    groupId.set(group)
-//    version.set(version)
-    inputSpec.set("$projectDir/openapi.yaml")
-    outputDir.set("$buildDir/server-spring")
-    apiPackage.set("org.openapi.example.api")
-    invokerPackage.set("org.openapi.example.invoker")
+tasks.register("generate-server-spring", GenerateTask::class) {
+  group = "openapi-generator"
 
+  inputSpec.set("$projectDir/openapi.yaml")
+  outputDir.set("$projectDir/generated-spring-interfaces")
+  apiPackage.set("com.claptrap.api")
+  globalProperties.put("apis", "")
+  generatorName.set("spring")
+  modelPackage.set("com.claptrap.model")
+  configOptions.put("reactive", "true")
+  configOptions.put("dateLibrary", "threetenbp")
+  configOptions.put("interfaceOnly", "true")
+  configOptions.put("serializationLibrary", "jackson")
+  configOptions.put("library", "spring-boot")
+  configOptions.put("skipDefaultInterface", "true")
+  configOptions.put("useRuntimeException", "true")
+}
 
-    generatorName.set("spring")
-    configOptions.put("reactive" ,"true")
-    configOptions.put("dateLibrary" ,"threetenbp")
-    configOptions.put("interfaceOnly" ,"true")
-    configOptions.put("serializationLibrary" ,"jackson")
-    configOptions.put("library" ,"spring-boot")
-    configOptions.put("skipDefaultInterface" ,"true")
-    configOptions.put("useRuntimeException" ,"true")
+tasks.register("generate-server-spring-and-publish") {
+  group = "openapi-generator"
+
+  dependsOn("generate-server-spring")
+  dependsOn("generated-spring-interfaces:build-and-publish")
+  dependsOn("generated-spring-interfaces:cleanup")
+}
+
+tasks.register("generate-api-models-and-publish") {
+  group = "openapi-generator"
+
+  dependsOn("generate-api-models")
+  dependsOn("generated-api-models:build-and-publish")
+  dependsOn("generated-api-models:cleanup")
+}
+
+tasks.register("generate-retrofit-apis-and-publish") {
+  group = "openapi-generator"
+
+  dependsOn("generate-retrofit-apis")
+  dependsOn("generated-retrofit-apis:build-and-publish")
+  dependsOn("generated-retrofit-apis:cleanup")
 }

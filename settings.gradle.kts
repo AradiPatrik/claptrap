@@ -60,6 +60,15 @@ if (includeAndroid == "true") {
 include(":api")
 project(":api").projectDir = file("./api")
 
+include(":api:generated-spring-interfaces")
+project(":api:generated-spring-interfaces").projectDir = file("./api/generated-spring-interfaces")
+
+include(":api:generated-api-models")
+project(":api:generated-api-models").projectDir = file("./api/generated-api-models")
+
+include(":api:generated-retrofit-apis")
+project(":api:generated-retrofit-apis").projectDir = file("./api/generated-retrofit-apis")
+
 include(":core")
 project(":core").projectDir = file("./core")
 

@@ -94,7 +94,8 @@ components:
         board:
           description: $board
           type: array
-          items: {  }
+          items:
+            type: string
           readOnly: true
         playerToMove:
           description: $playerToMove
