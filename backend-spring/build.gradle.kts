@@ -28,7 +28,6 @@ dependencies {
   implementation("io.r2dbc:r2dbc-postgresql")
   implementation("io.r2dbc:r2dbc-h2")
   implementation("org.postgresql:postgresql")
-  implementation("javax.validation:validation-api")
 
   implementation("org.springframework.boot:spring-boot-starter-webflux")
   implementation("org.springframework.boot:spring-boot-starter-security")

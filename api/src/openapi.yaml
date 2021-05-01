@@ -4,11 +4,12 @@ info:
   version: '1.0'
 
 security:
-  - bearerAuth: []
+  - bearerAuth: [ ]
 
 paths:
   '/token-sign-in':
     put:
+      operationId: tokenSignIn
       summary: |
         Validates the token, and initializes the user identified by the sub claim if the user
         is not already present inside the database. This token can come from either the Google,

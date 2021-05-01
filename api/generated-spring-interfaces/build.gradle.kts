@@ -54,5 +54,6 @@ dependencies {
   implementation("org.openapitools:jackson-databind-nullable:0.2.1")
   implementation("javax.validation:validation-api")
   implementation("com.fasterxml.jackson.core:jackson-databind")
+  implementation("org.springframework.security:spring-security-oauth2-jose")
   api(Libraries.Common.apiModels)
 }
