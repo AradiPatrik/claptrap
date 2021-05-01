@@ -8,5 +8,5 @@ dependencies {
   implementation(project(":core:domain-models"))
   implementation(project(":core:api-models"))
 
-  implementation("com.claptrap:spring:1.0.0")
+  implementation("com.claptrap:apimodels:1.0.0")
 }

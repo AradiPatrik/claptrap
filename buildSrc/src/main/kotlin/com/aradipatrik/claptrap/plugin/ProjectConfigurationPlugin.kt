@@ -68,7 +68,7 @@ class ProjectConfigurationPlugin : Plugin<Project> {
       !it.file("src/main/AndroidManifest.xml").exists()
     }
 
-  private fun Project.applyLibraryOrApplicationPlugin() = if (name == "app") {
+  private fun Project.applyLibraryOrApplicationPlugin() = if (name == "mobile-android") {
     plugins.apply("com.android.application")
   } else {
     plugins.apply("com.android.library")

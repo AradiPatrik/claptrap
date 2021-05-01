@@ -3,6 +3,10 @@ plugins {
   id("com.github.johnrengelman.shadow") version "6.0.0"
 }
 
+repositories {
+  mavenLocal()
+}
+
 application {
   group = "com.aradipatrik"
   version = "1.0.0"

@@ -9,6 +9,7 @@ tasks.withType<Jar> {
 
 repositories {
   mavenCentral()
+  mavenLocal()
   maven(url = "https://repo.spring.io/snapshot")
   maven(url = "https://repo.spring.io/milestone")
   maven(url = "https://oss.jfrog.org/artifactory/oss-snapshot-local/")

@@ -3,58 +3,58 @@ val includeKtor: String by extra
 val includeSpring: String by extra
 
 if (includeAndroid == "true") {
-  include(":app")
+  include(":mobile-android")
 
   include(":navigation")
-  project(":navigation").projectDir = file("./modules/navigation")
+  project(":navigation").projectDir = file("./mobile-android/modules/navigation")
 
   include(":features")
-  project(":features").projectDir = file("./modules/features")
+  project(":features").projectDir = file("./mobile-android/modules/features")
 
   include(":features:transactions")
-  project(":features:transactions").projectDir = file("./modules/features/transactions")
+  project(":features:transactions").projectDir = file("./mobile-android/modules/features/transactions")
 
   include(":features:statistics")
-  project(":features:statistics").projectDir = file("./modules/features/statistics")
+  project(":features:statistics").projectDir = file("./mobile-android/modules/features/statistics")
 
   include(":features:wallets")
-  project(":features:wallets").projectDir = file("./modules/features/wallets")
+  project(":features:wallets").projectDir = file("./mobile-android/modules/features/wallets")
 
   include(":features:common")
-  project(":features:common").projectDir = file("./modules/features/common")
+  project(":features:common").projectDir = file("./mobile-android/modules/features/common")
 
   include(":data")
-  project(":data").projectDir = file("./modules/data")
+  project(":data").projectDir = file("./mobile-android/modules/data")
 
   include(":data:disk")
-  project(":data:disk").projectDir = file("./modules/data/disk")
+  project(":data:disk").projectDir = file("./mobile-android/modules/data/disk")
 
   include(":data:network")
-  project(":data:network").projectDir = file("./modules/data/network")
+  project(":data:network").projectDir = file("./mobile-android/modules/data/network")
 
   include(":domain")
-  project(":domain").projectDir = file("./modules/domain")
+  project(":domain").projectDir = file("./mobile-android/modules/domain")
 
   include(":domain:datasources")
-  project(":domain:datasources").projectDir = file("./modules/domain/datasources")
+  project(":domain:datasources").projectDir = file("./mobile-android/modules/domain/datasources")
 
   include(":domain:interactors")
-  project(":domain:interactors").projectDir = file("./modules/domain/interactors")
+  project(":domain:interactors").projectDir = file("./mobile-android/modules/domain/interactors")
 
   include(":domain:interactor-interfaces")
-  project(":domain:interactor-interfaces").projectDir = file("./modules/domain/interactor-interfaces")
+  project(":domain:interactor-interfaces").projectDir = file("./mobile-android/modules/domain/interactor-interfaces")
 
   include(":domain:fake-interactors")
-  project(":domain:fake-interactors").projectDir = file("./modules/domain/fake-interactors")
+  project(":domain:fake-interactors").projectDir = file("./mobile-android/modules/domain/fake-interactors")
 
   include(":config")
-  project(":config").projectDir = file("./modules/config")
+  project(":config").projectDir = file("./mobile-android/modules/config")
 
   include(":theme")
-  project(":theme").projectDir = file("./modules/theme")
+  project(":theme").projectDir = file("./mobile-android/modules/theme")
 
   include(":mvi")
-  project(":mvi").projectDir = file("./modules/mvi")
+  project(":mvi").projectDir = file("./mobile-android/modules/mvi")
 }
 
 include(":api")
