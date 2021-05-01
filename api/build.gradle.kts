@@ -8,7 +8,11 @@ plugins {
 tasks.register("generate-api-models", GenerateTask::class) {
   group = "openapi-generator-private"
 
-  inputSpec.set("$projectDir/openapi.yaml")
+  inputs.files(fileTree("src"))
+    .withPropertyName("sourceFiles")
+    .withPathSensitivity(PathSensitivity.RELATIVE)
+
+  inputSpec.set("$projectDir/src/openapi.yaml")
   outputDir.set("$projectDir/generated-api-models")
   globalProperties.put("models", "")
   configOptions.put("serializationLibrary", "jackson")
@@ -22,8 +26,12 @@ tasks.register("generate-api-models", GenerateTask::class) {
 tasks.register("generate-retrofit-apis", GenerateTask::class) {
   group = "openapi-generator-private"
 
+  inputs.files(fileTree("src"))
+    .withPropertyName("sourceFiles")
+    .withPathSensitivity(PathSensitivity.RELATIVE)
+
   generatorName.set("kotlin")
-  inputSpec.set("$projectDir/openapi.yaml")
+  inputSpec.set("$buildDir/openapi.yaml")
   outputDir.set("$projectDir/generated-retrofit-apis")
   apiPackage.set("com.claptrap.retrofit.api")
   library.set("jvm-retrofit2")
@@ -35,7 +43,11 @@ tasks.register("generate-retrofit-apis", GenerateTask::class) {
 tasks.register("generate-server-spring", GenerateTask::class) {
   group = "openapi-generator-private"
 
-  inputSpec.set("$projectDir/openapi.yaml")
+  inputs.files(fileTree("src"))
+    .withPropertyName("sourceFiles")
+    .withPathSensitivity(PathSensitivity.RELATIVE)
+
+  inputSpec.set("$buildDir/openapi.yaml")
   outputDir.set("$projectDir/generated-spring-interfaces")
   apiPackage.set("com.claptrap.api")
   globalProperties.put("apis", "")
@@ -53,6 +65,7 @@ tasks.register("generate-server-spring", GenerateTask::class) {
 tasks.register("generate-server-spring-and-publish") {
   group = "openapi-generator-private"
 
+  dependsOn("mergeOpenApiFiles")
   dependsOn("generate-server-spring")
   dependsOn("generated-spring-interfaces:build-and-publish")
   dependsOn("generated-spring-interfaces:cleanup")
@@ -61,6 +74,7 @@ tasks.register("generate-server-spring-and-publish") {
 tasks.register("generate-api-models-and-publish") {
   group = "openapi-generator-private"
 
+  dependsOn("mergeOpenApiFiles")
   dependsOn("generate-api-models")
   dependsOn("generated-api-models:build-and-publish")
   dependsOn("generated-api-models:cleanup")
@@ -69,14 +83,16 @@ tasks.register("generate-api-models-and-publish") {
 tasks.register("generate-retrofit-apis-and-publish") {
   group = "openapi-generator-private"
 
+  dependsOn("mergeOpenApiFiles")
   dependsOn("generate-retrofit-apis")
   dependsOn("generated-retrofit-apis:build-and-publish")
   dependsOn("generated-retrofit-apis:cleanup")
 }
 
-tasks.register("generate") {
+tasks.register("generate-and-publish") {
   group = "openapi-generator"
 
+  dependsOn("mergeOpenApiFiles")
   dependsOn("generate-api-models-and-publish")
   dependsOn("generate-server-spring-and-publish")
   dependsOn("generate-retrofit-apis-and-publish")

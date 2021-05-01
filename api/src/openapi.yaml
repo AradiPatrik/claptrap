@@ -3,12 +3,6 @@ info:
   title: 'Claptrap'
   version: '1.0'
 
-components:
-  securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
 security:
   - bearerAuth: []
 
@@ -25,24 +19,34 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "./schemas/UserWire.yaml"
+                $ref: "#/components/schemas/DummyWire"
         '201':
           description: 'Validation successful. User was created.'
           content:
             application/json:
               schema:
-                $ref: "./schemas/UserWire.yaml"
+                $ref: "#/components/schemas/DummyWire"
         '401':
           description: 'Token validation failed. The token is either faulty or expired.'
   '/dummy':
     get:
       summary: 'Returns dummy data'
       responses:
-        '200':
+        '201':
           description: 'Dummy data returned'
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "./schemas/DummyWire.yaml"
+                  $ref: '#/components/schemas/DummyWire'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    DummyWire:
+      $ref: './schemas/DummyWire.yaml'
