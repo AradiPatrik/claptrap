@@ -6,9 +6,9 @@ plugins {
 publishing {
   publications {
     create<MavenPublication>("maven") {
-      groupId = "com.claptrap"
-      artifactId = "android-client"
-      version = "1.0.0"
+      groupId = ProjectConstants.commonGroupId
+      artifactId = ProjectConstants.retrofitApisArtifactId
+      version = Versions.Common.retrofitApis
 
       artifact("$buildDir/libs/generated-retrofit-apis.jar")
     }
@@ -44,12 +44,8 @@ tasks.register("remove-unused-infrastructure-import") {
   }
 }
 
-tasks.register("foo") {
-
-}
-
 tasks.register("build-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("keep-only-api-files")
   dependsOn("remove-unused-infrastructure-import")
@@ -72,5 +68,5 @@ dependencies {
   implementation(Libraries.Coroutines.core)
   implementation(Libraries.Network.okHttp)
   implementation(Libraries.Network.retrofit)
-  implementation("com.claptrap:apimodels:1.0.0")
+  api(Libraries.Common.apiModels)
 }

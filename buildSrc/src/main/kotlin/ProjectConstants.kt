@@ -1,6 +1,8 @@
 object ProjectConstants {
-  const val applicationId = "com.aradipatrik."
   const val versionCode = 1
   const val versionName = "1.0"
-  const val testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+  const val commonGroupId = "com.claptrap"
+  const val apiModelsArtifactId = "apimodels"
+  const val retrofitApisArtifactId = "android-client"
+  const val springInterfacesArtifactId = "spring"
 }

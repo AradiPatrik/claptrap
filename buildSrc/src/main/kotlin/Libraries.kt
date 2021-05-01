@@ -127,4 +127,10 @@ object Libraries {
     const val analytics = "com.google.firebase:firebase-analytics-ktx"
     const val auth = "com.google.firebase:firebase-auth-ktx"
   }
+
+  object Common {
+    const val apiModels = "${ProjectConstants.commonGroupId}:${ProjectConstants.apiModelsArtifactId}:${Versions.Common.apiModels}"
+    const val retrofitApis = "${ProjectConstants.commonGroupId}:${ProjectConstants.retrofitApisArtifactId}:${Versions.Common.retrofitApis}"
+    const val springInterfaces = "${ProjectConstants.commonGroupId}:${ProjectConstants.springInterfacesArtifactId}:${Versions.Common.springInterfaces}"
+  }
 }

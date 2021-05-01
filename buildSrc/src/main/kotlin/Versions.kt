@@ -69,4 +69,10 @@ object Versions {
   object Firebase {
     const val bom = "26.3.0"
   }
+
+  object Common {
+    const val apiModels = "1.0.0"
+    const val retrofitApis = "1.0.0"
+    const val springInterfaces = "1.0.0"
+  }
 }

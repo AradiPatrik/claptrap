@@ -6,9 +6,9 @@ plugins {
 publishing {
   publications {
     create<MavenPublication>("maven") {
-      groupId = "com.claptrap"
-      artifactId = "apimodels"
-      version = "1.0.0"
+      groupId = ProjectConstants.commonGroupId
+      artifactId = ProjectConstants.apiModelsArtifactId
+      version = Versions.Common.apiModels
 
       artifact("$buildDir/libs/generated-api-models.jar")
     }
@@ -20,7 +20,7 @@ tasks.register("cleanup", Delete::class) {
 }
 
 tasks.register("build-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("jar")
   dependsOn("publishToMavenLocal")

@@ -22,9 +22,9 @@ repositories {
 publishing {
   publications {
     create<MavenPublication>("maven") {
-      groupId = "com.claptrap"
-      artifactId = "spring"
-      version = "1.0.0"
+      groupId = ProjectConstants.commonGroupId
+      artifactId = ProjectConstants.springInterfacesArtifactId
+      version = Versions.Common.springInterfaces
 
       artifact("$buildDir/libs/generated-spring-interfaces.jar")
     }
@@ -36,7 +36,7 @@ tasks.register("cleanup", Delete::class) {
 }
 
 tasks.register("build-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("jar")
   dependsOn("publishToMavenLocal")
@@ -54,5 +54,5 @@ dependencies {
   implementation("org.openapitools:jackson-databind-nullable:0.2.1")
   implementation("javax.validation:validation-api")
   implementation("com.fasterxml.jackson.core:jackson-databind")
-  implementation("com.claptrap:apimodels:1.0.0")
+  api(Libraries.Common.apiModels)
 }

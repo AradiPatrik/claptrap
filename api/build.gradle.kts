@@ -6,7 +6,7 @@ plugins {
 }
 
 tasks.register("generate-api-models", GenerateTask::class) {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   inputSpec.set("$projectDir/openapi.yaml")
   outputDir.set("$projectDir/generated-api-models")
@@ -20,7 +20,7 @@ tasks.register("generate-api-models", GenerateTask::class) {
 }
 
 tasks.register("generate-retrofit-apis", GenerateTask::class) {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   generatorName.set("kotlin")
   inputSpec.set("$projectDir/openapi.yaml")
@@ -33,7 +33,7 @@ tasks.register("generate-retrofit-apis", GenerateTask::class) {
 }
 
 tasks.register("generate-server-spring", GenerateTask::class) {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   inputSpec.set("$projectDir/openapi.yaml")
   outputDir.set("$projectDir/generated-spring-interfaces")
@@ -51,7 +51,7 @@ tasks.register("generate-server-spring", GenerateTask::class) {
 }
 
 tasks.register("generate-server-spring-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("generate-server-spring")
   dependsOn("generated-spring-interfaces:build-and-publish")
@@ -59,7 +59,7 @@ tasks.register("generate-server-spring-and-publish") {
 }
 
 tasks.register("generate-api-models-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("generate-api-models")
   dependsOn("generated-api-models:build-and-publish")
@@ -67,9 +67,17 @@ tasks.register("generate-api-models-and-publish") {
 }
 
 tasks.register("generate-retrofit-apis-and-publish") {
-  group = "openapi-generator"
+  group = "openapi-generator-private"
 
   dependsOn("generate-retrofit-apis")
   dependsOn("generated-retrofit-apis:build-and-publish")
   dependsOn("generated-retrofit-apis:cleanup")
+}
+
+tasks.register("generate") {
+  group = "openapi-generator"
+
+  dependsOn("generate-api-models-and-publish")
+  dependsOn("generate-server-spring-and-publish")
+  dependsOn("generate-retrofit-apis-and-publish")
 }
