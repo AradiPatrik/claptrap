@@ -1,13 +1,13 @@
 type: object
 required:
-- id
-- name
+  - id
+  - email
 properties:
   id:
-    type: integer
+    type: string
+  email:
+    type: string
   name:
     type: string
-  kaga:
-    type: string
-  kugi:
+  profilePictureUrl:
     type: string

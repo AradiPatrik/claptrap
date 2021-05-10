@@ -20,27 +20,15 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DummyWire"
+                $ref: "#/components/schemas/UserWire"
         '201':
           description: 'Validation successful. User was created.'
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DummyWire"
+                $ref: "#/components/schemas/UserWire"
         '401':
           description: 'Token validation failed. The token is either faulty or expired.'
-  '/dummy':
-    get:
-      summary: 'Returns dummy data'
-      responses:
-        '201':
-          description: 'Dummy data returned'
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/DummyWire'
 
 components:
   securitySchemes:
@@ -49,5 +37,5 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    DummyWire:
-      $ref: './schemas/DummyWire.yaml'
+    UserWire:
+      $ref: './schemas/UserWire.yaml'
