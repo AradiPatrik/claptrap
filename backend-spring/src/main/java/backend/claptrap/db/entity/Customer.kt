@@ -1,4 +1,4 @@
-package emilfekete.claptrap.backend.db.entity
+package backend.claptrap.db.entity
 
 import org.springframework.data.annotation.Id
 

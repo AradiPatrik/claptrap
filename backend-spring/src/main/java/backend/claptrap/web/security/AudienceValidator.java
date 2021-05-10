@@ -1,4 +1,4 @@
-package emilfekete.claptrap.backend.web.security;
+package backend.claptrap.web.security;
 
 import org.springframework.security.oauth2.core.OAuth2Error;
 import org.springframework.security.oauth2.core.OAuth2ErrorCodes;

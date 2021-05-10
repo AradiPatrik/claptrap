@@ -1,10 +1,10 @@
-package emilfekete.claptrap.backend.web.routes;
+package backend.claptrap.web.routes;
 
 import com.claptrap.api.DummyApi;
 import com.claptrap.api.TokenSignInApi;
 import com.claptrap.model.DummyWire;
-import emilfekete.claptrap.backend.db.entity.Customer;
-import emilfekete.claptrap.backend.db.repository.CustomerRepository;
+import backend.claptrap.db.entity.Customer;
+import backend.claptrap.db.repository.CustomerRepository;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,28 +20,13 @@ class Controller implements TokenSignInApi, DummyApi {
   @Autowired
   private CustomerRepository customerRepository;
 
-  @GetMapping("/token-sign-in")
-  public Mono<String> getTokenSignIn(@AuthenticationPrincipal Mono<Jwt> jwt) {
-    return jwt.map(this::getUserDetailsStringFunction);
-  }
-
-  @GetMapping("/users")
-  public Flux<Customer> getUsers(@AuthenticationPrincipal Mono<Jwt> jwt) {
-    return customerRepository.findAll();
-  }
-
-  @NotNull
-  private String getUserDetailsStringFunction(Jwt jwt) {
-    return jwt.getSubject();
-  }
-
   @Override
-  public Flux<DummyWire> dummyGet() {
+  public Flux<DummyWire> dummyGet(Mono<Jwt> jwt) {
     return null;
   }
 
   @Override
-  public Mono<DummyWire> tokenSignInPut(Mono<Jwt> jwt) {
+  public Mono<DummyWire> tokenSignIn(Mono<Jwt> jwt) {
     return null;
   }
 }

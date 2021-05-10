@@ -14,7 +14,6 @@ application {
 }
 
 dependencies {
-  implementation(project(":core:api-models"))
   implementation(project(":core:domain-models"))
   implementation(project(":core:domain-network-mappers"))
   implementation(project(":core:json-adapters"))

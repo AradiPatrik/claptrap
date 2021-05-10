@@ -72,9 +72,6 @@ project(":api:generated-retrofit-apis").projectDir = file("./api/generated-retro
 include(":core")
 project(":core").projectDir = file("./core")
 
-include(":core:api-models")
-project(":core:api-models").projectDir = file("./core/api-models")
-
 include(":core:domain-models")
 project(":core:domain-models").projectDir = file("./core/domain-models")
 

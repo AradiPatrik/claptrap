@@ -17,7 +17,6 @@ import java.io.File
 
 class ProjectConfigurationPlugin : Plugin<Project> {
   override fun apply(target: Project) = with(target) {
-    optInToFlowPreviewAndExperimentalCoroutines()
     configureAndroidModules {
       applyLibraryOrApplicationPlugin()
       applyCommonPlugins()
@@ -25,19 +24,6 @@ class ProjectConfigurationPlugin : Plugin<Project> {
     }
     configureNonAndroidModules {
       applyKotlinLibraryPlugins()
-    }
-  }
-
-  private fun Project.optInToFlowPreviewAndExperimentalCoroutines() {
-    subprojects {
-      tasks.withType(KotlinCompile::class.java) {
-        kotlinOptions {
-          jvmTarget = JavaVersion.VERSION_1_8.toString()
-          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi"
-          freeCompilerArgs += "-Xopt-in=kotlinx.coroutines.FlowPreview"
-          freeCompilerArgs += "-Xopt-in=kotlin.ExperimentalStdlibApi"
-        }
-      }
     }
   }
 

@@ -19,7 +19,6 @@ dependencies {
   implementation(Libraries.Common.springInterfaces)
   implementation(Libraries.Common.apiModels)
 
-  implementation(project(":core:api-models"))
   implementation(project(":core:domain-models"))
   implementation(project(":core:domain-network-mappers"))
   implementation(project(":core:json-adapters"))
@@ -44,3 +43,5 @@ dependencies {
 tasks.withType<Test> {
   useJUnitPlatform()
 }
+
+tasks.getByName("bootRun").dependsOn(":api:generate-and-publish")

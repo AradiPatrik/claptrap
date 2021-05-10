@@ -1,6 +1,5 @@
-package emilfekete;
+package backend.claptrap;
 
-import io.r2dbc.spi.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -10,12 +9,15 @@ import org.springframework.core.io.ClassPathResource;
 import org.springframework.r2dbc.connection.init.ConnectionFactoryInitializer;
 import org.springframework.r2dbc.connection.init.ResourceDatabasePopulator;
 
+import io.r2dbc.spi.ConnectionFactory;
+
 @SpringBootApplication
 public class ReactiveDemoApplication {
 
   private static final Logger log = LoggerFactory.getLogger(ReactiveDemoApplication.class);
 
   public static void main(String[] args) {
+    String x;
     SpringApplication.run(ReactiveDemoApplication.class, args);
   }
 

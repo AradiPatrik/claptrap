@@ -1,7 +1,7 @@
 package emilfekete;
 
-import emilfekete.claptrap.backend.db.entity.Customer;
-import emilfekete.claptrap.backend.db.repository.CustomerRepository;
+import backend.claptrap.db.entity.Customer;
+import backend.claptrap.db.repository.CustomerRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.r2dbc.DataR2dbcTest;
