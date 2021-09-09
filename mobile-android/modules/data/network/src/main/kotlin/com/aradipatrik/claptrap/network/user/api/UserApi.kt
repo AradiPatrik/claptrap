@@ -1,6 +1,6 @@
 package com.aradipatrik.claptrap.network.user.api
 
-import com.aradipatrik.claptrap.apimodels.UserWire
+import com.claptrap.model.UserWire
 import retrofit2.http.POST
 
 interface UserApi {

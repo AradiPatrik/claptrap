@@ -22,6 +22,16 @@ class ProjectConfigurationPlugin : Plugin<Project> {
       applyCommonPlugins()
       configureAndroidPlugin()
     }
+
+    subprojects {
+      tasks.withType(KotlinCompile::class.java) {
+        kotlinOptions {
+          jvmTarget = JavaVersion.VERSION_1_8.toString()
+          freeCompilerArgs += "-Xopt-in=kotlin.ExperimentalStdlibApi"
+        }
+      }
+    }
+
     configureNonAndroidModules {
       applyKotlinLibraryPlugins()
     }

@@ -6,6 +6,7 @@ dependencies {
   api(project(":domain:datasources"))
   implementation(project(":core:domain-models"))
   implementation(project(":config"))
+  implementation("com.claptrap:apimodels:1.0.0")
   implementation(Libraries.Google.playServices)
   implementation(platform(Libraries.Firebase.bom))
   implementation(Libraries.Firebase.analytics)
