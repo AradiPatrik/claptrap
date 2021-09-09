@@ -15,6 +15,6 @@ class UserInteractorFake @Inject constructor() : UserInteractor {
   override fun getSignedInUserFlow(): Flow<User?> = signedInUserStateFlow
 
   override suspend fun signInWithGoogleJwt(jwt: String, identityProvider: IdentityProvider) {
-    TODO("Not yet implemented")
+    signedInUserStateFlow.value = User("1", "a@b.com", "a", "b")
   }
 }
